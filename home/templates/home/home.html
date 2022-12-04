@@ -1,0 +1,61 @@
+{% extends '_base_.html' %}
+{% load static %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block container %}
+
+  <section class="header1 cid-toBuRfARWF mbr-fullscreen mbr-parallax-background" id="header1-1">
+      <div class="mbr-overlay" style="opacity: 0.1; background-color: rgb(216, 216, 216);"></div>
+      <div class="container">
+          <div class="row">
+              <div class="col-12 col-lg-5">
+                  <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1"><strong>Przejmij kontrolę</strong></h1>
+                  <p class="mbr-text mbr-fonts-style display-7">
+                      Zacznij świadomie zarządzać swoimi finansami już dziś. Dołącz do tysięcy zadowolonych użytkowników.</p>
+                  <div class="mbr-section-btn mt-3"><a class="btn btn-secondary display-4" href="index.html">Dołącz teraz</a></div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <section class="features13 cid-toBCPfHnw3" id="features14-6">
+      <div class="container">
+          <div class="row">
+              <div class="col-12">
+                  <h3 class="mbr-section-title align-center mb-4 mbr-fonts-style display-2"><strong>Wypróbuj naszych niezawodnych asystentów</strong></h3>
+              </div>
+              <div class="card col-12 col-md-4 col-lg-2 p-3">
+                  <div class="card-wrapper">
+                      <div class="card-box align-center">
+                          <a href="index.html"><img src="{% static 'home/images/magnifying_glass.png' %}" alt="Magnifying glass over a coin"></a>
+                          <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
+                              <strong>Śledź swoje<br>finanse</strong></h4>
+                      </div>
+                  </div>
+              </div>
+              <div class="card p-3 col-12 col-md-4 col-lg-2">
+                  <div class="card-wrapper">
+                      <div class="card-box align-center">
+                          <a href="index.html"><img src="{% static 'home/images/wallets.png' %}" alt="Wallets"></a>
+                          <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
+                              <strong>Zarządzaj osobistymi portfelami</strong></h4>
+                      </div>
+                  </div>
+              </div>
+              <div class="card p-3 col-12 col-md-4 col-lg-2">
+                  <div class="card-wrapper">
+                      <div class="card-box align-center">
+                          <a href="index.html"><img src="{% static 'home/images/piggy_bank.png' %}" alt="Piggy bank"></a>
+                          <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
+                              <strong>Twórz plany oszczędzania</strong></h4>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+{% endblock %}
