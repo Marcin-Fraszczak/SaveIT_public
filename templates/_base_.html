@@ -9,7 +9,7 @@
   <link rel="shortcut icon" href="{% static 'assets/images/saveit_logo_short.png' %}" type="image/x-icon">
   <meta name="description" content="">
 
-  <title>{% block title %}{% endblock %}</title>
+  <title>{% block title %}{% endblock title %}</title>
 
   <link rel="stylesheet" href="{% static 'assets/tether/tether.min.css' %}">
   <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}">
@@ -22,11 +22,13 @@
 
 </head>
 <body>
-  {% include './partials/_menu.html' %}
+  {% block menu %}
+    {% include './partials/_menu.html' %}
+  {% endblock menu %}
 
   {% block container %}
 
-  {% endblock %}
+  {% endblock container %}
 
   {% include './partials/_footer.html' %}
 
