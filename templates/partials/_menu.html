@@ -22,24 +22,37 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link link text-white text-primary display-7" href="#">
+                                Hi {{user.username}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link link text-white text-primary display-7" href="{% url 'logout' %}">
+                                Log out
+                            </a>
+                        </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link link text-white text-primary display-7" href="{% url 'accounts:register' %}">
+                            Sign up
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link link text-white text-primary display-7" href="{% url 'login' %}">
+                            Log in
+                        </a>
+                    </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link link text-white text-primary display-7" href="{% url 'home:home' %}">
-                            Zarejestruj
+                            About
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link link text-white text-primary display-7" href="{% url 'home:home' %}">
-                            Zaloguj
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link link text-white text-primary display-7" href="{% url 'home:home' %}">
-                            O aplikacji
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link link text-white text-primary display-7" href="{% url 'home:home' %}">
-                            Kontakt
+                            Contact
                         </a>
                     </li>
                 </ul>
