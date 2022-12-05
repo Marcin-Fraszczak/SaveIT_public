@@ -6,8 +6,7 @@
 {% endblock %}
 
 {% block container %}
-    <p><br><br></p>
-    <div class="container-sm">
+    <div class="container-sm mt-5 pt-5">
       <form method="post">
         {% csrf_token %}
         {{ form|crispy }}

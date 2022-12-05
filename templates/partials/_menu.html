@@ -24,8 +24,8 @@
                 <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link link text-white text-primary display-7" href="#">
-                                Hi {{user.username}}
+                            <a class="nav-link link text-white text-primary display-7" href="{% url 'accounts:dashboard' %}">
+                                {{user.username}}
                             </a>
                         </li>
                         <li class="nav-item">
