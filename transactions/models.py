@@ -18,16 +18,26 @@ class Transaction(models.Model):
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='own_transaction')
     wallet = models.ManyToManyField('Wallet', related_name='wlt_transaction')
 
+    def __str__(self):
+        return self.date, self.value
+
 
 class Category(models.Model):
     name = models.CharField(max_length=60)
     search_terms = models.CharField(max_length=200)
     description = models.CharField(max_length=80, null=True)
 
+    def __str__(self):
+        return self.name
+
+
 
 class Counterparty(models.Model):
     name = models.CharField(max_length=60, default="b.d.")
     search_terms = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
 
 
 class Wallet(models.Model):
@@ -36,6 +46,9 @@ class Wallet(models.Model):
     description = models.CharField(max_length=80, null=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='wallet')
 
+    def __str__(self):
+        return self.name
+
 
 class SavingsPlan(models.Model):
     name = models.CharField(max_length=60)
@@ -43,3 +56,6 @@ class SavingsPlan(models.Model):
     monthly_goal = models.FloatField()
     initial_value = models.FloatField()
     curve_type = models.IntegerField(choices=CURVES)
+
+    def __str__(self):
+        return self.name
