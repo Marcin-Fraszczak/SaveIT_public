@@ -22,19 +22,10 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+
                     <li class="nav-item">
                         <a class="nav-link link text-white text-primary display-7" href="{% url 'accounts:dashboard' %}">
-                            Link1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link link text-white text-primary display-7" href="{% url 'accounts:dashboard' %}">
-                            Link2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link link text-white text-primary display-7" href="{% url 'accounts:dashboard' %}">
-                            Link3
+                            Account: {{user.username}}
                         </a>
                     </li>
                     <li class="nav-item">
@@ -42,17 +33,90 @@
                             Change data
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link link text-white text-primary display-7" href="{% url 'logout' %}">
+                            Log out
+                        </a>
+                    </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link link text-white text-primary display-7" href="{% url 'accounts:dashboard' %}">
-                                Account: {{user.username}}
+                    <li class="nav-item">
+                        <a class="nav-link link text-white text-primary display-7" href="#">
+                            Add transaction
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link text-white text-primary dropdown-toggle display-7" href="#"
+                            data-toggle="dropdown-submenu" aria-expanded="true">
+                            Transaction
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                Add new
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link link text-white text-primary display-7" href="{% url 'logout' %}">
-                                Log out
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                List all
                             </a>
-                        </li>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link text-white text-primary dropdown-toggle display-7" href="#"
+                            data-toggle="dropdown-submenu" aria-expanded="true">
+                            Category
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="text-white text-primary dropdown-item display-7" href="{% url 'transactions:add_category' %}">
+                                Add new
+                            </a>
+                            <a class="text-white text-primary dropdown-item display-7" href="{% url 'transactions:list_category' %}">
+                                List all
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link text-white text-primary dropdown-toggle display-7" href="#"
+                            data-toggle="dropdown-submenu" aria-expanded="true">
+                            Counterparty
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                Add new
+                            </a>
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                List all
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link text-white text-primary dropdown-toggle display-7" href="#"
+                            data-toggle="dropdown-submenu" aria-expanded="true">
+                            Wallet
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                Add new
+                            </a>
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                List all
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link text-white text-primary dropdown-toggle display-7" href="#"
+                            data-toggle="dropdown-submenu" aria-expanded="true">
+                            Savings Plan
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                Add new
+                            </a>
+                            <a class="text-white text-primary dropdown-item display-7" href="#">
+                                List all
+                            </a>
+                        </div>
+                    </li>
+
                 </ul>
             </div>
         </div>

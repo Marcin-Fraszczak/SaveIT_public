@@ -33,8 +33,9 @@ class Category(models.Model):
 
 
 class Counterparty(models.Model):
-    name = models.CharField(max_length=60, default="b.d.")
+    name = models.CharField(max_length=60)
     search_terms = models.CharField(max_length=200)
+    description = models.CharField(max_length=80, null=True)
 
     def __str__(self):
         return self.name

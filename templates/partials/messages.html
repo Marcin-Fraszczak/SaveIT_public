@@ -1,0 +1,13 @@
+{% if messages %}
+
+    {% for message in messages %}
+        <p class="container-sm alert alert-info timed-message">{{message}}</p>
+    {% endfor %}
+
+<script>
+    setTimeout(function () {
+        $('.timed-message').remove()
+    }, 2000);
+</script>
+
+{% endif %}
