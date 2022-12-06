@@ -15,3 +15,12 @@ class CounterpartyForm(forms.ModelForm):
         model = models.Counterparty
         fields = ("name", "description")
 
+
+class WalletForm(forms.ModelForm):
+
+    class Meta:
+        model = models.Wallet
+        fields = ("name", "description")
+
+
+

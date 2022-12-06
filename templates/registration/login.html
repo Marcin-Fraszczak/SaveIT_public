@@ -6,8 +6,8 @@
 {% endblock title %}
 
 {% block container %}
-    <h2>Log in</h2>
     <div class="container-sm">
+        <h2>Log in</h2>
         <form method="post">
             {% csrf_token %}
             {{form|crispy}}

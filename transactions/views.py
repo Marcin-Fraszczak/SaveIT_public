@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, get_user
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -51,6 +51,29 @@ class AddCounterpartyView(View):
         form = forms.CounterpartyForm
         return render(request=request, template_name='transactions/add_counterparty.html', context={"form": form})
 
+
+class AddWalletView(View):
+
+    def post(self, request):
+        form = forms.WalletForm(request.POST)
+        if form.is_valid():
+            exists = models.Wallet.objects.filter(name=request.POST.get('name'))
+            if exists:
+                messages.error(request, "Wallet already exists")
+            else:
+                wallet = form.save(commit=False)
+                wallet.owner = get_user(request)
+                wallet.save()
+                messages.success(request, "Wallet successfully added")
+        else:
+            messages.error(request, "Error saving form")
+
+        return redirect('transactions:list_wallet')
+
+    def get(self, request):
+
+        form = forms.WalletForm
+        return render(request=request, template_name='transactions/add_wallet.html', context={"form": form})
 
 class ListCategoryView(ListView):
     model = models.Category
