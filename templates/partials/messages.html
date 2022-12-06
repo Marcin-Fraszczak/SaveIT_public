@@ -1,7 +1,11 @@
 {% if messages %}
 
     {% for message in messages %}
-        <p class="container-sm alert alert-info timed-message">{{message}}</p>
+        {% if message.tags == 'error' %}
+            <p class="container-sm alert alert-danger timed-message">{{message}}</p>
+        {% else %}}
+            <p class="container-sm alert alert-{{message.tags}} timed-message">{{message}}</p>
+        {% endif %}
     {% endfor %}
 
 <script>

@@ -2,16 +2,16 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    Add Category
+    Add Counterparty
 {% endblock title %}
 
 {% block menu %}
-    {% include './partials/_dash_menu.html' %}
+    {% include '../partials/_dash_menu.html' %}
 {% endblock menu %}
 
 {% block container %}
     <div class="container-sm">
-        <h2>Add new category:</h2>
+        <h2>Add new counterparty:</h2>
         <form method="post">
             {% csrf_token %}
             {{ form|crispy }}

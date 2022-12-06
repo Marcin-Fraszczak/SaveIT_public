@@ -26,9 +26,11 @@
     {% include './partials/_menu.html' %}
   {% endblock menu %}
 
-  <div class="mt-5 pt-5">
-    {% include './partials/messages.html' %}
-  </div>
+  {% block messages %}
+    <div class="mt-5 pt-5">
+      {% include './partials/messages.html' %}
+    </div>
+  {% endblock messages %}
 
   {% block container %}
 
