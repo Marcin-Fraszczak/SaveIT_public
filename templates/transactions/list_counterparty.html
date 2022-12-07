@@ -18,7 +18,7 @@
                 <div class="col">Description</div>
             </div>
             {% for object in object_list %}
-            <a href="{% url 'transactions:modify_counterparty' object.id %}" class="text-black">
+            <a href="{% url 'transactions:modify_counterparty' object.pk %}" class="text-black">
                 <div class="row p-2">
                     <div class="col-1">{{forloop.counter}}</div>
                     <div class="col-2">{{object.name}}</div>
