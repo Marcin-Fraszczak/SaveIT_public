@@ -10,8 +10,8 @@
 {% endblock menu %}
 
 {% block container %}
-    <div class="container-sm">
-        <h2>View all transactions:</h2>
+    <div class="container-flex ml-3 mr-5 mb-2">
+        <h2 class="ml-4">View all transactions:</h2>
         <ul>
 
             <div class="row mb-3">
@@ -20,16 +20,14 @@
                 </div>
             </div>
 
-<!--            &#11015; Date &#11014;-->
-
-            <div class="row mb-3 table-dark data-table">
+            <div class="row mb-3 data-table customizer card-body rounded">
                 <div class="col-1"></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction'%}?order=date">Date</a></div>
-                <div class="col-1"><a href="{% url 'transactions:list_transaction'%}?order=value">Value</a></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction'%}?order=counterparty">Counterparty</a></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction'%}?order=category">Category</a></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet">Wallet</a></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes">Notes</a></div>
+                <div class="col-2"><a href="{% url 'transactions:list_transaction'%}?order=date" class="text-white text-primary display-7 nav-link">Date</a></div>
+                <div class="col-1"><a href="{% url 'transactions:list_transaction'%}?order=value" class="text-white text-primary display-7 nav-link">Value</a></div>
+                <div class="col-2"><a href="{% url 'transactions:list_transaction'%}?order=counterparty" class="text-white text-primary display-7 nav-link">Counterparty</a></div>
+                <div class="col-2"><a href="{% url 'transactions:list_transaction'%}?order=category" class="text-white text-primary display-7 nav-link">Category</a></div>
+                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet" class="text-white text-primary display-7 nav-link">Wallet</a></div>
+                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes" class="text-white text-primary display-7 nav-link">Notes</a></div>
             </div>
             {% for object in object_list %}
             <a href="{% url 'transactions:modify_transaction' object.pk %}" class="text-black">

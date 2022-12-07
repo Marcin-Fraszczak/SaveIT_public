@@ -226,14 +226,10 @@ class ListTransactionView(View):
             return redirect('login')
 
         sort_order = request.GET.get('order', 'date')
-        print(sort_order)
 
         if sort_order == last_sort_order:
             sort_order = f"-{sort_order}"
         last_sort_order = sort_order
-
-        print(sort_order)
-        print(last_sort_order)
 
         transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
         return render(request, 'transactions/list_transaction.html', context={"object_list": transactions})
