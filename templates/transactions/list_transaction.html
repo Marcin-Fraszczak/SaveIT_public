@@ -1,0 +1,54 @@
+{% extends '_base_.html' %}
+
+{% block title %}
+    List Transaction
+{% endblock title %}
+
+{% block menu %}
+    {% include '../partials/_dash_menu.html' %}
+{% endblock menu %}
+
+{% block container %}
+    <div class="container-sm">
+        <h2>View all transactions:</h2>
+        <ul>
+            <div class="row mb-3 table-dark">
+                <div class="col-1"></div>
+                <div class="col-2">Date</div>
+                <div class="col-1">Value</div>
+                <div class="col-2">Counterparty</div>
+                <div class="col-2">Category</div>
+                <div class="col-2">Wallet</div>
+                <div class="col">Notes</div>
+            </div>
+            {% for object in object_list %}
+            <a href="{% url 'transactions:modify_transaction' object.id %}" class="text-black">
+                <div class="row p-2">
+                    <div class="col-1">{{forloop.counter}}</div>
+                    <div class="col-2">{{object.date}}</div>
+                    {% if object.is_profit %}
+                    <div class="col-1">{{object.value}}</div>
+                    {% else %}
+                    <div class="col-1">-{{object.value}}</div>
+                    {% endif %}
+                    <div class="col-2">{{object.counterparty}}</div>
+                    <div class="col-2">{{object.category}}</div>
+                    {% if object.wallet %}
+                    <div class="col-2">
+                    {% for wallet in object.wallet.all %}
+                    {{wallet}}
+                    {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="col-2"></div>
+                    {% endif %}
+                    <div class="col">{{object.notes}}</div>
+                </div>
+            </a>
+            {% empty %}
+            <div class="col-12 align-center">Nothing to display</div>
+            {% endfor %}
+        </ul>
+    </div>
+    <div></div>
+{% endblock container %}

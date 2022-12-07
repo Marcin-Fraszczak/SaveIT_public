@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    Password Change
+    Modify Transaction
 {% endblock title %}
 
 {% block menu %}
@@ -11,14 +11,13 @@
 
 {% block container %}
     <div class="container-sm">
+        <h2>Modify transaction:</h2>
         <form method="post">
             {% csrf_token %}
-            <h2>Password change</h2>
-            <p>Please enter your old password, for security's sake, and then enter
-            your new password twice, so we can verify you typed it in correctly.</p>
-            {{form|crispy}}
-            <button type="submit" class="btn btn-secondary display-4">Change my password</button>
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-secondary display-4 m-2">Save changes</button>
         </form>
+        <a class="btn btn-secondary display-4" href="{% url 'transactions:list_transaction' %}">Discard changes and quit</a>
     </div>
     <div></div>
 {% endblock container %}

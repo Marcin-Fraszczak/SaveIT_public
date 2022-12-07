@@ -19,13 +19,15 @@ class Transaction(models.Model):
     wallet = models.ManyToManyField('Wallet', related_name='wlt_transaction')
 
     def __str__(self):
-        return self.date, self.value
+        name = f"{self.date} {self.value} {self.counterparty}"
+        return name
 
 
 class Category(models.Model):
     name = models.CharField(max_length=60)
     search_terms = models.CharField(max_length=200)
     description = models.CharField(max_length=80, null=True)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='own_category')
 
     def __str__(self):
         return self.name
@@ -36,6 +38,7 @@ class Counterparty(models.Model):
     name = models.CharField(max_length=60)
     search_terms = models.CharField(max_length=200)
     description = models.CharField(max_length=80, null=True)
+    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='own_counterparty')
 
     def __str__(self):
         return self.name

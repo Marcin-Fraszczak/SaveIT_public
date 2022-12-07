@@ -1,0 +1,21 @@
+{% if messages %}
+
+  <div class="toast show">
+    <div class="toast-header">
+      <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+    </div>
+    <div class="toast-body">
+      {% for message in messages%}
+      {{ message }}
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    setTimeout(function () {
+
+      $('.toast').remove()
+      }, 2000);
+  </script>
+
+{% endif %}

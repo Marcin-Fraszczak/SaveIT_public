@@ -9,14 +9,9 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = get_user_model()
-        # fields = UserCreationForm.Meta.fields
         fields = ("username", "email", "password1")
         help_texts = {
             'username': None,
-            # 'password': None,
-            # 'password1': None,
-            # 'password2': None,
-            # WTF 3 linie
         }
 
 
