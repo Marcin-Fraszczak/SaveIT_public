@@ -16,12 +16,15 @@ class AddTransactionView(View):
             wallets = list(form.cleaned_data.get("wallet"))
             transaction = form.save(commit=False)
             transaction.owner = get_user(request)
+            if transaction.is_profit:
+                transaction.value = abs(transaction.value)
+            else:
+                transaction.value = -abs(transaction.value)
             transaction.save()
             transaction.wallet.set(wallets)
             messages.success(request, "Transaction successfully added")
         else:
             messages.error(request, "Error saving form")
-
         return redirect('transactions:list_transaction')
 
     def get(self, request):
@@ -37,6 +40,10 @@ class ModifyTransactionView(View):
             transaction.date = form.cleaned_data.get("date")
             transaction.value = form.cleaned_data.get("value")
             transaction.is_profit = form.cleaned_data.get("is_profit")
+            if transaction.is_profit:
+                transaction.value = abs(transaction.value)
+            else:
+                transaction.value = -abs(transaction.value)
             transaction.notes = form.cleaned_data.get("notes")
             transaction.category = form.cleaned_data.get("category")
             transaction.counterparty = form.cleaned_data.get("counterparty")
@@ -59,8 +66,6 @@ class ModifyTransactionView(View):
         form = forms.TransactionForm(instance=transaction)
         return render(request=request, template_name='transactions/modify_transaction.html',
                       context={"form": form, "object": transaction})
-
-
 
 
 class AddCategoryView(View):
@@ -207,12 +212,30 @@ class ModifyWalletView(View):
                       context={"form": form, "object": wallet})
 
 
+last_sort_order = "date"
+
+
 class ListTransactionView(View):
+
     def get(self, request):
+        global last_sort_order
         user = get_user(request)
+
         if not user:
+            messages.error(request, "You must log in to see this data.")
             return redirect('login')
-        transactions = models.Transaction.objects.filter(owner=user).order_by('date')
+
+        sort_order = request.GET.get('order', 'date')
+        print(sort_order)
+
+        if sort_order == last_sort_order:
+            sort_order = f"-{sort_order}"
+        last_sort_order = sort_order
+
+        print(sort_order)
+        print(last_sort_order)
+
+        transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
         return render(request, 'transactions/list_transaction.html', context={"object_list": transactions})
 
 
@@ -220,6 +243,7 @@ class ListCategoryView(View):
     def get(self, request):
         user = get_user(request)
         if not user:
+            messages.error(request, "You must log in to see this data.")
             return redirect('login')
         categories = models.Category.objects.filter(owner=user).order_by('name')
         return render(request, 'transactions/list_category.html', context={"object_list": categories})
@@ -229,6 +253,7 @@ class ListCounterpartyView(View):
     def get(self, request):
         user = get_user(request)
         if not user:
+            messages.error(request, "You must log in to see this data.")
             return redirect('login')
         counterparties = models.Counterparty.objects.filter(owner=user).order_by('name')
         return render(request, 'transactions/list_counterparty.html', context={"object_list": counterparties})
@@ -238,6 +263,7 @@ class ListWalletView(View):
     def get(self, request):
         user = get_user(request)
         if not user:
+            messages.error(request, "You must log in to see this data.")
             return redirect('login')
         wallets = models.Wallet.objects.filter(owner=user).order_by('name')
         return render(request, 'transactions/list_wallet.html', context={"object_list": wallets})
@@ -357,6 +383,7 @@ class ListSavingsPlanView(View):
     def get(self, request):
         user = get_user(request)
         if not user:
+            messages.error(request, "You must log in to see this data.")
             return redirect('login')
         savings_plan = models.SavingsPlan.objects.filter(owner=user).order_by('name')
         return render(request, 'transactions/list_savings_plan.html', context={"object_list": savings_plan})

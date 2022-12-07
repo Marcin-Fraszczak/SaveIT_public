@@ -1,38 +1,54 @@
 {% extends '_base_.html' %}
+{% load static %}
 
 {% block title %}
-    List Counterparty
+List Counterparty
 {% endblock title %}
 
 {% block menu %}
-    {% include '../partials/_dash_menu.html' %}
+{% include '../partials/_dash_menu.html' %}
 {% endblock menu %}
 
 {% block container %}
-    <div class="container-sm">
-        <h2>View all counterparties:</h2>
-        <ul>
-            <div class="row mb-3 table-dark">
-                <div class="col-1"></div>
-                <div class="col">Name</div>
-                <div class="col">Description</div>
+
+<div class="container-sm">
+
+    <h2>View all counterparties:</h2>
+
+    <ul class="data-list">
+
+        <div class="row mb-3">
+            <div class="col align-center">
+                <input type="text" class="search-input form-control" onkeyup="searchFilter()" placeholder="Search for...">
             </div>
-            {% for object in object_list %}
-            <a href="{% url 'transactions:modify_counterparty' object.pk %}" class="text-black">
-                <div class="row p-2">
-                    <div class="col-1">{{forloop.counter}}</div>
-                    <div class="col">{{object.name}}</div>
-                    {% if object.description %}
-                    <div class="col">{{object.description}}</div>
-                    {% else %}
-                    <div class="col"></div>
-                    {% endif %}
-                </div>
-            </a>
-            {% empty %}
-            <div class="col-12 align-center">Nothing to display</div>
-            {% endfor %}
-        </ul>
-    </div>
-    <div></div>
+        </div>
+
+        <div class="row mb-3 table-dark">
+            <div class="col-1"></div>
+            <div class="col">Name</div>
+            <div class="col">Description</div>
+        </div>
+
+        {% for object in object_list %}
+        <a href="{% url 'transactions:modify_counterparty' object.pk %}" class="text-black">
+            <div class="row p-2 data-row">
+                <div class="col-1">{{forloop.counter}}</div>
+                <div class="col">{{object.name}}</div>
+                {% if object.description %}
+                <div class="col">{{object.description}}</div>
+                {% else %}
+                <div class="col"></div>
+                {% endif %}
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-12 align-center">Nothing to display</div>
+        {% endfor %}
+    </ul>
+</div>
+
+<script src="{% static 'assets/filtering/filtering.js' %}"></script>
+
+<div></div>
+
 {% endblock container %}
