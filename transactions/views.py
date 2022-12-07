@@ -289,3 +289,74 @@ class DeleteWalletView(View):
         wallet.delete()
         messages.success(request, "Wallet successfully removed")
         return redirect('transactions:list_wallet')
+
+
+class AddSavingsPlanView(View):
+    def post(self, request):
+        form = forms.SavingsPlanForm(request.POST)
+        if form.is_valid():
+            exists = models.SavingsPlan.objects.filter(name=request.POST.get('name'))
+            if exists:
+                messages.error(request, "Savings plan already exists")
+            else:
+                savings_plan = form.save(commit=False)
+                savings_plan.owner = get_user(request)
+                savings_plan.save()
+                messages.success(request, "Savings plan successfully added")
+        else:
+            messages.error(request, "Error saving form")
+
+        return redirect('transactions:list_savings_plan')
+
+    def get(self, request):
+        form = forms.SavingsPlanForm
+        return render(request=request, template_name='transactions/add_savings_plan.html', context={"form": form})
+
+
+class DeleteSavingsPlanView(View):
+    def get(self, request, pk):
+        user = get_user(request)
+        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+        if user != savings_plan.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+        savings_plan.delete()
+        messages.success(request, "Savings plan successfully removed")
+        return redirect('transactions:list_savings_plan')
+
+
+class ModifySavingsPlanView(View):
+    def post(self, request, pk):
+        form = forms.SavingsPlanForm(request.POST)
+        if form.is_valid():
+            savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+            savings_plan.name = form.cleaned_data.get("name")
+            savings_plan.monthly_goal = form.cleaned_data.get("monthly_goal")
+            savings_plan.initial_value = form.cleaned_data.get("initial_value")
+            savings_plan.curve_type = form.cleaned_data.get("curve_type")
+            savings_plan.save()
+            messages.success(request, "Savings plan successfully modified")
+
+        else:
+            messages.error(request, "Error saving form")
+
+        return redirect('transactions:list_savings_plan')
+
+    def get(self, request, pk):
+        user = get_user(request)
+        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+        if user != savings_plan.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+        form = forms.SavingsPlanForm(instance=savings_plan)
+        return render(request=request, template_name='transactions/modify_savings_plan.html',
+                      context={"form": form, "object": savings_plan})
+
+
+class ListSavingsPlanView(View):
+    def get(self, request):
+        user = get_user(request)
+        if not user:
+            return redirect('login')
+        savings_plan = models.SavingsPlan.objects.filter(owner=user).order_by('name')
+        return render(request, 'transactions/list_savings_plan.html', context={"object_list": savings_plan})

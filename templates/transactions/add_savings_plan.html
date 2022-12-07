@@ -1,0 +1,22 @@
+{% extends '_base_.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Add Savings Plan
+{% endblock title %}
+
+{% block menu %}
+    {% include '../partials/_dash_menu.html' %}
+{% endblock menu %}
+
+{% block container %}
+    <div class="container-sm">
+        <h2>Add new savings plan:</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-secondary display-4">Add</button>
+        </form>
+    </div>
+    <div></div>
+{% endblock container %}

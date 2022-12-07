@@ -1,0 +1,24 @@
+{% extends '_base_.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Modify Savings Plan
+{% endblock title %}
+
+{% block menu %}
+    {% include '../partials/_dash_menu.html' %}
+{% endblock menu %}
+
+{% block container %}
+    <div class="container-sm">
+        <h2>Modify savings plan:</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-secondary display-4 m-2">Save changes</button>
+        </form>
+        <a class="btn btn-secondary display-4" href="{% url 'transactions:list_savings_plan' %}">Discard changes and quit</a>
+        <a class="btn btn-secondary display-4" href="{% url 'transactions:delete_savings_plan' object.pk %}">Delete Savings Plan</a>
+    </div>
+    <div></div>
+{% endblock container %}

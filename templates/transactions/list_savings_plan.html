@@ -1,7 +1,7 @@
 {% extends '_base_.html' %}
 
 {% block title %}
-    List Wallet
+    List Savings Plan
 {% endblock title %}
 
 {% block menu %}
@@ -10,23 +10,23 @@
 
 {% block container %}
     <div class="container-sm">
-        <h2>View all wallets:</h2>
+        <h2>View all savings plans:</h2>
         <ul>
             <div class="row mb-3 table-dark">
                 <div class="col-1"></div>
                 <div class="col">Name</div>
-                <div class="col">Description</div>
+                <div class="col">Initial value</div>
+                <div class="col">Monthly goal</div>
+                <div class="col">Curve type</div>
             </div>
             {% for object in object_list %}
-            <a href="{% url 'transactions:modify_wallet' object.pk %}" class="text-black">
+            <a href="{% url 'transactions:modify_savings_plan' object.pk %}" class="text-black">
                 <div class="row p-2">
                     <div class="col-1">{{forloop.counter}}</div>
                     <div class="col">{{object.name}}</div>
-                    {% if object.description %}
-                    <div class="col">{{object.description}}</div>
-                    {% else %}
-                    <div class="col"></div>
-                    {% endif %}
+                    <div class="col">{{object.initial_value}}</div>
+                    <div class="col">{{object.monthly_goal}}</div>
+                    <div class="col">{{object.curve_type}}</div>
                 </div>
             </a>
             {% empty %}

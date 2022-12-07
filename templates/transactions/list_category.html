@@ -21,11 +21,11 @@
             <a href="{% url 'transactions:modify_category' object.pk %}" class="text-black">
                 <div class="row p-2">
                     <div class="col-1">{{forloop.counter}}</div>
-                    <div class="col-2">{{object.name}}</div>
+                    <div class="col">{{object.name}}</div>
                     {% if object.description %}
-                    <div class="col-2">{{object.description}}</div>
+                    <div class="col">{{object.description}}</div>
                     {% else %}
-                    <div class="col-2"></div>
+                    <div class="col"></div>
                     {% endif %}
                 </div>
             </a>
