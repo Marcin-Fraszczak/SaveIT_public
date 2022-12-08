@@ -1,10 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model, get_user
+from django.contrib.auth import get_user
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy, reverse
-from django.utils.http import urlencode
 from django.views import View
-from django.views.generic import CreateView, ListView
 from . import models
 from . import forms
 
@@ -219,12 +216,15 @@ class ListTransactionView(View):
 
     def get(self, request):
         global last_sort_order
+
         user = get_user(request)
 
         if not user:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
+        word_filter = request.GET.get("wordFilter", "")
+        value_filter = request.GET.get("valueFilter", 0)
         sort_order = request.GET.get('order', 'date')
 
         if sort_order == last_sort_order:
@@ -232,7 +232,13 @@ class ListTransactionView(View):
         last_sort_order = sort_order
 
         transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
-        return render(request, 'transactions/list_transaction.html', context={"object_list": transactions})
+
+        return render(request, 'transactions/list_transaction.html',
+                      context={
+                        "object_list": transactions,
+                        "word_filter": word_filter,
+                        "value_filter": value_filter,
+                        })
 
 
 class ListCategoryView(View):

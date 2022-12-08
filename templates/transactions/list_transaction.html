@@ -11,22 +11,36 @@
 
 {% block container %}
     <div class="container-flex ml-3 mr-5 mb-2">
-        <h2 class="ml-4">View all transactions:</h2>
-        <ul>
+        <div class="row">
+            <div class="col-4">
+                <h2 class="ml-4">View all transactions:</h2>
+            </div>
+            <div class="col-8">
+                <input type="text" class="search-input form-control" onkeyup="searchFilter()" placeholder="Search for..." value="{{word_filter}}">
+            </div>
+        </div>
 
-            <div class="row mb-3">
-                <div class="col align-center">
-                    <input type="text" class="search-input form-control" onkeyup="searchFilter()" placeholder="Search for...">
+        <ul>
+            <div class="row card-box">
+                <div class="col-1">Only Debits</div>
+                <div class="slidecontainer col-1">
+                    <input type="range" min="-1" max="1" value="{{value_filter}}" step="1" class="slider value-input">
                 </div>
+                <div class="col-1">Only Profits</div>
+                <div class="col-1 value-sum">Sum</div>
+                <div class="col-2"></div>
+                <div class="col-2"></div>
+                <div class="col-2"></div>
+                <div class="col-2"></div>
             </div>
 
-            <div class="row mb-3 data-table customizer card-body rounded">
+            <div class="row mb-3 mt-3 data-table customizer card-box rounded">
                 <div class="col-1"></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=date" class="text-white text-primary display-7 nav-link">Date</a></div>
-                <div class="col-1"><a href="{% url 'transactions:list_transaction' %}?order=value" class="text-white text-primary display-7 nav-link">Value</a></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=counterparty" class="text-white text-primary display-7 nav-link">Counterparty</a></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=category" class="text-white text-primary display-7 nav-link">Category</a></div>
-                <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet" class="text-white text-primary display-7 nav-link">Wallet</a></div>
+                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=date" class="text-white text-primary display-7 nav-link">Date</a></div>
+                <div class="z col-1"><a href="{% url 'transactions:list_transaction' %}?order=value" class="text-white text-primary display-7 nav-link">Value</a></div>
+                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=counterparty" class="text-white text-primary display-7 nav-link">Counterparty</a></div>
+                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=category" class="text-white text-primary display-7 nav-link">Category</a></div>
+                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet" class="text-white text-primary display-7 nav-link">Wallet</a></div>
                 <div class="col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes" class="text-white text-primary display-7 nav-link">Notes</a></div>
             </div>
             {% for object in object_list %}
