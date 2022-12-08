@@ -212,13 +212,13 @@ class ModifyWalletView(View):
                       context={"form": form, "object": wallet})
 
 
-last_sort_order = "date"
+last_sort_order_trans = "-date"
 
 
 class ListTransactionView(View):
 
     def get(self, request):
-        global last_sort_order
+        global last_sort_order_trans
 
         user = get_user(request)
 
@@ -230,28 +230,45 @@ class ListTransactionView(View):
         value_filter = request.GET.get("valueFilter", 0)
         sort_order = request.GET.get('order', 'date')
 
-        if sort_order == last_sort_order:
+        if sort_order == last_sort_order_trans:
             sort_order = f"-{sort_order}"
-        last_sort_order = sort_order
+        last_sort_order_trans = sort_order
 
         transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
 
         return render(request, 'transactions/list_transaction.html',
                       context={
-                        "object_list": transactions,
-                        "word_filter": word_filter,
-                        "value_filter": value_filter,
-                        })
+                          "object_list": transactions,
+                          "word_filter": word_filter,
+                          "value_filter": value_filter,
+                      })
+
+
+last_sort_order_category = "-name"
 
 
 class ListCategoryView(View):
     def get(self, request):
+        global last_sort_order_category
+        print(request.GET)
         user = get_user(request)
         if not user:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
-        categories = models.Category.objects.filter(owner=user).order_by('name')
-        return render(request, 'transactions/list_category.html', context={"object_list": categories})
+
+        word_filter = request.GET.get("wordFilter", "")
+        sort_order = request.GET.get('order', 'name')
+
+        if sort_order == last_sort_order_category:
+            sort_order = f"-{sort_order}"
+        last_sort_order_category = sort_order
+
+        categories = models.Category.objects.filter(owner=user).order_by(sort_order)
+        return render(request, 'transactions/list_category.html',
+                      context={
+                          "object_list": categories,
+                          "word_filter": word_filter,
+                      })
 
 
 class ListCounterpartyView(View):
