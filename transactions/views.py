@@ -75,6 +75,7 @@ class AddCategoryView(View):
             else:
                 category = form.save(commit=False)
                 category.owner = get_user(request)
+                category.name = category.name.upper()
                 category.save()
                 messages.success(request, "Category successfully added")
         else:
@@ -92,7 +93,7 @@ class ModifyCategoryView(View):
         form = forms.CategoryForm(request.POST)
         if form.is_valid():
             category = get_object_or_404(models.Category, pk=pk)
-            category.name = form.cleaned_data.get("name")
+            category.name = form.cleaned_data.get("name").upper()
             category.description = form.cleaned_data.get("description")
             category.save()
             messages.success(request, "Category successfully modified")
@@ -123,6 +124,7 @@ class AddCounterpartyView(View):
             else:
                 counterparty = form.save(commit=False)
                 counterparty.owner = get_user(request)
+                counterparty.name = counterparty.name.upper()
                 counterparty.save()
                 messages.success(request, "Counterparty successfully added")
         else:
@@ -140,7 +142,7 @@ class ModifyCounterpartyView(View):
         form = forms.CounterpartyForm(request.POST)
         if form.is_valid():
             counterparty = get_object_or_404(models.Counterparty, pk=pk)
-            counterparty.name = form.cleaned_data.get("name")
+            counterparty.name = form.cleaned_data.get("name").upper()
             counterparty.description = form.cleaned_data.get("description")
             counterparty.save()
             messages.success(request, "Counterparty successfully modified")
@@ -171,6 +173,7 @@ class AddWalletView(View):
             else:
                 wallet = form.save(commit=False)
                 wallet.owner = get_user(request)
+                wallet.name = wallet.name.upper()
                 wallet.save()
                 messages.success(request, "Wallet successfully added")
         else:
@@ -188,7 +191,7 @@ class ModifyWalletView(View):
         form = forms.WalletForm(request.POST)
         if form.is_valid():
             wallet = get_object_or_404(models.Wallet, pk=pk)
-            wallet.name = form.cleaned_data.get("name")
+            wallet.name = form.cleaned_data.get("name").upper()
             wallet.description = form.cleaned_data.get("description")
             wallet.save()
             messages.success(request, "Wallet successfully modified")
