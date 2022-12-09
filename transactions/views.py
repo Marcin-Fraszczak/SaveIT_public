@@ -69,13 +69,16 @@ class AddCategoryView(View):
     def post(self, request):
         form = forms.CategoryForm(request.POST)
         if form.is_valid():
-            exists = models.Category.objects.filter(name=request.POST.get('name'))
+            category = form.save(commit=False)
+            category.owner = get_user(request)
+            category.name = category.name.upper()
+            category.unique_name = f"{get_user(request).username}_{category.name}"
+
+            exists = models.Category.objects.filter(unique_name=category.unique_name)
             if exists:
-                messages.error(request, "Category already exists")
+                messages.error(request, "This name already exists")
+                return redirect(request.get_full_path())
             else:
-                category = form.save(commit=False)
-                category.owner = get_user(request)
-                category.name = category.name.upper()
                 category.save()
                 messages.success(request, "Category successfully added")
         else:
@@ -94,9 +97,16 @@ class ModifyCategoryView(View):
         if form.is_valid():
             category = get_object_or_404(models.Category, pk=pk)
             category.name = form.cleaned_data.get("name").upper()
+            category.unique_name = f"{get_user(request).username}_{category.name}"
             category.description = form.cleaned_data.get("description")
-            category.save()
-            messages.success(request, "Category successfully modified")
+
+            exists = models.Category.objects.filter(unique_name=category.unique_name).exclude(pk=pk)
+            if exists:
+                messages.error(request, "This name already exists")
+                return redirect(request.get_full_path())
+            else:
+                category.save()
+                messages.success(request, "Category successfully modified")
 
         else:
             messages.error(request, "Error saving form")
@@ -118,13 +128,16 @@ class AddCounterpartyView(View):
     def post(self, request):
         form = forms.CounterpartyForm(request.POST)
         if form.is_valid():
-            exists = models.Counterparty.objects.filter(name=request.POST.get('name'))
+            counterparty = form.save(commit=False)
+            counterparty.owner = get_user(request)
+            counterparty.name = counterparty.name.upper()
+            counterparty.unique_name = f"{get_user(request).username}_{counterparty.name}"
+
+            exists = models.Counterparty.objects.filter(unique_name=counterparty.unique_name)
             if exists:
-                messages.error(request, "Counterparty already exists")
+                messages.error(request, "This name already exists")
+                return redirect(request.get_full_path())
             else:
-                counterparty = form.save(commit=False)
-                counterparty.owner = get_user(request)
-                counterparty.name = counterparty.name.upper()
                 counterparty.save()
                 messages.success(request, "Counterparty successfully added")
         else:
@@ -143,9 +156,16 @@ class ModifyCounterpartyView(View):
         if form.is_valid():
             counterparty = get_object_or_404(models.Counterparty, pk=pk)
             counterparty.name = form.cleaned_data.get("name").upper()
+            counterparty.unique_name = f"{get_user(request).username}_{counterparty.name}"
             counterparty.description = form.cleaned_data.get("description")
-            counterparty.save()
-            messages.success(request, "Counterparty successfully modified")
+
+            exists = models.Category.objects.filter(unique_name=counterparty.unique_name).exclude(pk=pk)
+            if exists:
+                messages.error(request, "This name already exists")
+                return redirect(request.get_full_path())
+            else:
+                counterparty.save()
+                messages.success(request, "Counterparty successfully modified")
 
         else:
             messages.error(request, "Error saving form")
@@ -167,13 +187,16 @@ class AddWalletView(View):
     def post(self, request):
         form = forms.WalletForm(request.POST)
         if form.is_valid():
-            exists = models.Wallet.objects.filter(name=request.POST.get('name'))
+            wallet = form.save(commit=False)
+            wallet.owner = get_user(request)
+            wallet.name = wallet.name.upper()
+            wallet.unique_name = f"{get_user(request).username}_{wallet.name}"
+
+            exists = models.Wallet.objects.filter(unique_name=wallet.unique_name)
             if exists:
-                messages.error(request, "Wallet already exists")
+                messages.error(request, "This name already exists")
+                return redirect(request.get_full_path())
             else:
-                wallet = form.save(commit=False)
-                wallet.owner = get_user(request)
-                wallet.name = wallet.name.upper()
                 wallet.save()
                 messages.success(request, "Wallet successfully added")
         else:
@@ -192,9 +215,16 @@ class ModifyWalletView(View):
         if form.is_valid():
             wallet = get_object_or_404(models.Wallet, pk=pk)
             wallet.name = form.cleaned_data.get("name").upper()
+            wallet.unique_name = f"{get_user(request).username}_{wallet.name}"
             wallet.description = form.cleaned_data.get("description")
-            wallet.save()
-            messages.success(request, "Wallet successfully modified")
+
+            exists = models.Wallet.objects.filter(unique_name=wallet.unique_name).exclude(pk=pk)
+            if exists:
+                messages.error(request, "This name already exists")
+                return redirect(request.get_full_path())
+            else:
+                wallet.save()
+                messages.success(request, "Wallet successfully modified")
 
         else:
             messages.error(request, "Error saving form")
@@ -307,14 +337,30 @@ class ListCounterpartyView(View):
                       })
 
 
+last_sort_order_wallet = '-name'
+
+
 class ListWalletView(View):
     def get(self, request):
+        global last_sort_order_wallet
         user = get_user(request)
         if not user:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
-        wallets = models.Wallet.objects.filter(owner=user).order_by('name')
-        return render(request, 'transactions/list_wallet.html', context={"object_list": wallets})
+
+        word_filter = request.GET.get("wordFilter", "")
+        sort_order = request.GET.get('order', 'name')
+
+        if sort_order == last_sort_order_wallet:
+            sort_order = f"-{sort_order.replace('-', '')}"
+        last_sort_order_wallet = sort_order
+
+        wallets = models.Wallet.objects.filter(owner=user).order_by(sort_order)
+        return render(request, 'transactions/list_wallet.html',
+                      context={
+                          "object_list": wallets,
+                          "word_filter": word_filter,
+                      })
 
 
 class DeleteCounterpartyView(View):
@@ -371,7 +417,7 @@ class AddSavingsPlanView(View):
         if form.is_valid():
             exists = models.SavingsPlan.objects.filter(name=request.POST.get('name'))
             if exists:
-                messages.error(request, "Savings plan already exists")
+                messages.error(request, "This name already exists")
             else:
                 savings_plan = form.save(commit=False)
                 savings_plan.owner = get_user(request)

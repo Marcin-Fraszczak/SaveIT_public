@@ -25,7 +25,7 @@ class Transaction(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=60)
-    search_terms = models.CharField(max_length=200)
+    unique_name = models.CharField(max_length=200)
     description = models.CharField(max_length=80, null=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='own_category')
 
@@ -36,7 +36,7 @@ class Category(models.Model):
 
 class Counterparty(models.Model):
     name = models.CharField(max_length=60)
-    search_terms = models.CharField(max_length=200)
+    unique_name = models.CharField(max_length=200)
     description = models.CharField(max_length=80, null=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='own_counterparty')
 
@@ -46,7 +46,7 @@ class Counterparty(models.Model):
 
 class Wallet(models.Model):
     name = models.CharField(max_length=60)
-    search_terms = models.CharField(max_length=200)
+    unique_name = models.CharField(max_length=200)
     description = models.CharField(max_length=80, null=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='wallet')
 
@@ -56,6 +56,7 @@ class Wallet(models.Model):
 
 class SavingsPlan(models.Model):
     name = models.CharField(max_length=60)
+    unique_name = models.CharField(max_length=200)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='savings_plan')
     monthly_goal = models.FloatField()
     initial_value = models.FloatField()

@@ -9,7 +9,7 @@ from transactions import models
 
 
 def populate_db():
-    usernames = ["John Smith", "Derek Carpenter", "Maria", "Dude"]
+    usernames = ["John", "Derek", "Maria", "Dude"]
     counterparties = ["Enea", "Biedronka", "LIDL", "Auchan", "Żabka", "PKP", "Netia", "policja", "allegro"]
     categories = ["Rozrywka", "Spożywka", "Chemia", "Sport", "Zdrowie"]
     wallets = ["Osobisty", "Rodzinny", "Firmowy"]
@@ -30,20 +30,28 @@ def populate_db():
         user.save()
         print(f"User {username} created.")
 
-        wallet = models.Wallet(name=choice(wallets), description=random_desc(), owner=user)
+        w_name = choice(wallets).upper()
+        w_unique_name = f"{user.username}_{w_name}"
+
+        wallet = models.Wallet(name=w_name, unique_name=w_unique_name, description=random_desc(), owner=user)
         wallet.save()
 
         shuffle(counterparties)
         for c in counterparties[:len(counterparties) - 2]:
-            counterparty = models.Counterparty(name=c, description=random_desc(), owner=user)
+            c_name = c.upper()
+            c_unique_name = f"{user.username}_{c_name}"
+            counterparty = models.Counterparty(name=c_name, unique_name=c_unique_name, description=random_desc(),
+                                               owner=user)
             counterparty.save()
 
         shuffle(categories)
         for c in categories[:len(categories) - 1]:
-            category = models.Category(name=c, description=random_desc(), owner=user)
+            c_name = c.upper()
+            c_unique_name = f"{user.username}_{c_name}"
+            category = models.Category(name=c_name, unique_name=c_unique_name, description=random_desc(), owner=user)
             category.save()
 
-        for i in range(randint(40, 60)):
+        for i in range(randint(60, 70)):
             pass
             _category = models.Category.objects.filter(owner=user)
             _counterparty = models.Counterparty.objects.filter(owner=user)
