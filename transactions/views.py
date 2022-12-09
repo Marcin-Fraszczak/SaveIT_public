@@ -212,7 +212,7 @@ class ModifyWalletView(View):
                       context={"form": form, "object": wallet})
 
 
-last_sort_order_trans = "-date"
+last_sort_order_trans = "date"
 
 
 class ListTransactionView(View):
@@ -228,19 +228,30 @@ class ListTransactionView(View):
 
         word_filter = request.GET.get("wordFilter", "")
         value_filter = request.GET.get("valueFilter", 0)
-        sort_order = request.GET.get('order', 'date')
+        sort_order = request.GET.get('order', '-date')
+        filter_by = request.GET.get('filter_by', None)
+        filter_val = request.GET.get('filter_val')
 
         if sort_order == last_sort_order_trans:
-            sort_order = f"-{sort_order}"
+            sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_trans = sort_order
 
-        transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
+        if filter_by == 'category':
+            transactions = models.Transaction.objects.filter(owner=user, category=filter_val).order_by(sort_order)
+        elif filter_by == 'counterparty':
+            transactions = models.Transaction.objects.filter(owner=user, counterparty=filter_val).order_by(sort_order)
+        elif filter_by == 'wallet':
+            transactions = models.Transaction.objects.filter(owner=user, wallet=filter_val).order_by(sort_order)
+        else:
+            transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
 
         return render(request, 'transactions/list_transaction.html',
                       context={
                           "object_list": transactions,
                           "word_filter": word_filter,
                           "value_filter": value_filter,
+                          "filter_by": filter_by,
+                          "filter_val": filter_val,
                       })
 
 
@@ -250,7 +261,6 @@ last_sort_order_category = "-name"
 class ListCategoryView(View):
     def get(self, request):
         global last_sort_order_category
-        print(request.GET)
         user = get_user(request)
         if not user:
             messages.error(request, "You must log in to see this data.")
@@ -260,7 +270,7 @@ class ListCategoryView(View):
         sort_order = request.GET.get('order', 'name')
 
         if sort_order == last_sort_order_category:
-            sort_order = f"-{sort_order}"
+            sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_category = sort_order
 
         categories = models.Category.objects.filter(owner=user).order_by(sort_order)
