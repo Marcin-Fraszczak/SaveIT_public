@@ -29,5 +29,7 @@ urlpatterns = [
     path('modify/savings_plan/<int:pk>/', views.ModifySavingsPlanView.as_view(), name='modify_savings_plan'),
     path('delete/savings_plan/<int:pk>/', views.DeleteSavingsPlanView.as_view(), name='delete_savings_plan'),
 
+    path('transfer/<int:from_pk>/<int:to_pk>/', views.TransferWalletView.as_view(), name='transfer_wallet'),
+
 ]
 

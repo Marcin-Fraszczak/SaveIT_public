@@ -481,3 +481,31 @@ class ListSavingsPlanView(View):
             return redirect('login')
         savings_plan = models.SavingsPlan.objects.filter(owner=user).order_by('name')
         return render(request, 'transactions/list_savings_plan.html', context={"object_list": savings_plan})
+
+
+class TransferWalletView(View):
+    def get(self, request, from_pk, to_pk):
+        user = get_user(request)
+        if not user:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        from_wallet = get_object_or_404(models.Wallet, pk=from_pk)
+        transactions = models.Transaction.objects.filter(wallet=from_wallet)
+
+        if to_pk == 0:
+            other_wallets = models.Wallet.objects.filter(owner=user).exclude(pk=from_pk)
+            return render(request, 'transactions/transfer_wallet.html',
+                          context={
+                              "from_wallet": from_wallet,
+                              "object_list": other_wallets,
+                              "transactions": transactions,
+                          })
+        else:
+            to_wallet = get_object_or_404(models.Wallet, owner=user, pk=to_pk)
+            for transaction in transactions:
+                transaction.wallet.remove(from_wallet)
+                transaction.wallet.add(to_wallet)
+                transaction.save()
+            messages.success(request, f"{len(transactions)} transactions successfully transferred from {from_wallet.name} to {to_wallet.name}")
+            return redirect('transactions:list_wallet')

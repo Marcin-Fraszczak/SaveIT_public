@@ -10,7 +10,7 @@
 {% endblock menu %}
 
 {% block container %}
-    <div class="container-flex ml-3 mr-5 mb-2">
+    <div class="container-flex ml-3 mr-5 mb-2 mt-5">
         <div class="row">
             <div class="col-4">
                 <h2 class="ml-4">View all transactions:</h2>
@@ -43,7 +43,7 @@
                 <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Wallet</a></div>
                 <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Notes</a></div>
             </div>
-            <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 50vh">
+            <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 63vh">
             {% for object in object_list %}
             <a href="{% url 'transactions:modify_transaction' object.pk %}" class="text-black">
                 <div class="row p-2 data-row">

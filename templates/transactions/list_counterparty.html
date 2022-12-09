@@ -10,7 +10,7 @@
 {% endblock menu %}
 
 {% block container %}
-    <div class="container-flex ml-3 mr-5 mb-2">
+    <div class="container-flex ml-3 mr-5 mb-2 mt-5">
         <div class="row">
             <div class="col-4">
                 <h2 class="ml-4">View all counterparties:</h2>
@@ -38,9 +38,9 @@
                 <div class="col-1 text-white text-primary display-7 nav-link">No.</div>
                 <div class="z col"><a href="{% url 'transactions:list_counterparty' %}?order=name" class="text-white text-primary display-7 nav-link">Name</a></div>
                 <div class="z col"><a href="{% url 'transactions:list_counterparty' %}?order=description" class="text-white text-primary display-7 nav-link">Description</a></div>
-                <div class="col-3"></div>
+                <div class="col-5 text-white text-primary display-7 nav-link">Transactions assigned to counterparty</div>
             </div>
-            <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 50vh">
+            <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 63vh">
             {% for object in object_list %}
                 <div class="row p-4 data-row">
                     <div class="col-1">
@@ -56,9 +56,10 @@
                         <a href="{% url 'transactions:modify_counterparty' object.pk %}" class="text-black d-inline-block">{{object.description}}
                         </a>
                     </div>
+                    <div class="col-2">{{ object.ctr_transaction.all|length }}</div>
                     <div class="col-3">
                         <a href="{% url 'transactions:list_transaction' %}?filter_by=counterparty&filter_val={{object.pk}}" class="btn btn-secondary display-4 m-0">
-                            Transactions
+                            View transactions
                         </a>
                     </div>
                 </div>
