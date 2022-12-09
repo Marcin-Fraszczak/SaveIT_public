@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.auth import get_user
 from django.shortcuts import render, redirect, get_object_or_404
@@ -258,22 +260,39 @@ class ListTransactionView(View):
 
         word_filter = request.GET.get("wordFilter", "")
         value_filter = request.GET.get("valueFilter", 0)
-        sort_order = request.GET.get('order', '-date')
+        raw_sort_order = request.GET.get('order', '-date')
         filter_by = request.GET.get('filter_by', None)
         filter_val = request.GET.get('filter_val')
+        from_date = request.GET.get('fromDate', "")
+        to_date = request.GET.get('toDate', "")
+        if not from_date:
+            from_date = datetime(year=1, month=1, day=1).date()
+        if not to_date:
+            to_date = datetime.now().date()
 
-        if sort_order == last_sort_order_trans:
-            sort_order = f"-{sort_order.replace('-', '')}"
+        if raw_sort_order == last_sort_order_trans:
+            sort_order = f"-{raw_sort_order.replace('-', '')}"
+        else:
+            sort_order = raw_sort_order
+
         last_sort_order_trans = sort_order
+        transactions = models.Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
 
         if filter_by == 'category':
-            transactions = models.Transaction.objects.filter(owner=user, category=filter_val).order_by(sort_order)
+            # transactions = models.Transaction.objects.filter(owner=user, category=filter_val).order_by(sort_order)
+            transactions = transactions.filter(category=filter_val).order_by(sort_order)
         elif filter_by == 'counterparty':
-            transactions = models.Transaction.objects.filter(owner=user, counterparty=filter_val).order_by(sort_order)
+            # transactions = models.Transaction.objects.filter(owner=user, counterparty=filter_val).order_by(sort_order)
+            transactions = transactions.filter(counterparty=filter_val).order_by(sort_order)
         elif filter_by == 'wallet':
-            transactions = models.Transaction.objects.filter(owner=user, wallet=filter_val).order_by(sort_order)
+            # transactions = models.Transaction.objects.filter(owner=user, wallet=filter_val).order_by(sort_order)
+            transactions = transactions.filter(wallet=filter_val).order_by(sort_order)
+        elif raw_sort_order in ["category", "counterparty", "wallet"]:
+            # transactions = models.Transaction.objects.filter(owner=user).order_by(f"{sort_order}__name")
+            transactions = transactions.order_by(f"{sort_order}__name")
         else:
-            transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
+            # transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
+            transactions = transactions.order_by(sort_order)
 
         return render(request, 'transactions/list_transaction.html',
                       context={
