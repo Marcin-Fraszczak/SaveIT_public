@@ -281,14 +281,30 @@ class ListCategoryView(View):
                       })
 
 
+last_sort_order_counterparty = "-name"
+
+
 class ListCounterpartyView(View):
     def get(self, request):
+        global last_sort_order_counterparty
         user = get_user(request)
         if not user:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
-        counterparties = models.Counterparty.objects.filter(owner=user).order_by('name')
-        return render(request, 'transactions/list_counterparty.html', context={"object_list": counterparties})
+
+        word_filter = request.GET.get("wordFilter", "")
+        sort_order = request.GET.get('order', 'name')
+
+        if sort_order == last_sort_order_counterparty:
+            sort_order = f"-{sort_order.replace('-', '')}"
+        last_sort_order_counterparty = sort_order
+
+        counterparties = models.Counterparty.objects.filter(owner=user).order_by(sort_order)
+        return render(request, 'transactions/list_counterparty.html',
+                      context={
+                          "object_list": counterparties,
+                          "word_filter": word_filter,
+                      })
 
 
 class ListWalletView(View):
