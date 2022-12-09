@@ -47,7 +47,7 @@
             {% for object in object_list %}
             <a href="{% url 'transactions:modify_transaction' object.pk %}" class="text-black">
                 <div class="row p-2 data-row">
-                    <div class="col-1">{{object.id}}</div>
+                    <div class="col-1">{{forloop.counter}}</div>
                     <div class="col-2">{{object.date}}</div>
                     <div class="col-1">{{object.value}}</div>
                     <div class="col-2">{{object.counterparty}}</div>

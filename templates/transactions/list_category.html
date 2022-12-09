@@ -16,7 +16,7 @@
                 <h2 class="ml-4">View all categories:</h2>
             </div>
             <div class="col-8">
-                <input type="text" class="search-input form-control" onkeyup="searchCatFilter()" placeholder="Search for..." value="{{word_filter}}">
+                <input type="text" class="search-input form-control" onkeyup="searchWordFilter()" placeholder="Search for..." value="{{word_filter}}">
             </div>
         </div>
 
@@ -68,7 +68,7 @@
             </div>
         </ul>
     </div>
-    <script src="{% static 'assets/filtering/filtering_cat.js' %}"></script>
+    <script src="{% static 'assets/filtering/filtering_words.js' %}"></script>
     <div></div>
 
 {% endblock container %}
