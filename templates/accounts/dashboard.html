@@ -1,5 +1,6 @@
 {% extends '_base_.html' %}
 {% load static %}
+
 <!--background-color: #3F3838;-->
 {% block title %}
     Account
@@ -11,7 +12,9 @@
 
 {% block container %}
 
-    <div class="row mt-5 ml-5 pt-2 container-flex align-items-center align-center">
+
+
+    <div class="row mt-4 ml-5 pt-2 container-flex align-items-center align-center">
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'-1'}}"
                class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5"><</a>
         </div>
@@ -21,9 +24,51 @@
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'1'}}"
                class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5">></a>
         </div>
-        <div class="col-6"></div>
+
+
+
+        <div class="col-5">
+            <div class="row mb-2 customizer card-box rounded align-items-center">
+                <div class="col-6 align-left">
+                    <p class="text-white text-primary display-7 nav-link">Summary for {{abs_displayed_date}}:</p>
+                </div>
+                <div class="col-2"></div>
+                <div class="col-4"><a href="{% url 'accounts:dashboard' %}?abs_year={% now 'Y' %}&abs_month={% now 'm' %}"
+                    class="btn btn-light display-4 m-0 dash-link pt-2 pb-2">This month</a>
+                </div>
+            </div>
+            <div class="row p-1 align-items-center">
+                <div class="col-3">Transactions:</div>
+                <div class="col-2">{{abs_no_transactions}}</div>
+                <div class="col-3"><a href="{% url 'transactions:add_transaction' %}"
+                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
+                </div>
+                <div class="col-3"><a href="{% url 'transactions:list_transaction' %}?fromDate={{abs_year}}-{{abs_month}}-1&toDate=1000-01-01"
+                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
+                </div>
+            </div>
+
+            <div class="row p-1 pt-4 align-items-center">
+                <div class="col-3">Monthly profit:</div>
+                <div class="col-2">{{monthly_profit}}</div>
+            </div>
+
+            <div class="row p-1 pt-4 align-items-center">
+                <div class="col-3">Monthly debit:</div>
+                <div class="col-2">{{monthly_debit}}</div>
+            </div>
+
+            <div class="row p-1 pt-4 align-items-center">
+                <div class="col-3">Monthly balance:</div>
+                <div class="col-2">{{ monthly_balance }}</div>
+            </div>
+
+        </div>
     </div>
-    <div class="row mt-5 ml-5 pt-2 container-flex align-items-center align-center">
+
+
+
+    <div class="row mt-1 ml-5 pt-2 container-flex align-items-center align-center">
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'-1'}}"
                class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5"><</a>
         </div>
@@ -33,11 +78,67 @@
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'1'}}"
                class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5">></a>
         </div>
-        <div class="col-6"></div>
+
+        <div class="col-5">
+            <div class="row mb-2 customizer card-box rounded">
+                <p class="text-white text-primary display-7 nav-link ml-3">Total summary:</p>
+            </div>
+            <div class="row p-1 align-items-center">
+                <div class="col-3">Transactions:</div>
+                <div class="col-2">{{total_transactions}}</div>
+                <div class="col-3"><a href="{% url 'transactions:add_transaction' %}"
+                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
+                </div>
+                <div class="col-3"><a href="{% url 'transactions:list_transaction' %}"
+                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
+                </div>
+            </div>
+
+            <div class="row p-1 align-items-center">
+                <div class="col-3">Categories:</div>
+                <div class="col-2">{{total_categories}}</div>
+                <div class="col-3"><a href="{% url 'transactions:add_category' %}"
+                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
+                </div>
+                <div class="col-3"><a href="{% url 'transactions:list_category' %}"
+                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
+                </div>
+            </div>
+
+            <div class="row p-1 align-items-center">
+                <div class="col-3">Counterparties:</div>
+                <div class="col-2">{{total_counterparties}}</div>
+                <div class="col-3"><a href="{% url 'transactions:add_counterparty' %}"
+                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
+                </div>
+                <div class="col-3"><a href="{% url 'transactions:list_counterparty' %}"
+                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
+                </div>
+            </div>
+
+            <div class="row p-1 pt-4 align-items-center">
+                <div class="col-3">Total profit:</div>
+                <div class="col-2">{{total_profit}}</div>
+            </div>
+
+            <div class="row p-1 pt-4 align-items-center">
+                <div class="col-3">Total debit:</div>
+                <div class="col-2">{{total_debit}}</div>
+            </div>
+
+            <div class="row p-1 pt-4 align-items-center">
+                <div class="col-3">Total balance:</div>
+                <div class="col-2">{{total_balance}}</div>
+            </div>
+
+        </div>
     </div>
-    <div class="row mt-5 ml-5 pt-2 container-flex align-items-center align-center">
+
+
+
+    <div class="row mt-1 ml-4 pt-1 container-flex align-items-center align-center">
         <div class="col-2 display-4">Independent graphs</div>
-        <div class="slidecontainer col-2">
+        <div class="slidecontainer col-2 form-control">
             <input type="range" min="0" max="1" value="{{chain_graphs}}" step="1" class="slider chain-graphs">
         </div>
         <div class="col-2 display-4">Connected graphs</div>

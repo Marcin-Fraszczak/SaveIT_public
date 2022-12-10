@@ -17,7 +17,7 @@
             {{ form|crispy }}
             <button type="submit" class="btn btn-secondary display-4 m-2">Save changes</button>
         </form>
-        <a class="btn btn-secondary display-4" href="{% url 'transactions:list_wallet' %}">Discard changes and quit</a>
+        <a class="btn btn-dark display-4" href="{% url 'transactions:list_wallet' %}">Discard changes and quit</a>
         <a class="btn btn-secondary display-4" href="{% url 'transactions:delete_wallet' object.pk %}">Delete Wallet</a>
     </div>
     <div></div>

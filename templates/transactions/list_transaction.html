@@ -22,7 +22,7 @@
         </div>
         <div class="row align-center">
             <div class="col-1 btn-group-vertical">Only Debits</div>
-            <div class="slidecontainer col-1 btn-group-vertical">
+            <div class="slidecontainer col-1 btn-group-vertical form-control">
                 <input type="range" min="-1" max="1" value="{{value_filter}}" step="1" class="slider value-input">
             </div>
             <div class="col-1 btn-group-vertical">Only Profits</div>
@@ -37,7 +37,7 @@
             </div>
             <div class="z col-1"><a
                     href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}"
-                    class="btn btn-secondary display-4 m-0 d-flex">Search</a>
+                    class="btn btn-dark display-4 m-0 d-flex">Search</a>
             </div>
             <div class="col-1"><a
                     href="{% url 'transactions:list_transaction' %}"

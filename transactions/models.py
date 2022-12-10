@@ -61,6 +61,7 @@ class SavingsPlan(models.Model):
     monthly_goal = models.FloatField()
     initial_value = models.FloatField()
     curve_type = models.IntegerField(choices=CURVES)
+    wallet = models.OneToOneField(Wallet, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name

@@ -39,7 +39,7 @@ class DashboardView(View):
         abs_year = request.GET.get("abs_year", graph_data.get("abs_year"))
         cum_month = request.GET.get("cum_month", graph_data.get("cum_month"))
         cum_year = request.GET.get("cum_year", graph_data.get("cum_year"))
-        chain_graphs = request.GET.get("chain_graphs", 0)
+        chain_graphs = request.GET.get("chain_graphs", 1)
 
         try:
             abs_month = int(abs_month)
@@ -103,10 +103,23 @@ class DashboardView(View):
                 values_list[i][3] = values_list[i][1] + values_list[i - 1][3]
                 values_list[i][4] = values_list[i][2] + values_list[i - 1][4]
 
-            return displayed_date, values_list
+            return displayed_date, values_list, len(transactions)
 
-        abs_displayed_date, abs_values_list = get_data_for_graph(abs_year, abs_month)
-        cum_displayed_date, cum_values_list = get_data_for_graph(cum_year, cum_month)
+        abs_displayed_date, abs_values_list, abs_no_transactions = get_data_for_graph(abs_year, abs_month)
+        cum_displayed_date, cum_values_list, cum_no_transactions = get_data_for_graph(cum_year, cum_month)
+
+        total_categories = models.Category.objects.filter(owner=user)
+        total_counterparties = models.Counterparty.objects.filter(owner=user)
+        total_transactions = models.Transaction.objects.filter(owner=user)
+        total_profit = 0
+        total_debit = 0
+
+        for transaction in total_transactions:
+            value = transaction.value
+            if transaction.is_profit:
+                total_profit += value
+            else:
+                total_debit += value
 
         return render(request, "accounts/dashboard.html", context={
             "abs_displayed_date": abs_displayed_date,
@@ -118,4 +131,15 @@ class DashboardView(View):
             "abs_month": abs_month,
             "cum_month": cum_month,
             "chain_graphs": chain_graphs,
+            "abs_no_transactions": abs_no_transactions,
+            "cum_no_transactions": cum_no_transactions,
+            "monthly_profit": abs_values_list[-1][3],
+            "monthly_debit": abs_values_list[-1][4],
+            "monthly_balance": abs_values_list[-1][4] + abs_values_list[-1][3],
+            "total_transactions": len(total_transactions),
+            "total_categories": len(total_categories),
+            "total_counterparties": len(total_counterparties),
+            "total_profit": total_profit,
+            "total_debit": total_debit,
+            "total_balance": total_debit + total_profit,
         })

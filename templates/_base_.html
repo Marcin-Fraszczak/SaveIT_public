@@ -24,9 +24,14 @@
 
 </head>
 <body>
+
+  <style>body {background-color: lightgrey;}</style>
   {% block menu %}
     {% include './partials/_menu.html' %}
   {% endblock menu %}
+
+  <div class="row"><p></p></div>
+
 
   {% block messages %}
     <div class="container-sm position-absolute" style="left: 300px; top: 150px; z-index: 99;">

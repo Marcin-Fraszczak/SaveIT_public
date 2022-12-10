@@ -1,3 +1,4 @@
+from calendar import monthrange
 from datetime import datetime
 
 from django.contrib import messages
@@ -265,8 +266,19 @@ class ListTransactionView(View):
         filter_val = request.GET.get('filter_val')
         from_date = request.GET.get('fromDate', "")
         to_date = request.GET.get('toDate', "")
+
+        if from_date and to_date == '1000-01-01':
+            date = from_date.split("-")
+            try:
+                year = int(date[0])
+                month = int(date[1])
+            except ValueError as e:
+                messages.error(request, "Wrong date input")
+                return redirect("accounts:dashboard")
+            to_date = datetime(year=year, month=month, day=monthrange(year, month)[1])
+
         if not from_date:
-            from_date = datetime(year=1, month=1, day=1).date()
+            from_date = datetime(year=2000, month=1, day=1).date()
         if not to_date:
             to_date = datetime.now().date()
 
@@ -489,14 +501,30 @@ class ModifySavingsPlanView(View):
                       context={"form": form, "object": savings_plan})
 
 
+last_sort_order_plan = '-name'
+
+
 class ListSavingsPlanView(View):
     def get(self, request):
+        global last_sort_order_plan
         user = get_user(request)
         if not user:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
-        savings_plan = models.SavingsPlan.objects.filter(owner=user).order_by('name')
-        return render(request, 'transactions/list_savings_plan.html', context={"object_list": savings_plan})
+
+        word_filter = request.GET.get("wordFilter", "")
+        sort_order = request.GET.get('order', 'name')
+
+        if sort_order == last_sort_order_plan:
+            sort_order = f"-{sort_order.replace('-', '')}"
+        last_sort_order_plan = sort_order
+
+        plans = models.SavingsPlan.objects.filter(owner=user).order_by(sort_order)
+        return render(request, 'transactions/list_savings_plan.html',
+                      context={
+                          "object_list": plans,
+                          "word_filter": word_filter,
+                      })
 
 
 class TransferWalletView(View):
@@ -525,3 +553,7 @@ class TransferWalletView(View):
                 transaction.save()
             messages.success(request, f"{len(transactions)} transactions successfully transferred from {from_wallet.name} to {to_wallet.name}")
             return redirect('transactions:list_wallet')
+
+
+class LinkSavingsPlanView(View):
+    pass

@@ -21,18 +21,6 @@
         </div>
 
         <ul>
-<!--            <div class="row card-box">-->
-<!--                <div class="col-1">Only Debits</div>-->
-<!--                <div class="slidecontainer col-1">-->
-<!--                    <input type="range" min="-1" max="1" value="{{value_filter}}" step="1" class="slider value-input">-->
-<!--                </div>-->
-<!--                <div class="col-1">Only Profits</div>-->
-<!--                <div class="col-1 value-sum">Sum</div>-->
-<!--                <div class="col-2"></div>-->
-<!--                <div class="col-2"></div>-->
-<!--                <div class="col-2"></div>-->
-<!--                <div class="col-2"></div>-->
-<!--            </div>-->
 
             <div class="row mb-3 mt-3 data-table customizer card-box rounded">
                 <div class="col-1 text-white text-primary display-7 nav-link">No.</div>
@@ -42,7 +30,7 @@
             </div>
             <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 63vh">
             {% for object in object_list %}
-                <div class="row p-4 data-row">
+                <div class="row p-4 data-row align-items-center">
                     <div class="col-1">
                         <a href="{% url 'transactions:modify_counterparty' object.pk %}" class="text-black d-inline-block">
                             {{forloop.counter}}
