@@ -279,19 +279,14 @@ class ListTransactionView(View):
         transactions = models.Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
 
         if filter_by == 'category':
-            # transactions = models.Transaction.objects.filter(owner=user, category=filter_val).order_by(sort_order)
             transactions = transactions.filter(category=filter_val).order_by(sort_order)
         elif filter_by == 'counterparty':
-            # transactions = models.Transaction.objects.filter(owner=user, counterparty=filter_val).order_by(sort_order)
             transactions = transactions.filter(counterparty=filter_val).order_by(sort_order)
         elif filter_by == 'wallet':
-            # transactions = models.Transaction.objects.filter(owner=user, wallet=filter_val).order_by(sort_order)
             transactions = transactions.filter(wallet=filter_val).order_by(sort_order)
         elif raw_sort_order in ["category", "counterparty", "wallet"]:
-            # transactions = models.Transaction.objects.filter(owner=user).order_by(f"{sort_order}__name")
             transactions = transactions.order_by(f"{sort_order}__name")
         else:
-            # transactions = models.Transaction.objects.filter(owner=user).order_by(sort_order)
             transactions = transactions.order_by(sort_order)
 
         return render(request, 'transactions/list_transaction.html',
@@ -301,6 +296,8 @@ class ListTransactionView(View):
                           "value_filter": value_filter,
                           "filter_by": filter_by,
                           "filter_val": filter_val,
+                          "from_date": from_date,
+                          "to_date": to_date,
                       })
 
 
