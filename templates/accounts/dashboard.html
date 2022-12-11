@@ -16,13 +16,13 @@
 
     <div class="row mt-4 ml-5 pt-2 container-flex align-items-center align-center">
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'-1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5"><</a>
+               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3"><</a>
         </div>
         <div class="col-4">
             <canvas id="chartAbsolute" style="width:100%;max-width:700px"></canvas>
         </div>
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5">></a>
+               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3">></a>
         </div>
 
 
@@ -69,13 +69,13 @@
 
     <div class="row mt-1 ml-5 pt-2 container-flex align-items-center align-center">
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'-1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5"><</a>
+               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3"><</a>
         </div>
         <div class="col-4">
             <canvas id="chartCumulative" style="width:100%;max-width:700px"></canvas>
         </div>
         <div class="col-1"><a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link pt-5 pb-5">></a>
+               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3">></a>
         </div>
 
         <div class="col-5">
@@ -93,9 +93,15 @@
                 <div class="col-3"><a href="{% url 'transactions:add_transaction' %}"
                     class="btn btn-dark display-4 m-0 dash-link">Add new</a>
                 </div>
+                {% if default_wallet %}
+                <div class="col-3"><a href="{% url 'transactions:list_transaction' %}?filter_by=wallet&filter_val={{default_wallet.pk}}"
+                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
+                </div>
+                {% else %}
                 <div class="col-3"><a href="{% url 'transactions:list_transaction' %}"
                     class="btn btn-secondary display-4 m-0 dash-link">Show</a>
                 </div>
+                {% endif %}
             </div>
 
             <div class="row p-1 pt-4 align-items-center">
@@ -118,7 +124,7 @@
 
 
 
-    <div class="row mt-1 ml-4 pt-1 container-flex align-items-center align-center">
+    <div class="row mt-5 ml-4 pt-1 container-flex align-items-center align-center">
         <div class="col-2 display-4">Independent graphs</div>
         <div class="slidecontainer col-2 form-control">
             <input type="range" min="0" max="1" value="{{chain_graphs}}" step="1" class="slider chain-graphs">
