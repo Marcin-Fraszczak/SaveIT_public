@@ -10,19 +10,18 @@ from transactions import models
 
 def populate_db():
     usernames = ["John", "Derek", "Maria", "Dude"]
-    counterparties = ["Enea", "Biedronka", "LIDL", "Auchan", "Żabka", "PKP", "Netia", "policja", "allegro"]
-    categories = ["Rozrywka", "Spożywka", "Chemia", "Sport", "Zdrowie"]
+    counterparties = ["Praca", "Enea", "Biedronka", "LIDL", "Auchan", "Żabka", "PKP", "Netia", "policja", "allegro"]
+    categories = ["Praca", "Rozrywka", "Spożywka", "Chemia", "Sport", "Zdrowie"]
     wallets = ["Osobisty", "Rodzinny", "Firmowy"]
-    desc = 'aaeeoouuiibnvmcxzhshfkjeiroeqwertyuipkndkajkv'
 
-    def random_desc():
-        return "".join(choices(desc, k=randint(4, 20)))
+    def get_desc(item):
+        return f"{item} desc"
 
-    def random_date():
-        start = datetime(year=2022, month=8, day=1).date()
-        stop = datetime(year=2022, month=11, day=11).date()
-        delta = timedelta(days=randint(1, (stop - start).days))
-        return start + delta
+
+    def get_days_till_today(start):
+        stop = datetime.now().date()
+        delta = (stop - start).days
+        return delta
 
     for username in usernames[:1]:
         user = get_user_model()(username=username, email=f"{username.split()[0]}@gmail.com")
@@ -30,49 +29,72 @@ def populate_db():
         user.save()
         print(f"User {username} created.")
 
-        w_name = choice(wallets).upper()
+        w_name = wallets[0].upper()
         w_unique_name = f"{user.username}_{w_name}"
 
-        wallet = models.Wallet(name=w_name, unique_name=w_unique_name, description=random_desc(), owner=user)
+        wallet = models.Wallet(name=w_name, unique_name=w_unique_name, description=get_desc("wallet"), owner=user)
         wallet.save()
 
-        shuffle(counterparties)
-        for c in counterparties[:len(counterparties) - 2]:
+        # shuffle(counterparties)
+        for c in counterparties:
             c_name = c.upper()
             c_unique_name = f"{user.username}_{c_name}"
-            counterparty = models.Counterparty(name=c_name, unique_name=c_unique_name, description=random_desc(),
+            counterparty = models.Counterparty(name=c_name, unique_name=c_unique_name, description=get_desc("cntrp"),
                                                owner=user)
             counterparty.save()
 
-        shuffle(categories)
-        for c in categories[:len(categories) - 1]:
+        # shuffle(categories)
+        for c in categories:
             c_name = c.upper()
             c_unique_name = f"{user.username}_{c_name}"
-            category = models.Category(name=c_name, unique_name=c_unique_name, description=random_desc(), owner=user)
+            category = models.Category(name=c_name, unique_name=c_unique_name, description=get_desc("cat"), owner=user)
             category.save()
 
-        for i in range(randint(60, 70)):
-            pass
-            _category = models.Category.objects.filter(owner=user)
-            _counterparty = models.Counterparty.objects.filter(owner=user)
-            _wallet = models.Wallet.objects.filter(owner=user)
+        starting_date = datetime(year=2022, month=1, day=1).date()
+        _category = models.Category.objects.filter(owner=user)
+        _counterparty = models.Counterparty.objects.filter(owner=user)
+        _wallet = models.Wallet.objects.filter(owner=user)
 
-            is_profit = bool(randint(0, 1))
-            value = randint(1, 200)
-            if not is_profit:
-                value = -value
+        for i in range(get_days_till_today(starting_date)):
 
-            transaction = models.Transaction(
-                counterparty=choice(_counterparty),
-                category=choice(_category),
-                is_profit=is_profit,
-                value=value,
-                date=random_date(),
-                owner=user,
-                notes=random_desc(),
-            )
-            transaction.save()
-            transaction.wallet.add(choice(_wallet))
-            transaction.save()
+            today = starting_date + timedelta(days=i)
+
+            if today.day == 10:
+                transaction = models.Transaction(
+                    counterparty=models.Counterparty.objects.get(name="PRACA"),
+                    category=models.Category.objects.get(name="PRACA"),
+                    is_profit=True,
+                    value=6000,
+                    date=today,
+                    owner=user,
+                    notes=get_desc("tran"),
+                )
+                transaction.save()
+                transaction.wallet.add(choice(_wallet))
+                transaction.save()
+
+            trans_no = randint(0, 3)
+            if not trans_no:
+                continue
+
+            for t in range(trans_no):
+
+                is_profit = False
+                value = randint(5, 200)
+                if not is_profit:
+                    value = -value
+
+                transaction = models.Transaction(
+                    counterparty=choice(_counterparty),
+                    category=choice(_category),
+                    is_profit=is_profit,
+                    value=value,
+                    date=today,
+                    owner=user,
+                    notes=get_desc("tran"),
+                )
+                transaction.save()
+                transaction.wallet.add(choice(_wallet))
+                transaction.save()
 
         print(f"User {username} fully created.")

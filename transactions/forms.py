@@ -31,6 +31,6 @@ class TransactionForm(forms.ModelForm):
 class SavingsPlanForm(forms.ModelForm):
     class Meta:
         model = models.SavingsPlan
-        fields = ("name", "wallet", "monthly_goal", "initial_value", "curve_type")
+        fields = ("name", "monthly_goal", "initial_value", "curve_type")
 
 

@@ -1,5 +1,4 @@
 from calendar import monthrange
-from collections import defaultdict
 from datetime import datetime
 
 from django.contrib import messages
@@ -77,8 +76,22 @@ class DashboardView(View):
                 cum_month = abs_month
                 cum_year = abs_year
 
-        for key, value in [("abs_month", abs_month), ("abs_year", abs_year), ("cum_month", cum_month), ("cum_year", cum_year)]:
+        for key, value in [("abs_month", abs_month), ("abs_year", abs_year), ("cum_month", cum_month),
+                           ("cum_year", cum_year)]:
             graph_data[key] = value
+
+        default_wallet = models.Wallet.objects.filter(owner=user, is_default=True)
+
+        if default_wallet:
+            default_wallet = default_wallet[0]
+
+        default_plan = models.SavingsPlan.objects.filter(owner=user, is_default=1)
+
+        if default_plan:
+            default_plan = default_plan[0]
+            init = default_plan.initial_value
+            goal = default_plan.monthly_goal
+            diff = goal - init
 
         def get_data_for_graph(year, month):
             last_day = monthrange(year, month)[1]
@@ -86,37 +99,67 @@ class DashboardView(View):
             from_date = datetime(year=year, month=month, day=1).date()
             to_date = datetime(year=year, month=month, day=last_day).date()
 
-            transactions = models.Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
-            values_list = [[i, 0, 0, 0, 0] for i in range(1, last_day + 1)]
+            if default_wallet:
+                transactions = models.Transaction.objects.filter(owner=user, wallet=default_wallet,
+                                                                 date__range=(from_date, to_date))
+            else:
+                transactions = models.Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
 
-            for transaction in transactions:
-                val = transaction.value
-                if transaction.is_profit:
-                    values_list[transaction.date.day][1] += val
+            values_list = [[i, 0, 0, 0, 0, 0] for i in range(last_day + 1)]
+
+            if default_plan.curve_type != 1:
+                if default_plan.curve_type == 2:
+                    medi = init + (diff / 3)
                 else:
-                    values_list[transaction.date.day][2] += val
+                    medi = init + (2 * diff / 3)
+
+                middle_day = last_day // 2
+                a = ((middle_day - 1) * (goal - init) - (last_day - 1) * (medi - init)) / (
+                        (middle_day - 1) * (last_day - 1) * (last_day - middle_day))
+                b = (medi - init) / (middle_day - 1) - a * (middle_day + 1)
+                c = init - b - a
+
+            for tran in transactions:
+                val = tran.value
+                if tran.is_profit:
+                    values_list[tran.date.day][1] += val
+                else:
+                    values_list[tran.date.day][2] += val
 
             for i in range(len(values_list)):
                 if i == 0:
                     values_list[i][3] = values_list[i][1]
                     values_list[i][4] = values_list[i][2]
-                values_list[i][3] = values_list[i][1] + values_list[i - 1][3]
-                values_list[i][4] = values_list[i][2] + values_list[i - 1][4]
+                elif i == 1:
+                    values_list[i][3] = values_list[i][1] + values_list[i - 1][3]
+                    values_list[i][4] = values_list[i][2] + values_list[i - 1][4]
+                    if default_plan:
+                        values_list[i][5] = init
+                else:
+                    values_list[i][3] = values_list[i][1] + values_list[i - 1][3]
+                    values_list[i][4] = values_list[i][2] + values_list[i - 1][4]
+                    if default_plan:
+                        if default_plan.curve_type == 1:
+                            values_list[i][5] = round(init + diff * (i - 1) / (last_day - 1), 2)
+                        elif default_plan.curve_type in [2, 3]:
+                            values_list[i][5] = round(a * i * i + b * i + c, 2)
 
-            return displayed_date, values_list, len(transactions)
+            return displayed_date, values_list[1:], len(transactions)
 
         abs_displayed_date, abs_values_list, abs_no_transactions = get_data_for_graph(abs_year, abs_month)
         cum_displayed_date, cum_values_list, cum_no_transactions = get_data_for_graph(cum_year, cum_month)
 
-        total_categories = models.Category.objects.filter(owner=user)
-        total_counterparties = models.Counterparty.objects.filter(owner=user)
-        total_transactions = models.Transaction.objects.filter(owner=user)
+        if default_wallet:
+            total_transactions = models.Transaction.objects.filter(owner=user, wallet=default_wallet)
+        else:
+            total_transactions = models.Transaction.objects.filter(owner=user)
+
         total_profit = 0
         total_debit = 0
 
-        for transaction in total_transactions:
-            value = transaction.value
-            if transaction.is_profit:
+        for trans in total_transactions:
+            value = trans.value
+            if trans.is_profit:
                 total_profit += value
             else:
                 total_debit += value
@@ -137,9 +180,9 @@ class DashboardView(View):
             "monthly_debit": abs_values_list[-1][4],
             "monthly_balance": abs_values_list[-1][4] + abs_values_list[-1][3],
             "total_transactions": len(total_transactions),
-            "total_categories": len(total_categories),
-            "total_counterparties": len(total_counterparties),
             "total_profit": total_profit,
             "total_debit": total_debit,
             "total_balance": total_debit + total_profit,
+            "default_wallet": default_wallet,
+            "default_plan": default_plan,
         })

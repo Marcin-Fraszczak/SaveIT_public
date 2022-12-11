@@ -28,7 +28,7 @@
                 <div class="z col-2"><a href="{% url 'transactions:list_wallet' %}?order=description" class="text-white text-primary display-7 nav-link">Description</a></div>
                 <div class="col-3 text-white text-primary display-7 nav-link">Transactions assigned to wallet</div>
                 <div class="col-2 text-white text-primary display-7 nav-link">Transfer transactions</div>
-                <div class="col-2 text-white text-primary display-7 nav-link">Link saving plan</div>
+                <div class="col-2 text-white text-primary display-7 nav-link">Default</div>
             </div>
             <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 63vh">
             {% for object in object_list %}
@@ -60,11 +60,19 @@
                             Transfer
                         </a>
                     </div>
+                    {% if object.is_default %}
                     <div class="col-2">
-                        <a href="{% url 'transactions:link_savings_plan' object.pk '0'%}" class="btn btn-dark display-4 m-0">
-                            Link
+                        <a href="#" class="btn btn-dark display-4 m-0 disabled">
+                            default
                         </a>
                     </div>
+                    {% else %}
+                    <div class="col-2">
+                        <a href="{% url 'transactions:make_default_wallet' default_wallet.pk|default:'0' object.pk %}" class="btn btn-secondary display-4 m-0">
+                            make default
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             {% empty %}
             <div class="col-12 align-center">Nothing to display</div>

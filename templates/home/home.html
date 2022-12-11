@@ -2,92 +2,90 @@
 {% load static %}
 
 {% block title %}
-    Home
+Home
 {% endblock title %}
 
 {% block messages %}
 {% endblock messages %}
 
+{% block top_margin %}
+{% endblock top_margin %}
+
 {% block container %}
 
-  <section class="header1 cid-toBuRfARWF mbr-fullscreen mbr-parallax-background" id="header1-1">
-      <div class="mbr-overlay" style="opacity: 0.1; background-color: rgb(216, 216, 216);"></div>
-      <div class="container">
-          <div class="row">
-              <div class="col-12 col-lg-5">
+<section class="header1 cid-toBuRfARWF mbr-fullscreen mbr-parallax-background" id="header1-1">
+    <div class="mbr-overlay" style="opacity: 0.1; background-color: rgb(216, 216, 216);"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-5">
 
-                  {% if user.is_authenticated %}
-                  <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1">
-                      <strong>You're in control</strong>
-                  </h1>
-                  <p class="mbr-text mbr-fonts-style display-7">
-                      Continue improving your life.
-                  </p>
-                  <div class="mbr-section-btn mt-3">
-                      <a class="btn btn-secondary display-4" href="{% url 'accounts:dashboard' %}">
-                          Your account
-                      </a>
-                  </div>
+                {% if user.is_authenticated %}
+                <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1">
+                    <strong>You're in control</strong>
+                </h1>
+                <p class="mbr-text mbr-fonts-style display-7">
+                    Continue improving your life.
+                </p>
+                <div class="mbr-section-btn mt-3">
+                    <a class="btn btn-secondary display-4" href="{% url 'accounts:dashboard' %}">
+                        Your account
+                    </a>
+                </div>
 
-                  {% else %}
-                  <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1">
-                      <strong>Take control</strong>
-                  </h1>
-                  <p class="mbr-text mbr-fonts-style display-7">
-                      Manage your finances consciously without an effort.
-                  </p>
-                  <div class="mbr-section-btn mt-3">
-                      <a class="btn btn-secondary display-4" href="{% url 'accounts:register' %}">
-                          Join now
-                      </a>
-                  </div>
+                {% else %}
+                <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1">
+                    <strong>Take control</strong>
+                </h1>
+                <p class="mbr-text mbr-fonts-style display-7">
+                    Manage your finances consciously without an effort.
+                </p>
+                <div class="mbr-section-btn mt-3">
+                    <a class="btn btn-secondary display-4" href="{% url 'accounts:register' %}">
+                        Join now
+                    </a>
+                </div>
 
-                  {% endif %}
-              </div>
-          </div>
-      </div>
-  </section>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
 
-  <section class="features13 cid-toBCPfHnw3" id="features14-6">
-      <div class="container">
-          <div class="row">
-              <div class="col-12">
-                  <h3 class="mbr-section-title align-center mb-4 mbr-fonts-style display-2">
-                      <strong>Try our reliable assistants</strong>
-                  </h3>
-              </div>
-              <div class="card col-12 col-md-4 col-lg-2 p-3">
-                  <div class="card-wrapper">
-                      <div class="card-box align-center">
-                          <img src="{% static 'assets/images/magnifying_glass.png' %}" alt="Magnifying glass over a coin">
-                          <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
-                              <strong>Track your<br>expenses</strong>
-                          </h4>
-                      </div>
-                  </div>
-              </div>
-              <div class="card p-3 col-12 col-md-4 col-lg-2">
-                  <div class="card-wrapper">
-                      <div class="card-box align-center">
-                          <img src="{% static 'assets/images/wallets.png' %}" alt="Wallets">
-                          <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
-                              <strong>Manage individual wallets</strong>
-                          </h4>
-                      </div>
-                  </div>
-              </div>
-              <div class="card p-3 col-12 col-md-4 col-lg-2">
-                  <div class="card-wrapper">
-                      <div class="card-box align-center">
-                          <img src="{% static 'assets/images/piggy_bank.png' %}" alt="Piggy bank">
-                          <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
-                              <strong>Create savings plans</strong>
-                          </h4>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </section>
+<section class="features13 cid-toBCPfHnw3" id="features14-6">
+    <div class="container-flex mr-5 ml-5">
+
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mbr-section-title align-center mb-4 mbr-fonts-style display-2">
+                    <strong>Try our reliable assistants</strong>
+                </h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card-box align-center col-4">
+                <img src="{% static 'assets/images/magnifying_glass.jpg' %}" alt="Magnifying glass over a coin">
+                <h4 class="card-title align-center mbr-black mbr-fonts-style display-7 mt-2">
+                    <strong>Track <br>your expenses</strong>
+                </h4>
+            </div>
+
+            <div class="card-box align-center col-4">
+                <img src="{% static 'assets/images/wallet.jpg' %}" alt="Wallets">
+                <h4 class="card-title align-center mbr-black mbr-fonts-style display-7 mt-2">
+                    <strong>Manage <br>individual wallets</strong>
+                </h4>
+            </div>
+
+            <div class="card-box align-center col-4">
+                <img src="{% static 'assets/images/piggy_bank.jpg' %}" alt="Piggy bank">
+                <h4 class="card-title align-center mbr-black mbr-fonts-style display-7 mt-2">
+                    <strong>Create <br>savings plans</strong>
+                </h4>
+            </div>
+        </div>
+
+    </div>
+</section>
 
 {% endblock container %}

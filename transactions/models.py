@@ -3,7 +3,7 @@ from django.db import models
 
 CURVES = (
     (1, "Linear"),
-    (2, "Exponential"),
+    (2, "Parabolic"),
     (3, "Logarithmic"),
 )
 
@@ -48,6 +48,7 @@ class Wallet(models.Model):
     name = models.CharField(max_length=60)
     unique_name = models.CharField(max_length=200)
     description = models.CharField(max_length=80, null=True)
+    is_default = models.BooleanField(default=False)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='wallet')
 
     def __str__(self):
@@ -61,7 +62,7 @@ class SavingsPlan(models.Model):
     monthly_goal = models.FloatField()
     initial_value = models.FloatField()
     curve_type = models.IntegerField(choices=CURVES)
-    wallet = models.OneToOneField(Wallet, on_delete=models.CASCADE, null=True)
+    is_default = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

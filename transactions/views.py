@@ -383,11 +383,17 @@ class ListWalletView(View):
             sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_wallet = sort_order
 
+
         wallets = models.Wallet.objects.filter(owner=user).order_by(sort_order)
+        default_wallet = wallets.filter(is_default=True)
+        if not len(default_wallet):
+            default_wallet.pk = 0
+
         return render(request, 'transactions/list_wallet.html',
                       context={
                           "object_list": wallets,
                           "word_filter": word_filter,
+                          "default_wallet": default_wallet,
                       })
 
 
@@ -443,12 +449,16 @@ class AddSavingsPlanView(View):
     def post(self, request):
         form = forms.SavingsPlanForm(request.POST)
         if form.is_valid():
-            exists = models.SavingsPlan.objects.filter(name=request.POST.get('name'))
+            savings_plan = form.save(commit=False)
+            savings_plan.owner = get_user(request)
+            savings_plan.name = savings_plan.name.upper()
+            savings_plan.unique_name = f"{get_user(request).username}_{savings_plan.name}"
+
+            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name)
+
             if exists:
                 messages.error(request, "This name already exists")
             else:
-                savings_plan = form.save(commit=False)
-                savings_plan.owner = get_user(request)
                 savings_plan.save()
                 messages.success(request, "Savings plan successfully added")
         else:
@@ -555,5 +565,70 @@ class TransferWalletView(View):
             return redirect('transactions:list_wallet')
 
 
-class LinkSavingsPlanView(View):
-    pass
+class MakeDefaultWalletView(View):
+    def get(self, request, from_pk, to_pk):
+
+        user = get_user(request)
+        if not user:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        if from_pk == 0:
+            to_wallet = models.Wallet.objects.get(pk=to_pk)
+            if to_wallet.owner != user:
+                messages.error(request, "Access denied")
+                return redirect('transactions:list_wallet')
+        else:
+            to_wallet = models.Wallet.objects.get(pk=to_pk)
+            from_wallet = models.Wallet.objects.get(pk=from_pk)
+            if from_wallet.owner != user or to_wallet.owner != user:
+                messages.error(request, "Access denied")
+                return redirect('transactions:list_wallet')
+
+        all_wallets = models.Wallet.objects.filter(owner=user)
+
+        for wallet in all_wallets:
+            if wallet.pk == to_pk:
+                wallet.is_default = 1
+                wallet.save()
+            else:
+                wallet.is_default = 0
+                wallet.save()
+
+        messages.success(request, "Default wallet changed successfully")
+        return redirect('transactions:list_wallet')
+
+
+class MakeDefaultPlanView(View):
+    def get(self, request, from_pk, to_pk):
+
+        user = get_user(request)
+        if not user:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        if from_pk == 0:
+            to_plan = models.SavingsPlan.objects.get(pk=to_pk)
+            if to_plan.owner != user:
+                messages.error(request, "Access denied")
+                return redirect('transactions:list_savings_plan')
+        else:
+            to_plan = models.SavingsPlan.objects.get(pk=to_pk)
+            from_plan = models.SavingsPlan.objects.get(pk=from_pk)
+            if from_plan.owner != user or to_plan.owner != user:
+                messages.error(request, "Access denied")
+                return redirect('transactions:list_savings_plan')
+
+        all_plans = models.SavingsPlan.objects.filter(owner=user)
+
+        for plan in all_plans:
+            if plan.pk == to_pk:
+                plan.is_default = 1
+                plan.save()
+            else:
+                plan.is_default = 0
+                plan.save()
+
+        messages.success(request, "Default Savings plan changed successfully")
+        return redirect('transactions:list_savings_plan')
+

@@ -29,10 +29,9 @@
 
         <div class="col-5">
             <div class="row mb-2 customizer card-box rounded align-items-center">
-                <div class="col-6 align-left">
-                    <p class="text-white text-primary display-7 nav-link">Summary for {{abs_displayed_date}}:</p>
+                <div class="col-8 align-left">
+                    <p class="text-white text-primary display-7 nav-link">Summary for wallet: {{ default_wallet.name|default:'All wallets' }} in {{abs_displayed_date}}</p>
                 </div>
-                <div class="col-2"></div>
                 <div class="col-4"><a href="{% url 'accounts:dashboard' %}?abs_year={% now 'Y' %}&abs_month={% now 'm' %}"
                     class="btn btn-light display-4 m-0 dash-link pt-2 pb-2">This month</a>
                 </div>
@@ -80,8 +79,13 @@
         </div>
 
         <div class="col-5">
-            <div class="row mb-2 customizer card-box rounded">
-                <p class="text-white text-primary display-7 nav-link ml-3">Total summary:</p>
+            <div class="row mb-2 customizer card-box rounded align-items-center">
+                <div class="col-8 align-left">
+                    <p class="text-white text-primary display-7 nav-link">Summary for wallet: {{default_wallet.name|default:'All wallets'}}</p>
+                </div>
+                <div class="col-4"><a href="{% url 'transactions:list_wallet' %}"
+                    class="btn btn-light display-4 m-0 dash-link pt-2 pb-2">Change wallet</a>
+                </div>
             </div>
             <div class="row p-1 align-items-center">
                 <div class="col-3">Transactions:</div>
@@ -90,28 +94,6 @@
                     class="btn btn-dark display-4 m-0 dash-link">Add new</a>
                 </div>
                 <div class="col-3"><a href="{% url 'transactions:list_transaction' %}"
-                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
-                </div>
-            </div>
-
-            <div class="row p-1 align-items-center">
-                <div class="col-3">Categories:</div>
-                <div class="col-2">{{total_categories}}</div>
-                <div class="col-3"><a href="{% url 'transactions:add_category' %}"
-                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
-                </div>
-                <div class="col-3"><a href="{% url 'transactions:list_category' %}"
-                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
-                </div>
-            </div>
-
-            <div class="row p-1 align-items-center">
-                <div class="col-3">Counterparties:</div>
-                <div class="col-2">{{total_counterparties}}</div>
-                <div class="col-3"><a href="{% url 'transactions:add_counterparty' %}"
-                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
-                </div>
-                <div class="col-3"><a href="{% url 'transactions:list_counterparty' %}"
                     class="btn btn-secondary display-4 m-0 dash-link">Show</a>
                 </div>
             </div>
