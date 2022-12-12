@@ -43,6 +43,8 @@ class AddTransactionView(View):
 
         form = forms.TransactionForm()
         form.fields['wallet'].queryset = models.Wallet.objects.filter(owner=user)
+        form.fields['category'].queryset = models.Category.objects.filter(owner=user)
+        form.fields['counterparty'].queryset = models.Counterparty.objects.filter(owner=user)
         return render(request=request, template_name='transactions/add_transaction.html', context={"form": form})
 
 
@@ -88,6 +90,9 @@ class ModifyTransactionView(View):
             return redirect('login')
 
         form = forms.TransactionForm(instance=transaction)
+        form.fields['wallet'].queryset = models.Wallet.objects.filter(owner=user)
+        form.fields['category'].queryset = models.Category.objects.filter(owner=user)
+        form.fields['counterparty'].queryset = models.Counterparty.objects.filter(owner=user)
         return render(request=request, template_name='transactions/modify_transaction.html',
                       context={"form": form, "object": transaction})
 
@@ -365,7 +370,7 @@ class ModifySavingsPlanView(View):
             savings_plan.initial_value = form.cleaned_data.get("initial_value")
             savings_plan.curve_type = form.cleaned_data.get("curve_type")
 
-            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name)
+            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name).exclude(pk=pk)
 
             if exists:
                 messages.error(request, "This name already exists")

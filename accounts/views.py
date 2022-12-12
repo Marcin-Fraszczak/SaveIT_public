@@ -80,6 +80,37 @@ class DashboardView(View):
                            ("cum_year", cum_year)]:
             graph_data[key] = value
 
+        any_wallet = models.Wallet.objects.filter(owner=user)
+        if not any_wallet:
+            default_wallet = models.Wallet(
+                name="DEFAULT WALLET",
+                unique_name=f"{user.username}_DEFAULT WALLET",
+                description="Generic wallet to start",
+                is_default=1,
+                owner=user,
+            )
+            default_wallet.save()
+
+        any_category = models.Category.objects.filter(owner=user)
+        if not any_category:
+            default_category = models.Category(
+                name="DEFAULT CATEGORY",
+                unique_name=f"{user.username}_DEFAULT CATEGORY",
+                description="Generic category to start",
+                owner=user,
+            )
+            default_category.save()
+
+        any_counterparty = models.Counterparty.objects.filter(owner=user)
+        if not any_counterparty:
+            default_counterparty = models.Counterparty(
+                name="DEFAULT COUNTERPARTY",
+                unique_name=f"{user.username}_DEFAULT COUNTERPARTY",
+                description="Generic counterparty to start",
+                owner=user,
+            )
+            default_counterparty.save()
+
         default_wallet = models.Wallet.objects.filter(owner=user, is_default=True)
 
         if default_wallet:
