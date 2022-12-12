@@ -96,6 +96,7 @@ class ModifyTransactionView(View):
         return render(request=request, template_name='transactions/modify_transaction.html',
                       context={"form": form, "object": transaction})
 
+
 class AddCategoryView(View):
     def post(self, request):
 
