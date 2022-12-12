@@ -4,6 +4,7 @@
 venv
 static
 
+env/.env
 
 **/*.pyc
 
