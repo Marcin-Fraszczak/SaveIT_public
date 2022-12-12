@@ -30,22 +30,22 @@ def translate(item, ind):
         "category": (
             models.Category.objects.all().count(),
             models.Category,
-            models.Category.objects.last()
+            models.Category.objects
         ),
         "counterparty": (
             models.Counterparty.objects.all().count(),
             models.Counterparty,
-            models.Counterparty.objects.last()
+            models.Counterparty.objects
         ),
         "wallet": (
             models.Wallet.objects.all().count(),
             models.Wallet,
-            models.Wallet.objects.last()
+            models.Wallet.objects
         ),
         "savings_plan": (
             models.SavingsPlan.objects.all().count(),
             models.SavingsPlan,
-            models.SavingsPlan.objects.last()
+            models.SavingsPlan.objects
         ),
     }
     return translate_dict[item][ind]
@@ -113,7 +113,7 @@ def test_wallet_manipulation(client):
     response = client.post(
         reverse(f'transactions:add_{item}'),
         {
-            "name": "New name",
+            "name": f"New {item}",
             "description": "new description",
             "owner": user,
         })
@@ -126,17 +126,18 @@ def test_wallet_manipulation(client):
     assert items_manual - items_before == 1
     assert items_form - items_manual == 1
 
+    pk = translate(item, 0)
     # for update view
     response = client.post(
-        reverse(f'transactions:modify_{item}', args=f"{translate(item, 0)}"),
+        reverse(f'transactions:modify_{item}', args=f'{pk}'),
         {
-            "name": "Updated name",
+            "name": f"Updated {item}",
             "description": "Updated description",
         })
 
     assert response.status_code == 302
-    assert translate(item, 2).name == "Updated name".upper()
-    assert translate(item, 2).description == "Updated description"
+    assert translate(item, 2).get(pk=pk).name == f"Updated {item}".upper()
+    assert translate(item, 2).get(pk=pk).description == "Updated description"
 
     # for delete view
     items_before = translate(item, 0)
