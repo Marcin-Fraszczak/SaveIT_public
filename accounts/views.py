@@ -30,7 +30,7 @@ class DashboardView(View):
     def get(self, request):
 
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 

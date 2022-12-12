@@ -2,7 +2,7 @@ from calendar import monthrange
 from datetime import datetime
 
 from django.contrib import messages
-from django.contrib.auth import get_user
+from django.contrib.auth import get_user, get_user_model
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from . import models
@@ -11,39 +11,56 @@ from . import forms
 
 class AddTransactionView(View):
     def post(self, request):
+
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
-            wallets = list(form.cleaned_data.get("wallet"))
+            wallets = form.cleaned_data.get("wallet")
+            if wallets:
+                wallets = list(wallets)
             transaction = form.save(commit=False)
             transaction.owner = get_user(request)
+
             if transaction.is_profit:
                 transaction.value = abs(transaction.value)
             else:
                 transaction.value = -abs(transaction.value)
+
             transaction.save()
-            transaction.wallet.set(wallets)
+            if wallets:
+                transaction.wallet.set(wallets)
             messages.success(request, "Transaction successfully added")
         else:
             messages.error(request, "Error saving form")
+
         return redirect('transactions:list_transaction')
 
     def get(self, request):
-        form = forms.TransactionForm
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        form = forms.TransactionForm()
+        form.fields['wallet'].queryset = models.Wallet.objects.filter(owner=user)
         return render(request=request, template_name='transactions/add_transaction.html', context={"form": form})
 
 
 class ModifyTransactionView(View):
     def post(self, request, pk):
+
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
             transaction = get_object_or_404(models.Transaction, pk=pk)
             transaction.date = form.cleaned_data.get("date")
             transaction.value = form.cleaned_data.get("value")
             transaction.is_profit = form.cleaned_data.get("is_profit")
+
             if transaction.is_profit:
                 transaction.value = abs(transaction.value)
             else:
                 transaction.value = -abs(transaction.value)
+
             transaction.notes = form.cleaned_data.get("notes")
             transaction.category = form.cleaned_data.get("category")
             transaction.counterparty = form.cleaned_data.get("counterparty")
@@ -58,18 +75,25 @@ class ModifyTransactionView(View):
         return redirect('transactions:list_transaction')
 
     def get(self, request, pk):
+
         user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         transaction = get_object_or_404(models.Transaction, pk=pk)
+
         if user != transaction.owner:
             messages.error(request, "Access denied")
             return redirect('login')
+
         form = forms.TransactionForm(instance=transaction)
         return render(request=request, template_name='transactions/modify_transaction.html',
                       context={"form": form, "object": transaction})
 
-
 class AddCategoryView(View):
     def post(self, request):
+
         form = forms.CategoryForm(request.POST)
         if form.is_valid():
             category = form.save(commit=False)
@@ -78,24 +102,33 @@ class AddCategoryView(View):
             category.unique_name = f"{get_user(request).username}_{category.name}"
 
             exists = models.Category.objects.filter(unique_name=category.unique_name)
+
             if exists:
                 messages.error(request, "This name already exists")
                 return redirect(request.get_full_path())
             else:
                 category.save()
                 messages.success(request, "Category successfully added")
+
         else:
             messages.error(request, "Error saving form")
 
         return redirect('transactions:list_category')
 
     def get(self, request):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         form = forms.CategoryForm
         return render(request=request, template_name='transactions/add_category.html', context={"form": form})
 
 
 class ModifyCategoryView(View):
     def post(self, request, pk):
+
         form = forms.CategoryForm(request.POST)
         if form.is_valid():
             category = get_object_or_404(models.Category, pk=pk)
@@ -117,11 +150,18 @@ class ModifyCategoryView(View):
         return redirect('transactions:list_category')
 
     def get(self, request, pk):
+
         user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         category = get_object_or_404(models.Category, pk=pk)
+
         if user != category.owner:
             messages.error(request, "Access denied")
             return redirect('login')
+
         form = forms.CategoryForm(instance=category)
         return render(request=request, template_name='transactions/modify_category.html',
                       context={"form": form, "object": category})
@@ -129,6 +169,7 @@ class ModifyCategoryView(View):
 
 class AddCounterpartyView(View):
     def post(self, request):
+
         form = forms.CounterpartyForm(request.POST)
         if form.is_valid():
             counterparty = form.save(commit=False)
@@ -137,6 +178,7 @@ class AddCounterpartyView(View):
             counterparty.unique_name = f"{get_user(request).username}_{counterparty.name}"
 
             exists = models.Counterparty.objects.filter(unique_name=counterparty.unique_name)
+
             if exists:
                 messages.error(request, "This name already exists")
                 return redirect(request.get_full_path())
@@ -149,12 +191,19 @@ class AddCounterpartyView(View):
         return redirect('transactions:list_counterparty')
 
     def get(self, request):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         form = forms.CounterpartyForm
         return render(request=request, template_name='transactions/add_counterparty.html', context={"form": form})
 
 
 class ModifyCounterpartyView(View):
     def post(self, request, pk):
+
         form = forms.CounterpartyForm(request.POST)
         if form.is_valid():
             counterparty = get_object_or_404(models.Counterparty, pk=pk)
@@ -163,6 +212,7 @@ class ModifyCounterpartyView(View):
             counterparty.description = form.cleaned_data.get("description")
 
             exists = models.Category.objects.filter(unique_name=counterparty.unique_name).exclude(pk=pk)
+
             if exists:
                 messages.error(request, "This name already exists")
                 return redirect(request.get_full_path())
@@ -176,11 +226,18 @@ class ModifyCounterpartyView(View):
         return redirect('transactions:list_counterparty')
 
     def get(self, request, pk):
+
         user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         counterparty = get_object_or_404(models.Counterparty, pk=pk)
+
         if user != counterparty.owner:
             messages.error(request, "Access denied")
             return redirect('login')
+
         form = forms.CounterpartyForm(instance=counterparty)
         return render(request=request, template_name='transactions/modify_counterparty.html',
                       context={"form": form, "object": counterparty})
@@ -188,6 +245,7 @@ class ModifyCounterpartyView(View):
 
 class AddWalletView(View):
     def post(self, request):
+
         form = forms.WalletForm(request.POST)
         if form.is_valid():
             wallet = form.save(commit=False)
@@ -196,6 +254,7 @@ class AddWalletView(View):
             wallet.unique_name = f"{get_user(request).username}_{wallet.name}"
 
             exists = models.Wallet.objects.filter(unique_name=wallet.unique_name)
+
             if exists:
                 messages.error(request, "This name already exists")
                 return redirect(request.get_full_path())
@@ -208,12 +267,19 @@ class AddWalletView(View):
         return redirect('transactions:list_wallet')
 
     def get(self, request):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         form = forms.WalletForm
         return render(request=request, template_name='transactions/add_wallet.html', context={"form": form})
 
 
 class ModifyWalletView(View):
     def post(self, request, pk):
+
         form = forms.WalletForm(request.POST)
         if form.is_valid():
             wallet = get_object_or_404(models.Wallet, pk=pk)
@@ -222,6 +288,7 @@ class ModifyWalletView(View):
             wallet.description = form.cleaned_data.get("description")
 
             exists = models.Wallet.objects.filter(unique_name=wallet.unique_name).exclude(pk=pk)
+
             if exists:
                 messages.error(request, "This name already exists")
                 return redirect(request.get_full_path())
@@ -235,14 +302,98 @@ class ModifyWalletView(View):
         return redirect('transactions:list_wallet')
 
     def get(self, request, pk):
+
         user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         wallet = get_object_or_404(models.Wallet, pk=pk)
+
         if user != wallet.owner:
             messages.error(request, "Access denied")
             return redirect('login')
+
         form = forms.WalletForm(instance=wallet)
         return render(request=request, template_name='transactions/modify_wallet.html',
                       context={"form": form, "object": wallet})
+
+
+class AddSavingsPlanView(View):
+    def post(self, request):
+
+        form = forms.SavingsPlanForm(request.POST)
+        if form.is_valid():
+            savings_plan = form.save(commit=False)
+            savings_plan.owner = get_user(request)
+            savings_plan.name = savings_plan.name.upper()
+            savings_plan.unique_name = f"{get_user(request).username}_{savings_plan.name}"
+
+            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name)
+
+            if exists:
+                messages.error(request, "This name already exists")
+            else:
+                savings_plan.save()
+                messages.success(request, "Savings plan successfully added")
+
+        else:
+            messages.error(request, "Error saving form")
+
+        return redirect('transactions:list_savings_plan')
+
+    def get(self, request):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        form = forms.SavingsPlanForm
+        return render(request=request, template_name='transactions/add_savings_plan.html', context={"form": form})
+
+
+class ModifySavingsPlanView(View):
+    def post(self, request, pk):
+
+        form = forms.SavingsPlanForm(request.POST)
+        if form.is_valid():
+            savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+            savings_plan.name = form.cleaned_data.get("name").upper()
+            savings_plan.unique_name = f"{get_user(request).username}_{savings_plan.name}"
+            savings_plan.monthly_goal = form.cleaned_data.get("monthly_goal")
+            savings_plan.initial_value = form.cleaned_data.get("initial_value")
+            savings_plan.curve_type = form.cleaned_data.get("curve_type")
+
+            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name)
+
+            if exists:
+                messages.error(request, "This name already exists")
+            else:
+                savings_plan.save()
+                messages.success(request, "Savings plan successfully added")
+
+        else:
+            messages.error(request, "Error saving form")
+
+        return redirect('transactions:list_savings_plan')
+
+    def get(self, request, pk):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+
+        if user != savings_plan.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+
+        form = forms.SavingsPlanForm(instance=savings_plan)
+        return render(request=request, template_name='transactions/modify_savings_plan.html',
+                      context={"form": form, "object": savings_plan})
 
 
 last_sort_order_trans = "date"
@@ -251,11 +402,11 @@ last_sort_order_trans = "date"
 class ListTransactionView(View):
 
     def get(self, request):
+
         global last_sort_order_trans
 
         user = get_user(request)
-
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
@@ -318,9 +469,11 @@ last_sort_order_category = "-name"
 
 class ListCategoryView(View):
     def get(self, request):
+
         global last_sort_order_category
+
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
@@ -344,9 +497,11 @@ last_sort_order_counterparty = "-name"
 
 class ListCounterpartyView(View):
     def get(self, request):
+
         global last_sort_order_counterparty
+
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
@@ -370,9 +525,11 @@ last_sort_order_wallet = '-name'
 
 class ListWalletView(View):
     def get(self, request):
+
         global last_sort_order_wallet
+
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
@@ -397,128 +554,16 @@ class ListWalletView(View):
                       })
 
 
-class DeleteCounterpartyView(View):
-    def get(self, request, pk):
-        user = get_user(request)
-        counterparty = get_object_or_404(models.Counterparty, pk=pk)
-        if user != counterparty.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-        counterparty.delete()
-        messages.success(request, "Counterparty successfully removed")
-        return redirect('transactions:list_counterparty')
-
-
-class DeleteCategoryView(View):
-    def get(self, request, pk):
-        user = get_user(request)
-        category = get_object_or_404(models.Category, pk=pk)
-        if user != category.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-        category.delete()
-        messages.success(request, "Category successfully removed")
-        return redirect('transactions:list_category')
-
-
-class DeleteTransactionView(View):
-    def get(self, request, pk):
-        user = get_user(request)
-        transaction = get_object_or_404(models.Transaction, pk=pk)
-        if user != transaction.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-        transaction.delete()
-        messages.success(request, "Transaction successfully removed")
-        return redirect('transactions:list_transaction')
-
-
-class DeleteWalletView(View):
-    def get(self, request, pk):
-        user = get_user(request)
-        wallet = get_object_or_404(models.Wallet, pk=pk)
-        if user != wallet.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-        wallet.delete()
-        messages.success(request, "Wallet successfully removed")
-        return redirect('transactions:list_wallet')
-
-
-class AddSavingsPlanView(View):
-    def post(self, request):
-        form = forms.SavingsPlanForm(request.POST)
-        if form.is_valid():
-            savings_plan = form.save(commit=False)
-            savings_plan.owner = get_user(request)
-            savings_plan.name = savings_plan.name.upper()
-            savings_plan.unique_name = f"{get_user(request).username}_{savings_plan.name}"
-
-            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name)
-
-            if exists:
-                messages.error(request, "This name already exists")
-            else:
-                savings_plan.save()
-                messages.success(request, "Savings plan successfully added")
-        else:
-            messages.error(request, "Error saving form")
-
-        return redirect('transactions:list_savings_plan')
-
-    def get(self, request):
-        form = forms.SavingsPlanForm
-        return render(request=request, template_name='transactions/add_savings_plan.html', context={"form": form})
-
-
-class DeleteSavingsPlanView(View):
-    def get(self, request, pk):
-        user = get_user(request)
-        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
-        if user != savings_plan.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-        savings_plan.delete()
-        messages.success(request, "Savings plan successfully removed")
-        return redirect('transactions:list_savings_plan')
-
-
-class ModifySavingsPlanView(View):
-    def post(self, request, pk):
-        form = forms.SavingsPlanForm(request.POST)
-        if form.is_valid():
-            savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
-            savings_plan.name = form.cleaned_data.get("name")
-            savings_plan.monthly_goal = form.cleaned_data.get("monthly_goal")
-            savings_plan.initial_value = form.cleaned_data.get("initial_value")
-            savings_plan.curve_type = form.cleaned_data.get("curve_type")
-            savings_plan.save()
-            messages.success(request, "Savings plan successfully modified")
-
-        else:
-            messages.error(request, "Error saving form")
-
-        return redirect('transactions:list_savings_plan')
-
-    def get(self, request, pk):
-        user = get_user(request)
-        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
-        if user != savings_plan.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-        form = forms.SavingsPlanForm(instance=savings_plan)
-        return render(request=request, template_name='transactions/modify_savings_plan.html',
-                      context={"form": form, "object": savings_plan})
-
-
 last_sort_order_plan = '-name'
 
 
 class ListSavingsPlanView(View):
     def get(self, request):
+
         global last_sort_order_plan
+
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
@@ -537,10 +582,106 @@ class ListSavingsPlanView(View):
                       })
 
 
+class DeleteTransactionView(View):
+    def get(self, request, pk):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        transaction = get_object_or_404(models.Transaction, pk=pk)
+
+        if user != transaction.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+
+        transaction.delete()
+        messages.success(request, "Transaction successfully removed")
+        return redirect('transactions:list_transaction')
+
+
+class DeleteCategoryView(View):
+    def get(self, request, pk):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        category = get_object_or_404(models.Category, pk=pk)
+
+        if user != category.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+
+        category.delete()
+        messages.success(request, "Category successfully removed")
+        return redirect('transactions:list_category')
+
+
+class DeleteCounterpartyView(View):
+    def get(self, request, pk):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        counterparty = get_object_or_404(models.Counterparty, pk=pk)
+
+        if user != counterparty.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+
+        counterparty.delete()
+        messages.success(request, "Counterparty successfully removed")
+        return redirect('transactions:list_counterparty')
+
+
+class DeleteWalletView(View):
+    def get(self, request, pk):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        wallet = get_object_or_404(models.Wallet, pk=pk)
+
+        if user != wallet.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+
+        wallet.delete()
+        messages.success(request, "Wallet successfully removed")
+        return redirect('transactions:list_wallet')
+
+
+class DeleteSavingsPlanView(View):
+    def get(self, request, pk):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
+        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+
+        if user != savings_plan.owner:
+            messages.error(request, "Access denied")
+            return redirect('login')
+
+        savings_plan.delete()
+        messages.success(request, "Savings plan successfully removed")
+        return redirect('transactions:list_savings_plan')
+
+
 class TransferWalletView(View):
     def get(self, request, from_pk, to_pk):
+
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
@@ -555,12 +696,14 @@ class TransferWalletView(View):
                               "object_list": other_wallets,
                               "transactions": transactions,
                           })
+
         else:
             to_wallet = get_object_or_404(models.Wallet, owner=user, pk=to_pk)
             for transaction in transactions:
                 transaction.wallet.remove(from_wallet)
                 transaction.wallet.add(to_wallet)
                 transaction.save()
+
             messages.success(request, f"{len(transactions)} transactions successfully transferred from {from_wallet.name} to {to_wallet.name}")
             return redirect('transactions:list_wallet')
 
@@ -569,7 +712,7 @@ class MakeDefaultWalletView(View):
     def get(self, request, from_pk, to_pk):
 
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 
@@ -603,7 +746,7 @@ class MakeDefaultPlanView(View):
     def get(self, request, from_pk, to_pk):
 
         user = get_user(request)
-        if not user:
+        if not user.is_authenticated:
             messages.error(request, "You must log in to see this data.")
             return redirect('login')
 

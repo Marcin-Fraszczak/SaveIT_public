@@ -31,6 +31,9 @@ def test_proper_template_loaded(client):
     # for t in response.templates:
     #     print(t.name)
     assert 'home/home.html' in (t.name for t in response.templates)
+    assert 'partials/_menu.html' in (t.name for t in response.templates)
+    assert 'partials/_footer.html' in (t.name for t in response.templates)
+    assert '_base_.html' in (t.name for t in response.templates)
 
 
 @pytest.mark.django_db

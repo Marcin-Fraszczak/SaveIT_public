@@ -31,7 +31,7 @@ urlpatterns = [
 
     path('transfer_wallet/<int:from_pk>/<int:to_pk>/', views.TransferWalletView.as_view(), name='transfer_wallet'),
     path('default_wallet/<int:from_pk>/<int:to_pk>/', views.MakeDefaultWalletView.as_view(), name='make_default_wallet'),
-    path('default_plan/<int:from_pk>/<int:to_pk>/', views.MakeDefaultPlanView.as_view(), name='make_default_plan'),
+    path('default_savings_plan/<int:from_pk>/<int:to_pk>/', views.MakeDefaultPlanView.as_view(), name='make_default_savings_plan'),
 
 ]
 
