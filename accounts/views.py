@@ -107,17 +107,18 @@ class DashboardView(View):
 
             values_list = [[i, 0, 0, 0, 0, 0] for i in range(last_day + 1)]
 
-            if default_plan.curve_type != 1:
-                if default_plan.curve_type == 2:
-                    medi = init + (diff / 3)
-                else:
-                    medi = init + (2 * diff / 3)
+            if default_plan:
+                if default_plan.curve_type != 1:
+                    if default_plan.curve_type == 2:
+                        medi = init + (diff / 3)
+                    else:
+                        medi = init + (2 * diff / 3)
 
-                middle_day = last_day // 2
-                a = ((middle_day - 1) * (goal - init) - (last_day - 1) * (medi - init)) / (
-                        (middle_day - 1) * (last_day - 1) * (last_day - middle_day))
-                b = (medi - init) / (middle_day - 1) - a * (middle_day + 1)
-                c = init - b - a
+                    middle_day = last_day // 2
+                    a = ((middle_day - 1) * (goal - init) - (last_day - 1) * (medi - init)) / (
+                            (middle_day - 1) * (last_day - 1) * (last_day - middle_day))
+                    b = (medi - init) / (middle_day - 1) - a * (middle_day + 1)
+                    c = init - b - a
 
             for tran in transactions:
                 val = tran.value
