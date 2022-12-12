@@ -4,7 +4,6 @@ from django.test import Client
 from django.urls import reverse
 
 import os
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings'
 
 import django
