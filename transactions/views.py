@@ -12,6 +12,11 @@ from . import forms
 class AddTransactionView(View):
     def post(self, request):
 
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
+
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
             wallets = form.cleaned_data.get("wallet")
@@ -50,6 +55,11 @@ class AddTransactionView(View):
 
 class ModifyTransactionView(View):
     def post(self, request, pk):
+
+        user = get_user(request)
+        if not user.is_authenticated:
+            messages.error(request, "You must log in to see this data.")
+            return redirect('login')
 
         form = forms.TransactionForm(request.POST)
         if form.is_valid():

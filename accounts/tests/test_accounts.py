@@ -105,7 +105,4 @@ def test_user_manipulation(client):
     )
 
     assert response.status_code == 200
-    # assert not response.context["user"].is_authenticated
-    # assert response.url != reverse("accounts:dashboard")
-    # assert response.url == reverse("login")
-    print(response)
+    assert not response.context["user"].is_authenticated

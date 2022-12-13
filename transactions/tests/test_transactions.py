@@ -130,7 +130,7 @@ def test_adding_new_transaction(client):
         })
 
     items_after = models.Transaction.objects.all().count()
-    print(items_before, items_after)
+
     assert response.status_code == 302
     assert response.url == "/finances/list/transaction/"
     assert items_after - items_before == 1
