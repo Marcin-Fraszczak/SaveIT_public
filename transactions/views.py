@@ -15,8 +15,8 @@ class AddTransactionView(View):
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
             wallets = form.cleaned_data.get("wallet")
-            if wallets:
-                wallets = list(wallets)
+            # if wallets:
+            #     wallets = list(wallets)
             transaction = form.save(commit=False)
             transaction.owner = get_user(request)
 
@@ -27,7 +27,7 @@ class AddTransactionView(View):
 
             transaction.save()
             if wallets:
-                transaction.wallet.set(wallets)
+                transaction.wallet.set(list(wallets))
             messages.success(request, "Transaction successfully added")
         else:
             messages.error(request, "Error saving form")
@@ -453,7 +453,8 @@ class ListTransactionView(View):
             transactions = transactions.filter(counterparty=filter_val).order_by(sort_order)
         elif filter_by == 'wallet':
             transactions = transactions.filter(wallet=filter_val).order_by(sort_order)
-        elif raw_sort_order in ["category", "counterparty", "wallet"]:
+
+        if raw_sort_order in ["category", "counterparty", "wallet"]:
             transactions = transactions.order_by(f"{sort_order}__name")
         else:
             transactions = transactions.order_by(sort_order)

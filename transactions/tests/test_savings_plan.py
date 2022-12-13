@@ -115,14 +115,14 @@ def test_savings_plan_manipulation(client):
     response = client.post(
         reverse(f'transactions:add_{item}'),
         {
-            "name": "New name",
+            "name": f"New {item}",
             "initial_value": 2000,
             "monthly_goal": 6000,
             "curve_type": 2,
             "owner": user,
         })
 
-    # should be 3 items
+    # should be 2 items
     items_form = translate(item, 0)
 
     assert response.status_code == 302
@@ -132,16 +132,16 @@ def test_savings_plan_manipulation(client):
 
     # for update view
     response = client.post(
-        reverse(f'transactions:modify_{item}', args=f"{translate(item, 0)}"),
+        reverse(f'transactions:modify_{item}', args=f"{translate(item, 2).pk}"),
         {
-            "name": "Updated name",
+            "name": f"Updated {item}",
             "initial_value": 3000,
             "monthly_goal": 7000,
             "curve_type": 3,
         })
 
     assert response.status_code == 302
-    assert translate(item, 2).name == "Updated name".upper()
+    assert translate(item, 2).name == f"Updated {item}".upper()
     assert translate(item, 2).initial_value == 3000
     assert translate(item, 2).monthly_goal == 7000
     assert translate(item, 2).curve_type == 3

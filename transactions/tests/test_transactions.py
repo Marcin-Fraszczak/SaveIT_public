@@ -48,7 +48,7 @@ def test_url_available_under_specific_name(client):
 def test_access_not_possible_without_login(client):
     for action in actions:
         response = client.get(reverse(f"transactions:{action}_{item}"))
-        assert response.url == "/accounts/login/"
+        assert response.url == reverse('login')
 
 
 @pytest.mark.django_db
@@ -92,7 +92,6 @@ def test_adding_new_transaction(client):
     )
     wallet.save()
 
-
     t1 = models.Transaction(
             date=datetime.today().date(),
             value="997",
@@ -106,16 +105,17 @@ def test_adding_new_transaction(client):
 
     # to nie chce działać
     response = client.post(
-        reverse('transactions:add_transaction'),
+        reverse(f'transactions:add_{item}'),
         {
-            "date": datetime.today().date(),
+            # "date": datetime.today().date(),
+            "date": "2022-10-10",
             "value": "997",
-            "is_profit": True,
+            "is_profit": 1,
             "notes": "test_note",
             "category": cat,
             "counterparty": cntp,
             "owner": user,
-            "wallet": wallet,
+            # "wallet": wallet,
         })
 
     items_after = models.Transaction.objects.all().count()
