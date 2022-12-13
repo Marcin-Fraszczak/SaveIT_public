@@ -92,16 +92,27 @@ def test_adding_new_transaction(client):
     )
     wallet.save()
 
-    t1 = models.Transaction(
-            date=datetime.today().date(),
-            value="997",
-            is_profit=True,
-            notes="test_note",
-            category=cat,
-            counterparty=cntp,
-            owner=user,
-            )
-    t1.save()
+    # t1 = models.Transaction(
+    #         date=datetime.today().date(),
+    #         value="997",
+    #         is_profit=True,
+    #         notes="test_note",
+    #         category=cat,
+    #         counterparty=cntp,
+    #         owner=user,
+    #         )
+    # t1.save()
+    #
+    # t2 = models.Transaction(
+    #     date=datetime.today().date(),
+    #     value="998",
+    #     is_profit=True,
+    #     notes="test_note",
+    #     category=cat,
+    #     counterparty=cntp,
+    #     owner=user,
+    # )
+    # t2.save()
 
     # to nie chce działać
     response = client.post(
@@ -112,10 +123,10 @@ def test_adding_new_transaction(client):
             "value": "997",
             "is_profit": 1,
             "notes": "test_note",
-            "category": cat,
-            "counterparty": cntp,
-            "owner": user,
-            # "wallet": wallet,
+            "category": cat.pk,
+            "counterparty": cntp.pk,
+            "owner": user.pk,
+            "wallet": [wallet.pk],
         })
 
     items_after = models.Transaction.objects.all().count()
