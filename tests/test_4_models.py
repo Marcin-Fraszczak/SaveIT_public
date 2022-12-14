@@ -3,8 +3,6 @@ Tests for 4 models: Category, Counterparty, Wallet, SavingsPlan
 """
 
 import pytest
-from django.contrib.auth import get_user_model
-from django.test import Client
 from django.urls import reverse
 
 from categories.models import Category
@@ -13,22 +11,8 @@ from plans.models import SavingsPlan
 from transactions.models import Transaction
 from wallets.models import Wallet
 
-name = 'testuser'
 items = ["category", "counterparty", "wallet", "savings_plan"]
 actions = ["add", "list"]
-
-
-@pytest.fixture
-def client():
-    client = Client()
-    return client
-
-
-@pytest.fixture
-def user():
-    user = get_user_model()(username=name)
-    user.save()
-    return user
 
 
 @pytest.fixture

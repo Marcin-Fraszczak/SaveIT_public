@@ -1,27 +1,10 @@
 import pytest
-from django.contrib.auth import get_user_model
-from django.test import Client
 from django.urls import reverse
 from transactions.models import Transaction
 from categories.models import Category
 from counterparties.models import Counterparty
 from wallets.models import Wallet
 
-
-@pytest.fixture
-def client():
-    client = Client()
-    return client
-
-
-@pytest.fixture
-def user():
-    user = get_user_model()(username=name)
-    user.save()
-    return user
-
-
-name = 'testuser'
 item = "transaction"
 actions = ["add", "list"]
 
