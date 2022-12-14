@@ -39,6 +39,20 @@ class AddSavingsPlanView(LoginRequiredMixin, View):
 class ModifySavingsPlanView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
+        if 'delete' in request.POST:
+            user = get_user(request)
+
+            savings_plan = get_object_or_404(SavingsPlan, pk=pk)
+
+            if user != savings_plan.owner:
+                messages.error(request, "Access denied")
+                return redirect('login')
+
+            savings_plan.delete()
+            messages.success(request, "Savings plan successfully removed")
+            return redirect('plans:list_savings_plan')
+
+
         form = forms.SavingsPlanForm(request.POST)
         if form.is_valid():
             savings_plan = get_object_or_404(SavingsPlan, pk=pk)
@@ -98,20 +112,20 @@ class ListSavingsPlanView(LoginRequiredMixin, View):
                           "word_filter": word_filter,
                       })
 
-
-class DeleteSavingsPlanView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        user = get_user(request)
-
-        savings_plan = get_object_or_404(SavingsPlan, pk=pk)
-
-        if user != savings_plan.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-
-        savings_plan.delete()
-        messages.success(request, "Savings plan successfully removed")
-        return redirect('plans:list_savings_plan')
+#
+# class DeleteSavingsPlanView(LoginRequiredMixin, View):
+#     def get(self, request, pk):
+#         user = get_user(request)
+#
+#         savings_plan = get_object_or_404(SavingsPlan, pk=pk)
+#
+#         if user != savings_plan.owner:
+#             messages.error(request, "Access denied")
+#             return redirect('login')
+#
+#         savings_plan.delete()
+#         messages.success(request, "Savings plan successfully removed")
+#         return redirect('plans:list_savings_plan')
 
 
 class MakeDefaultPlanView(LoginRequiredMixin, View):

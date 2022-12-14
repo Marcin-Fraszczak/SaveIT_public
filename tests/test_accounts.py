@@ -9,7 +9,6 @@ def test_url_exists_at_correct_location(client, user):
 
     response = client.get("/accounts/main/")
     assert response.status_code == 200
-
     response = client.get(reverse("accounts:dashboard"))
     assert response.status_code == 200
 
@@ -62,12 +61,12 @@ def test_user_sign_up_and_log_in(client):
 
 
 @pytest.mark.django_db
-def test_wrong_login_data(client):
+def test_login_impossible_with_wrong_data(client):
     response = client.post(
         reverse("login"),
         {
             "username": "YabaDabaDoo",
-            "password": "jneje123REFVV",
+            "password": "Random123Password",
         }
     )
 

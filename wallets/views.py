@@ -41,6 +41,20 @@ class AddWalletView(LoginRequiredMixin, View):
 class ModifyWalletView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
+        if 'delete' in request.POST:
+            user = get_user(request)
+
+            wallet = get_object_or_404(Wallet, pk=pk)
+
+            if user != wallet.owner:
+                messages.error(request, "Access denied")
+                return redirect('login')
+
+            wallet.delete()
+            messages.success(request, "Wallet successfully removed")
+            return redirect('wallets:list_wallet')
+
+
         form = forms.WalletForm(request.POST)
         if form.is_valid():
             wallet = get_object_or_404(Wallet, pk=pk)
@@ -105,20 +119,20 @@ class ListWalletView(LoginRequiredMixin, View):
                           "default_wallet": default_wallet,
                       })
 
-
-class DeleteWalletView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        user = get_user(request)
-
-        wallet = get_object_or_404(Wallet, pk=pk)
-
-        if user != wallet.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-
-        wallet.delete()
-        messages.success(request, "Wallet successfully removed")
-        return redirect('wallets:list_wallet')
+#
+# class DeleteWalletView(LoginRequiredMixin, View):
+#     def get(self, request, pk):
+#         user = get_user(request)
+#
+#         wallet = get_object_or_404(Wallet, pk=pk)
+#
+#         if user != wallet.owner:
+#             messages.error(request, "Access denied")
+#             return redirect('login')
+#
+#         wallet.delete()
+#         messages.success(request, "Wallet successfully removed")
+#         return redirect('wallets:list_wallet')
 
 
 class TransferWalletView(LoginRequiredMixin, View):

@@ -40,6 +40,20 @@ class AddCategoryView(LoginRequiredMixin, View):
 class ModifyCategoryView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
+        if 'delete' in request.POST:
+            user = get_user(request)
+
+            category = get_object_or_404(Category, pk=pk)
+
+            if user != category.owner:
+                messages.error(request, "Access denied")
+                return redirect('login')
+
+            category.delete()
+            messages.success(request, "Category successfully removed")
+            return redirect('categories:list_category')
+
+
         form = forms.CategoryForm(request.POST)
         if form.is_valid():
             category = get_object_or_404(Category, pk=pk)
@@ -97,17 +111,17 @@ class ListCategoryView(LoginRequiredMixin, View):
                           "word_filter": word_filter,
                       })
 
-
-class DeleteCategoryView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        user = get_user(request)
-
-        category = get_object_or_404(Category, pk=pk)
-
-        if user != category.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-
-        category.delete()
-        messages.success(request, "Category successfully removed")
-        return redirect('categories:list_category')
+#
+# class DeleteCategoryView(LoginRequiredMixin, View):
+#     def get(self, request, pk):
+#         user = get_user(request)
+#
+#         category = get_object_or_404(Category, pk=pk)
+#
+#         if user != category.owner:
+#             messages.error(request, "Access denied")
+#             return redirect('login')
+#
+#         category.delete()
+#         messages.success(request, "Category successfully removed")
+#         return redirect('categories:list_category')

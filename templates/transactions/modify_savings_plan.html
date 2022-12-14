@@ -18,7 +18,10 @@
             <button type="submit" class="btn btn-secondary display-4 m-2">Save changes</button>
         </form>
         <a class="btn btn-dark display-4" href="{% url 'plans:list_savings_plan' %}">Discard changes and quit</a>
-        <a class="btn btn-secondary display-4" href="{% url 'plans:delete_savings_plan' object.pk %}">Delete Savings Plan</a>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="delete" class="btn btn-secondary display-4 m-2">Delete Savings plan</button>
+        </form>
     </div>
     <div></div>
 {% endblock container %}

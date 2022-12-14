@@ -18,7 +18,10 @@
             <button type="submit" class="btn btn-secondary display-4 m-3">Save changes</button>
         </form>
         <a class="btn btn-dark display-4" href="{% url 'counterparties:list_counterparty' %}">Discard changes and quit</a>
-        <a class="btn btn-secondary display-4" href="{% url 'counterparties:delete_counterparty' object.pk %}">Delete Counterparty</a>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="delete" class="btn btn-secondary display-4 m-2">Delete counterparty</button>
+        </form>
     </div>
     <div></div>
 {% endblock container %}

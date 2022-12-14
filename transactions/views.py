@@ -50,6 +50,20 @@ class AddTransactionView(LoginRequiredMixin, View):
 class ModifyTransactionView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
+        if 'delete' in request.POST:
+            user = get_user(request)
+
+            transaction = get_object_or_404(Transaction, pk=pk)
+
+            if user != transaction.owner:
+                messages.error(request, "Access denied")
+                return redirect('transactions:list_transaction')
+
+            transaction.delete()
+            messages.success(request, "Transaction successfully removed")
+            return redirect('transactions:list_transaction')
+
+
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
             transaction = get_object_or_404(Transaction, pk=pk)
@@ -82,7 +96,7 @@ class ModifyTransactionView(LoginRequiredMixin, View):
 
         if user != transaction.owner:
             messages.error(request, "Access denied")
-            return redirect('login')
+            return redirect('transactions:list_transaction')
 
         form = forms.TransactionForm(instance=transaction)
         form.fields['wallet'].queryset = Wallet.objects.filter(owner=user)
@@ -90,6 +104,10 @@ class ModifyTransactionView(LoginRequiredMixin, View):
         form.fields['counterparty'].queryset = Counterparty.objects.filter(owner=user)
         return render(request=request, template_name='transactions/modify_transaction.html',
                       context={"form": form, "object": transaction})
+
+
+
+
 
 
 last_sort_order_trans = "date"
@@ -156,18 +174,18 @@ class ListTransactionView(LoginRequiredMixin, View):
                           "from_date": from_date,
                           "to_date": to_date,
                       })
-
-
-class DeleteTransactionView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        user = get_user(request)
-
-        transaction = get_object_or_404(Transaction, pk=pk)
-
-        if user != transaction.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-
-        transaction.delete()
-        messages.success(request, "Transaction successfully removed")
-        return redirect('transactions:list_transaction')
+#
+#
+# class DeleteTransactionView(LoginRequiredMixin, View):
+#     def get(self, request, pk):
+#         user = get_user(request)
+#
+#         transaction = get_object_or_404(Transaction, pk=pk)
+#
+#         if user != transaction.owner:
+#             messages.error(request, "Access denied")
+#             return redirect('transactions:list_transaction')
+#
+#         transaction.delete()
+#         messages.success(request, "Transaction successfully removed")
+#         return redirect('transactions:list_transaction')

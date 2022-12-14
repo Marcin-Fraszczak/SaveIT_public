@@ -39,6 +39,20 @@ class AddCounterpartyView(LoginRequiredMixin, View):
 class ModifyCounterpartyView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
+        if 'delete' in request.POST:
+            user = get_user(request)
+
+            counterparty = get_object_or_404(Counterparty, pk=pk)
+
+            if user != counterparty.owner:
+                messages.error(request, "Access denied")
+                return redirect('login')
+
+            counterparty.delete()
+            messages.success(request, "Counterparty successfully removed")
+            return redirect('counterparties:list_counterparty')
+
+
         form = forms.CounterpartyForm(request.POST)
         if form.is_valid():
             counterparty = get_object_or_404(Counterparty, pk=pk)
@@ -97,17 +111,17 @@ class ListCounterpartyView(LoginRequiredMixin, View):
                           "word_filter": word_filter,
                       })
 
-
-class DeleteCounterpartyView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        user = get_user(request)
-
-        counterparty = get_object_or_404(Counterparty, pk=pk)
-
-        if user != counterparty.owner:
-            messages.error(request, "Access denied")
-            return redirect('login')
-
-        counterparty.delete()
-        messages.success(request, "Counterparty successfully removed")
-        return redirect('counterparties:list_counterparty')
+#
+# class DeleteCounterpartyView(LoginRequiredMixin, View):
+#     def get(self, request, pk):
+#         user = get_user(request)
+#
+#         counterparty = get_object_or_404(Counterparty, pk=pk)
+#
+#         if user != counterparty.owner:
+#             messages.error(request, "Access denied")
+#             return redirect('login')
+#
+#         counterparty.delete()
+#         messages.success(request, "Counterparty successfully removed")
+#         return redirect('counterparties:list_counterparty')
