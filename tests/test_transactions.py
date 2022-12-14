@@ -103,17 +103,17 @@ def test_delete_transaction(client, prepare_data):
     pk = prepare_data[t_item].pk
     user = prepare_data["user"]
     client.force_login(user)
-
+    print(pk)
     t_items_before = Transaction.objects.all().count()
 
-    response = client.get(
-        reverse(f'{app_name}:modify_{t_item}', args=f"{pk}"), {"delete": ''})
+    response = client.post(
+        reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"]), {"delete": ''})
 
     t_items_after = Transaction.objects.all().count()
 
+    assert response.url == reverse(f"{app_name}:list_{t_item}")
     assert t_items_before - t_items_after == 1
     assert response.status_code == 302
-    assert response.url == reverse(f"{app_name}:list_{t_item}")
 
 
 @pytest.mark.django_db
@@ -125,11 +125,11 @@ def test_access_denied_if_not_logged_in(client, prepare_data):
     commands = [
         client.get(reverse(f'{app_name}:add_{t_item}')),
         client.get(reverse(f'{app_name}:list_{t_item}')),
-        client.get(reverse(f'{app_name}:modify_{t_item}', args=f"{pk}")),
+        client.get(reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"])),
 
         client.post(reverse(f'{app_name}:add_{t_item}')),
-        client.post(reverse(f'{app_name}:modify_{t_item}', args=f"{pk}")),
-        client.post(reverse(f'{app_name}:modify_{t_item}', args=f"{pk}"), {"delete": ''}),
+        client.post(reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"])),
+        client.post(reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"]), {"delete": ''}),
     ]
 
     for comm in commands:
@@ -149,11 +149,11 @@ def test_access_denied_if_different_user(client, prepare_data):
     client.force_login(user2)
 
     commands = [
-        client.get(reverse(f'{app_name}:modify_{t_item}', args=f"{pk}")),
+        client.get(reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"])),
 
         client.post(reverse(f'{app_name}:add_{t_item}')),
-        client.post(reverse(f'{app_name}:modify_{t_item}', args=f"{pk}")),
-        client.post(reverse(f'{app_name}:modify_{t_item}', args=f"{pk}"), {"delete": ''}),
+        client.post(reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"])),
+        client.post(reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"]), {"delete": ''}),
     ]
 
     for comm in commands:
