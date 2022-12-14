@@ -28,7 +28,7 @@ class AddSavingsPlanView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_savings_plan')
+        return redirect('plans:list_savings_plan')
 
     def get(self, request):
 
@@ -59,7 +59,7 @@ class ModifySavingsPlanView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_savings_plan')
+        return redirect('plans:list_savings_plan')
 
     def get(self, request, pk):
 
@@ -111,7 +111,7 @@ class DeleteSavingsPlanView(LoginRequiredMixin, View):
 
         savings_plan.delete()
         messages.success(request, "Savings plan successfully removed")
-        return redirect('transactions:list_savings_plan')
+        return redirect('plans:list_savings_plan')
 
 
 class MakeDefaultPlanView(LoginRequiredMixin, View):
@@ -123,13 +123,13 @@ class MakeDefaultPlanView(LoginRequiredMixin, View):
             to_plan = SavingsPlan.objects.get(pk=to_pk)
             if to_plan.owner != user:
                 messages.error(request, "Access denied")
-                return redirect('transactions:list_savings_plan')
+                return redirect('plans:list_savings_plan')
         else:
             to_plan = SavingsPlan.objects.get(pk=to_pk)
             from_plan = SavingsPlan.objects.get(pk=from_pk)
             if from_plan.owner != user or to_plan.owner != user:
                 messages.error(request, "Access denied")
-                return redirect('transactions:list_savings_plan')
+                return redirect('plans:list_savings_plan')
 
         all_plans = SavingsPlan.objects.filter(owner=user)
 
@@ -142,4 +142,4 @@ class MakeDefaultPlanView(LoginRequiredMixin, View):
                 plan.save()
 
         messages.success(request, "Default Savings plan changed successfully")
-        return redirect('transactions:list_savings_plan')
+        return redirect('plans:list_savings_plan')

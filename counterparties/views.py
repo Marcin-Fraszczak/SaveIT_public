@@ -28,7 +28,7 @@ class AddCounterpartyView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_counterparty')
+        return redirect('counterparties:list_counterparty')
 
     def get(self, request):
 
@@ -58,7 +58,7 @@ class ModifyCounterpartyView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_counterparty')
+        return redirect('counterparties:list_counterparty')
 
     def get(self, request, pk):
 
@@ -110,4 +110,4 @@ class DeleteCounterpartyView(LoginRequiredMixin, View):
 
         counterparty.delete()
         messages.success(request, "Counterparty successfully removed")
-        return redirect('transactions:list_counterparty')
+        return redirect('counterparties:list_counterparty')

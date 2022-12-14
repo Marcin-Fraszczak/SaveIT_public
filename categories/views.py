@@ -29,7 +29,7 @@ class AddCategoryView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_category')
+        return redirect('categories:list_category')
 
     def get(self, request):
 
@@ -58,7 +58,7 @@ class ModifyCategoryView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_category')
+        return redirect('categories:list_category')
 
     def get(self, request, pk):
 
@@ -110,4 +110,4 @@ class DeleteCategoryView(LoginRequiredMixin, View):
 
         category.delete()
         messages.success(request, "Category successfully removed")
-        return redirect('transactions:list_category')
+        return redirect('categories:list_category')

@@ -30,7 +30,7 @@ class AddWalletView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_wallet')
+        return redirect('wallets:list_wallet')
 
     def get(self, request):
 
@@ -60,7 +60,7 @@ class ModifyWalletView(LoginRequiredMixin, View):
         else:
             messages.error(request, "Error saving form")
 
-        return redirect('transactions:list_wallet')
+        return redirect('wallets:list_wallet')
 
     def get(self, request, pk):
 
@@ -118,7 +118,7 @@ class DeleteWalletView(LoginRequiredMixin, View):
 
         wallet.delete()
         messages.success(request, "Wallet successfully removed")
-        return redirect('transactions:list_wallet')
+        return redirect('wallets:list_wallet')
 
 
 class TransferWalletView(LoginRequiredMixin, View):
@@ -147,7 +147,7 @@ class TransferWalletView(LoginRequiredMixin, View):
 
             messages.success(request,
                              f"{len(transactions)} transactions successfully transferred from {from_wallet.name} to {to_wallet.name}")
-            return redirect('transactions:list_wallet')
+            return redirect('wallets:list_wallet')
 
 
 class MakeDefaultWalletView(LoginRequiredMixin, View):
@@ -159,13 +159,13 @@ class MakeDefaultWalletView(LoginRequiredMixin, View):
             to_wallet = Wallet.objects.get(pk=to_pk)
             if to_wallet.owner != user:
                 messages.error(request, "Access denied")
-                return redirect('transactions:list_wallet')
+                return redirect('wallets:list_wallet')
         else:
             to_wallet = Wallet.objects.get(pk=to_pk)
             from_wallet = Wallet.objects.get(pk=from_pk)
             if from_wallet.owner != user or to_wallet.owner != user:
                 messages.error(request, "Access denied")
-                return redirect('transactions:list_wallet')
+                return redirect('wallets:list_wallet')
 
         all_wallets = Wallet.objects.filter(owner=user)
 
@@ -178,4 +178,4 @@ class MakeDefaultWalletView(LoginRequiredMixin, View):
                 wallet.save()
 
         messages.success(request, "Default wallet changed successfully")
-        return redirect('transactions:list_wallet')
+        return redirect('wallets:list_wallet')
