@@ -85,7 +85,7 @@ def test_adding_new_transaction(client):
     )
     cntp.save()
 
-    wallet = models.Wallet(
+    wallet = Wallet(
         name="test_wallet".upper(),
         description="desc",
         owner=user,

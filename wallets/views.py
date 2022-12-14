@@ -3,8 +3,10 @@ from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from . import models
 from . import forms
+
+from transactions.models import Transaction
+from .models import Wallet
 
 
 class AddWalletView(LoginRequiredMixin, View):
@@ -17,7 +19,7 @@ class AddWalletView(LoginRequiredMixin, View):
             wallet.name = wallet.name.upper()
             wallet.unique_name = f"{get_user(request).username}_{wallet.name}"
 
-            exists = models.Wallet.objects.filter(unique_name=wallet.unique_name)
+            exists = Wallet.objects.filter(unique_name=wallet.unique_name)
 
             if exists:
                 messages.error(request, "This name already exists")
@@ -41,12 +43,12 @@ class ModifyWalletView(LoginRequiredMixin, View):
 
         form = forms.WalletForm(request.POST)
         if form.is_valid():
-            wallet = get_object_or_404(models.Wallet, pk=pk)
+            wallet = get_object_or_404(Wallet, pk=pk)
             wallet.name = form.cleaned_data.get("name").upper()
             wallet.unique_name = f"{get_user(request).username}_{wallet.name}"
             wallet.description = form.cleaned_data.get("description")
 
-            exists = models.Wallet.objects.filter(unique_name=wallet.unique_name).exclude(pk=pk)
+            exists = Wallet.objects.filter(unique_name=wallet.unique_name).exclude(pk=pk)
 
             if exists:
                 messages.error(request, "This name already exists")
@@ -63,7 +65,7 @@ class ModifyWalletView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        wallet = get_object_or_404(models.Wallet, pk=pk)
+        wallet = get_object_or_404(Wallet, pk=pk)
 
         if user != wallet.owner:
             messages.error(request, "Access denied")
@@ -91,7 +93,7 @@ class ListWalletView(LoginRequiredMixin, View):
             sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_wallet = sort_order
 
-        wallets = models.Wallet.objects.filter(owner=user).order_by(sort_order)
+        wallets = Wallet.objects.filter(owner=user).order_by(sort_order)
         default_wallet = wallets.filter(is_default=True)
         if not len(default_wallet):
             default_wallet.pk = 0
@@ -108,7 +110,7 @@ class DeleteWalletView(LoginRequiredMixin, View):
     def get(self, request, pk):
         user = get_user(request)
 
-        wallet = get_object_or_404(models.Wallet, pk=pk)
+        wallet = get_object_or_404(Wallet, pk=pk)
 
         if user != wallet.owner:
             messages.error(request, "Access denied")
@@ -124,11 +126,11 @@ class TransferWalletView(LoginRequiredMixin, View):
 
         user = get_user(request)
 
-        from_wallet = get_object_or_404(models.Wallet, pk=from_pk)
-        transactions = models.Transaction.objects.filter(wallet=from_wallet)
+        from_wallet = get_object_or_404(Wallet, pk=from_pk)
+        transactions = Transaction.objects.filter(wallet=from_wallet)
 
         if to_pk == 0:
-            other_wallets = models.Wallet.objects.filter(owner=user).exclude(pk=from_pk)
+            other_wallets = Wallet.objects.filter(owner=user).exclude(pk=from_pk)
             return render(request, 'transactions/transfer_wallet.html',
                           context={
                               "from_wallet": from_wallet,
@@ -137,7 +139,7 @@ class TransferWalletView(LoginRequiredMixin, View):
                           })
 
         else:
-            to_wallet = get_object_or_404(models.Wallet, owner=user, pk=to_pk)
+            to_wallet = get_object_or_404(Wallet, owner=user, pk=to_pk)
             for transaction in transactions:
                 transaction.wallet.remove(from_wallet)
                 transaction.wallet.add(to_wallet)
@@ -154,18 +156,18 @@ class MakeDefaultWalletView(LoginRequiredMixin, View):
         user = get_user(request)
 
         if from_pk == 0:
-            to_wallet = models.Wallet.objects.get(pk=to_pk)
+            to_wallet = Wallet.objects.get(pk=to_pk)
             if to_wallet.owner != user:
                 messages.error(request, "Access denied")
                 return redirect('transactions:list_wallet')
         else:
-            to_wallet = models.Wallet.objects.get(pk=to_pk)
-            from_wallet = models.Wallet.objects.get(pk=from_pk)
+            to_wallet = Wallet.objects.get(pk=to_pk)
+            from_wallet = Wallet.objects.get(pk=from_pk)
             if from_wallet.owner != user or to_wallet.owner != user:
                 messages.error(request, "Access denied")
                 return redirect('transactions:list_wallet')
 
-        all_wallets = models.Wallet.objects.filter(owner=user)
+        all_wallets = Wallet.objects.filter(owner=user)
 
         for wallet in all_wallets:
             if wallet.pk == to_pk:

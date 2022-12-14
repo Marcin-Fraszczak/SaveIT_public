@@ -1,10 +1,10 @@
 from django import forms
-from . import models
+from .models import Category
 
 
 class CategoryForm(forms.ModelForm):
     class Meta:
-        model = models.Category
+        model = Category
         fields = ("name", "description")
 
     def __init__(self, *args, **kwargs):

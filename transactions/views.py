@@ -6,8 +6,12 @@ from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from . import models
+
 from . import forms
+from .models import Transaction
+from categories.models import Category
+from counterparties.models import Counterparty
+from wallets.models import Wallet
 
 
 class AddTransactionView(LoginRequiredMixin, View):
@@ -37,9 +41,9 @@ class AddTransactionView(LoginRequiredMixin, View):
     def get(self, request):
         user = get_user(request)
         form = forms.TransactionForm()
-        form.fields['wallet'].queryset = models.Wallet.objects.filter(owner=user)
-        form.fields['category'].queryset = models.Category.objects.filter(owner=user)
-        form.fields['counterparty'].queryset = models.Counterparty.objects.filter(owner=user)
+        form.fields['wallet'].queryset = Wallet.objects.filter(owner=user)
+        form.fields['category'].queryset = Category.objects.filter(owner=user)
+        form.fields['counterparty'].queryset = Counterparty.objects.filter(owner=user)
         return render(request=request, template_name='transactions/add_transaction.html', context={"form": form})
 
 
@@ -48,7 +52,7 @@ class ModifyTransactionView(LoginRequiredMixin, View):
 
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
-            transaction = get_object_or_404(models.Transaction, pk=pk)
+            transaction = get_object_or_404(Transaction, pk=pk)
             transaction.date = form.cleaned_data.get("date")
             transaction.value = form.cleaned_data.get("value")
             transaction.is_profit = form.cleaned_data.get("is_profit")
@@ -74,16 +78,16 @@ class ModifyTransactionView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        transaction = get_object_or_404(models.Transaction, pk=pk)
+        transaction = get_object_or_404(Transaction, pk=pk)
 
         if user != transaction.owner:
             messages.error(request, "Access denied")
             return redirect('login')
 
         form = forms.TransactionForm(instance=transaction)
-        form.fields['wallet'].queryset = models.Wallet.objects.filter(owner=user)
-        form.fields['category'].queryset = models.Category.objects.filter(owner=user)
-        form.fields['counterparty'].queryset = models.Counterparty.objects.filter(owner=user)
+        form.fields['wallet'].queryset = Wallet.objects.filter(owner=user)
+        form.fields['category'].queryset = Category.objects.filter(owner=user)
+        form.fields['counterparty'].queryset = Counterparty.objects.filter(owner=user)
         return render(request=request, template_name='transactions/modify_transaction.html',
                       context={"form": form, "object": transaction})
 
@@ -128,7 +132,7 @@ class ListTransactionView(LoginRequiredMixin, View):
             sort_order = raw_sort_order
 
         last_sort_order_trans = sort_order
-        transactions = models.Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
+        transactions = Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
 
         if filter_by == 'category':
             transactions = transactions.filter(category=filter_val).order_by(sort_order)
@@ -158,7 +162,7 @@ class DeleteTransactionView(LoginRequiredMixin, View):
     def get(self, request, pk):
         user = get_user(request)
 
-        transaction = get_object_or_404(models.Transaction, pk=pk)
+        transaction = get_object_or_404(Transaction, pk=pk)
 
         if user != transaction.owner:
             messages.error(request, "Access denied")

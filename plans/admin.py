@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . import models
+from .models import SavingsPlan
 
-admin.site.register(models.SavingsPlan)
+admin.site.register(SavingsPlan)
 

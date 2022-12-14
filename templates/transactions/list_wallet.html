@@ -24,8 +24,8 @@
 
             <div class="row mb-3 mt-3 data-table customizer card-box rounded">
                 <div class="col-1 text-white text-primary display-7 nav-link">No.</div>
-                <div class="z col-2"><a href="{% url 'transactions:list_wallet' %}?order=name" class="text-white text-primary display-7 nav-link">Name</a></div>
-                <div class="z col-2"><a href="{% url 'transactions:list_wallet' %}?order=description" class="text-white text-primary display-7 nav-link">Description</a></div>
+                <div class="z col-2"><a href="{% url 'wallets:list_wallet' %}?order=name" class="text-white text-primary display-7 nav-link">Name</a></div>
+                <div class="z col-2"><a href="{% url 'wallets:list_wallet' %}?order=description" class="text-white text-primary display-7 nav-link">Description</a></div>
                 <div class="col-3 text-white text-primary display-7 nav-link">Transactions assigned to wallet</div>
                 <div class="col-2 text-white text-primary display-7 nav-link">Transfer transactions</div>
                 <div class="col-2 text-white text-primary display-7 nav-link">Default</div>
@@ -34,20 +34,20 @@
             {% for object in object_list %}
                 <div class="row p-4 data-row align-items-center">
                     <div class="col-1">
-                        <a href="{% url 'transactions:modify_wallet' object.pk %}" class="text-black d-inline-block">
+                        <a href="{% url 'wallets:modify_wallet' object.pk %}" class="text-black d-inline-block">
                             {{forloop.counter}}
                         </a>
                     </div>
                     <div class="col-2">
-                        <a href="{% url 'transactions:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.name}}
+                        <a href="{% url 'wallets:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.name}}
                         </a>
                     </div>
                     <div class="col-2">
-                        <a href="{% url 'transactions:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.description}}
+                        <a href="{% url 'wallets:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.description}}
                         </a>
                     </div>
                     <div class="col-1">
-                        <a href="{% url 'transactions:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.wlt_transaction.all|length}}
+                        <a href="{% url 'wallets:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.wlt_transaction.all|length}}
                         </a>
                     </div>
                     <div class="col-2">
@@ -56,7 +56,7 @@
                         </a>
                     </div>
                     <div class="col-2">
-                        <a href="{% url 'transactions:transfer_wallet' object.pk '0' %}" class="btn btn-secondary display-4 m-0">
+                        <a href="{% url 'wallets:transfer_wallet' object.pk '0' %}" class="btn btn-secondary display-4 m-0">
                             Transfer
                         </a>
                     </div>
@@ -68,7 +68,7 @@
                     </div>
                     {% else %}
                     <div class="col-2">
-                        <a href="{% url 'transactions:make_default_wallet' default_wallet.pk|default:'0' object.pk %}" class="btn btn-secondary display-4 m-0">
+                        <a href="{% url 'wallets:make_default_wallet' default_wallet.pk|default:'0' object.pk %}" class="btn btn-secondary display-4 m-0">
                             make default
                         </a>
                     </div>

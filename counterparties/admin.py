@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . import models
+from .models import Counterparty
 
-admin.site.register(models.Counterparty)
+admin.site.register(Counterparty)
 

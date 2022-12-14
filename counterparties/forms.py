@@ -1,10 +1,10 @@
 from django import forms
-from . import models
+from .models import Counterparty
 
 
 class CounterpartyForm(forms.ModelForm):
     class Meta:
-        model = models.Counterparty
+        model = Counterparty
         fields = ("name", "description")
 
     def __init__(self, *args, **kwargs):

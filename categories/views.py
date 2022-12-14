@@ -3,7 +3,7 @@ from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from . import models
+from .models import Category
 from . import forms
 
 
@@ -17,7 +17,7 @@ class AddCategoryView(LoginRequiredMixin, View):
             category.name = category.name.upper()
             category.unique_name = f"{get_user(request).username}_{category.name}"
 
-            exists = models.Category.objects.filter(unique_name=category.unique_name)
+            exists = Category.objects.filter(unique_name=category.unique_name)
 
             if exists:
                 messages.error(request, "This name already exists")
@@ -42,12 +42,12 @@ class ModifyCategoryView(LoginRequiredMixin, View):
 
         form = forms.CategoryForm(request.POST)
         if form.is_valid():
-            category = get_object_or_404(models.Category, pk=pk)
+            category = get_object_or_404(Category, pk=pk)
             category.name = form.cleaned_data.get("name").upper()
             category.unique_name = f"{get_user(request).username}_{category.name}"
             category.description = form.cleaned_data.get("description")
 
-            exists = models.Category.objects.filter(unique_name=category.unique_name).exclude(pk=pk)
+            exists = Category.objects.filter(unique_name=category.unique_name).exclude(pk=pk)
             if exists:
                 messages.error(request, "This name already exists")
                 return redirect(request.get_full_path())
@@ -63,7 +63,7 @@ class ModifyCategoryView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        category = get_object_or_404(models.Category, pk=pk)
+        category = get_object_or_404(Category, pk=pk)
 
         if user != category.owner:
             messages.error(request, "Access denied")
@@ -90,7 +90,7 @@ class ListCategoryView(LoginRequiredMixin, View):
             sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_category = sort_order
 
-        categories = models.Category.objects.filter(owner=user).order_by(sort_order)
+        categories = Category.objects.filter(owner=user).order_by(sort_order)
         return render(request, 'transactions/list_category.html',
                       context={
                           "object_list": categories,
@@ -102,7 +102,7 @@ class DeleteCategoryView(LoginRequiredMixin, View):
     def get(self, request, pk):
         user = get_user(request)
 
-        category = get_object_or_404(models.Category, pk=pk)
+        category = get_object_or_404(Category, pk=pk)
 
         if user != category.owner:
             messages.error(request, "Access denied")

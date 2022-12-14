@@ -59,9 +59,9 @@ def translate(item, ind):
             models.Counterparty.objects.last()
         ),
         "wallet": (
-            models.Wallet.objects.all().count(),
-            models.Wallet,
-            models.Wallet.objects.last()
+            Wallet.objects.all().count(),
+            Wallet,
+            Wallet.objects.last()
         ),
         "savings_plan": (
             models.SavingsPlan.objects.all().count(),

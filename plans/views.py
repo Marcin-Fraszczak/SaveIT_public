@@ -3,7 +3,7 @@ from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from . import models
+from .models import SavingsPlan
 from . import forms
 
 
@@ -17,7 +17,7 @@ class AddSavingsPlanView(LoginRequiredMixin, View):
             savings_plan.name = savings_plan.name.upper()
             savings_plan.unique_name = f"{get_user(request).username}_{savings_plan.name}"
 
-            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name)
+            exists = SavingsPlan.objects.filter(unique_name=savings_plan.unique_name)
 
             if exists:
                 messages.error(request, "This name already exists")
@@ -41,14 +41,14 @@ class ModifySavingsPlanView(LoginRequiredMixin, View):
 
         form = forms.SavingsPlanForm(request.POST)
         if form.is_valid():
-            savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+            savings_plan = get_object_or_404(SavingsPlan, pk=pk)
             savings_plan.name = form.cleaned_data.get("name").upper()
             savings_plan.unique_name = f"{get_user(request).username}_{savings_plan.name}"
             savings_plan.monthly_goal = form.cleaned_data.get("monthly_goal")
             savings_plan.initial_value = form.cleaned_data.get("initial_value")
             savings_plan.curve_type = form.cleaned_data.get("curve_type")
 
-            exists = models.SavingsPlan.objects.filter(unique_name=savings_plan.unique_name).exclude(pk=pk)
+            exists = SavingsPlan.objects.filter(unique_name=savings_plan.unique_name).exclude(pk=pk)
 
             if exists:
                 messages.error(request, "This name already exists")
@@ -64,7 +64,7 @@ class ModifySavingsPlanView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+        savings_plan = get_object_or_404(SavingsPlan, pk=pk)
 
         if user != savings_plan.owner:
             messages.error(request, "Access denied")
@@ -91,7 +91,7 @@ class ListSavingsPlanView(LoginRequiredMixin, View):
             sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_plan = sort_order
 
-        plans = models.SavingsPlan.objects.filter(owner=user).order_by(sort_order)
+        plans = SavingsPlan.objects.filter(owner=user).order_by(sort_order)
         return render(request, 'transactions/list_savings_plan.html',
                       context={
                           "object_list": plans,
@@ -103,7 +103,7 @@ class DeleteSavingsPlanView(LoginRequiredMixin, View):
     def get(self, request, pk):
         user = get_user(request)
 
-        savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
+        savings_plan = get_object_or_404(SavingsPlan, pk=pk)
 
         if user != savings_plan.owner:
             messages.error(request, "Access denied")
@@ -120,18 +120,18 @@ class MakeDefaultPlanView(LoginRequiredMixin, View):
         user = get_user(request)
 
         if from_pk == 0:
-            to_plan = models.SavingsPlan.objects.get(pk=to_pk)
+            to_plan = SavingsPlan.objects.get(pk=to_pk)
             if to_plan.owner != user:
                 messages.error(request, "Access denied")
                 return redirect('transactions:list_savings_plan')
         else:
-            to_plan = models.SavingsPlan.objects.get(pk=to_pk)
-            from_plan = models.SavingsPlan.objects.get(pk=from_pk)
+            to_plan = SavingsPlan.objects.get(pk=to_pk)
+            from_plan = SavingsPlan.objects.get(pk=from_pk)
             if from_plan.owner != user or to_plan.owner != user:
                 messages.error(request, "Access denied")
                 return redirect('transactions:list_savings_plan')
 
-        all_plans = models.SavingsPlan.objects.filter(owner=user)
+        all_plans = SavingsPlan.objects.filter(owner=user)
 
         for plan in all_plans:
             if plan.pk == to_pk:

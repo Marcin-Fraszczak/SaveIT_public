@@ -3,12 +3,17 @@ from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth import get_user
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
 
-from transactions import models
+from categories.models import Category
+from counterparties.models import Counterparty
+from plans.models import SavingsPlan
+from transactions.models import Transaction
+from wallets.models import Wallet
 from .forms import CustomUserCreationForm
 
 
@@ -26,13 +31,10 @@ graph_data = {
 }
 
 
-class DashboardView(View):
+class DashboardView(LoginRequiredMixin, View):
     def get(self, request):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         abs_month = request.GET.get("abs_month", graph_data.get("abs_month"))
         abs_year = request.GET.get("abs_year", graph_data.get("abs_year"))
@@ -80,9 +82,9 @@ class DashboardView(View):
                            ("cum_year", cum_year)]:
             graph_data[key] = value
 
-        any_wallet = models.Wallet.objects.filter(owner=user)
+        any_wallet = Wallet.objects.filter(owner=user)
         if not any_wallet:
-            default_wallet = models.Wallet(
+            default_wallet = Wallet(
                 name="DEFAULT WALLET",
                 unique_name=f"{user.username}_DEFAULT WALLET",
                 description="Generic wallet to start",
@@ -91,9 +93,9 @@ class DashboardView(View):
             )
             default_wallet.save()
 
-        any_category = models.Category.objects.filter(owner=user)
+        any_category = Category.objects.filter(owner=user)
         if not any_category:
-            default_category = models.Category(
+            default_category = Category(
                 name="DEFAULT CATEGORY",
                 unique_name=f"{user.username}_DEFAULT CATEGORY",
                 description="Generic category to start",
@@ -101,9 +103,9 @@ class DashboardView(View):
             )
             default_category.save()
 
-        any_counterparty = models.Counterparty.objects.filter(owner=user)
+        any_counterparty = Counterparty.objects.filter(owner=user)
         if not any_counterparty:
-            default_counterparty = models.Counterparty(
+            default_counterparty = Counterparty(
                 name="DEFAULT COUNTERPARTY",
                 unique_name=f"{user.username}_DEFAULT COUNTERPARTY",
                 description="Generic counterparty to start",
@@ -111,12 +113,12 @@ class DashboardView(View):
             )
             default_counterparty.save()
 
-        default_wallet = models.Wallet.objects.filter(owner=user, is_default=True)
+        default_wallet = Wallet.objects.filter(owner=user, is_default=True)
 
         if default_wallet:
             default_wallet = default_wallet[0]
 
-        default_plan = models.SavingsPlan.objects.filter(owner=user, is_default=1)
+        default_plan = SavingsPlan.objects.filter(owner=user, is_default=1)
 
         if default_plan:
             default_plan = default_plan[0]
@@ -131,10 +133,10 @@ class DashboardView(View):
             to_date = datetime(year=year, month=month, day=last_day).date()
 
             if default_wallet:
-                transactions = models.Transaction.objects.filter(owner=user, wallet=default_wallet,
+                transactions = Transaction.objects.filter(owner=user, wallet=default_wallet,
                                                                  date__range=(from_date, to_date))
             else:
-                transactions = models.Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
+                transactions = Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
 
             values_list = [[i, 0, 0, 0, 0, 0] for i in range(last_day + 1)]
 
@@ -182,9 +184,9 @@ class DashboardView(View):
         cum_displayed_date, cum_values_list, cum_no_transactions = get_data_for_graph(cum_year, cum_month)
 
         if default_wallet:
-            total_transactions = models.Transaction.objects.filter(owner=user, wallet=default_wallet)
+            total_transactions = Transaction.objects.filter(owner=user, wallet=default_wallet)
         else:
-            total_transactions = models.Transaction.objects.filter(owner=user)
+            total_transactions = Transaction.objects.filter(owner=user)
 
         total_profit = 0
         total_debit = 0

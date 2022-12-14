@@ -3,7 +3,7 @@ from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from . import models
+from .models import Counterparty
 from . import forms
 
 
@@ -17,7 +17,7 @@ class AddCounterpartyView(LoginRequiredMixin, View):
             counterparty.name = counterparty.name.upper()
             counterparty.unique_name = f"{get_user(request).username}_{counterparty.name}"
 
-            exists = models.Counterparty.objects.filter(unique_name=counterparty.unique_name)
+            exists = Counterparty.objects.filter(unique_name=counterparty.unique_name)
 
             if exists:
                 messages.error(request, "This name already exists")
@@ -41,12 +41,12 @@ class ModifyCounterpartyView(LoginRequiredMixin, View):
 
         form = forms.CounterpartyForm(request.POST)
         if form.is_valid():
-            counterparty = get_object_or_404(models.Counterparty, pk=pk)
+            counterparty = get_object_or_404(Counterparty, pk=pk)
             counterparty.name = form.cleaned_data.get("name").upper()
             counterparty.unique_name = f"{get_user(request).username}_{counterparty.name}"
             counterparty.description = form.cleaned_data.get("description")
 
-            exists = models.Category.objects.filter(unique_name=counterparty.unique_name).exclude(pk=pk)
+            exists = Counterparty.objects.filter(unique_name=counterparty.unique_name).exclude(pk=pk)
 
             if exists:
                 messages.error(request, "This name already exists")
@@ -63,7 +63,7 @@ class ModifyCounterpartyView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        counterparty = get_object_or_404(models.Counterparty, pk=pk)
+        counterparty = get_object_or_404(Counterparty, pk=pk)
 
         if user != counterparty.owner:
             messages.error(request, "Access denied")
@@ -90,7 +90,7 @@ class ListCounterpartyView(LoginRequiredMixin, View):
             sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_counterparty = sort_order
 
-        counterparties = models.Counterparty.objects.filter(owner=user).order_by(sort_order)
+        counterparties = Counterparty.objects.filter(owner=user).order_by(sort_order)
         return render(request, 'transactions/list_counterparty.html',
                       context={
                           "object_list": counterparties,
@@ -102,7 +102,7 @@ class DeleteCounterpartyView(LoginRequiredMixin, View):
     def get(self, request, pk):
         user = get_user(request)
 
-        counterparty = get_object_or_404(models.Counterparty, pk=pk)
+        counterparty = get_object_or_404(Counterparty, pk=pk)
 
         if user != counterparty.owner:
             messages.error(request, "Access denied")

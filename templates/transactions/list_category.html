@@ -24,24 +24,24 @@
 
             <div class="row mb-3 mt-3 data-table customizer card-box rounded">
                 <div class="col-1 text-white text-primary display-7 nav-link">No.</div>
-                <div class="z col"><a href="{% url 'transactions:list_category' %}?order=name" class="text-white text-primary display-7 nav-link">Name</a></div>
-                <div class="z col"><a href="{% url 'transactions:list_category' %}?order=description" class="text-white text-primary display-7 nav-link">Description</a></div>
+                <div class="z col"><a href="{% url 'categories:list_category' %}?order=name" class="text-white text-primary display-7 nav-link">Name</a></div>
+                <div class="z col"><a href="{% url 'categories:list_category' %}?order=description" class="text-white text-primary display-7 nav-link">Description</a></div>
                 <div class="col-5 text-white text-primary display-7 nav-link">Transactions assigned to category</div>
             </div>
             <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 63vh">
             {% for object in object_list %}
                 <div class="row p-4 data-row align-items-center">
                     <div class="col-1">
-                        <a href="{% url 'transactions:modify_category' object.pk %}" class="text-black d-inline-block">
+                        <a href="{% url 'categories:modify_category' object.pk %}" class="text-black d-inline-block">
                             {{forloop.counter}}
                         </a>
                     </div>
                     <div class="col">
-                        <a href="{% url 'transactions:modify_category' object.pk %}" class="text-black d-inline-block">{{object.name}}
+                        <a href="{% url 'categories:modify_category' object.pk %}" class="text-black d-inline-block">{{object.name}}
                         </a>
                     </div>
                     <div class="col">
-                        <a href="{% url 'transactions:modify_category' object.pk %}" class="text-black d-inline-block">{{object.description}}
+                        <a href="{% url 'categories:modify_category' object.pk %}" class="text-black d-inline-block">{{object.description}}
                         </a>
                     </div>
                     <div class="col-2">{{ object.cat_transaction.all|length }}</div>

@@ -17,8 +17,8 @@
             {{ form|crispy }}
             <button type="submit" class="btn btn-secondary display-4 m-3">Save changes</button>
         </form>
-        <a class="btn btn-dark display-4" href="{% url 'transactions:list_counterparty' %}">Discard changes and quit</a>
-        <a class="btn btn-secondary display-4" href="{% url 'transactions:delete_counterparty' object.pk %}">Delete Counterparty</a>
+        <a class="btn btn-dark display-4" href="{% url 'counterparties:list_counterparty' %}">Discard changes and quit</a>
+        <a class="btn btn-secondary display-4" href="{% url 'counterparties:delete_counterparty' object.pk %}">Delete Counterparty</a>
     </div>
     <div></div>
 {% endblock container %}
