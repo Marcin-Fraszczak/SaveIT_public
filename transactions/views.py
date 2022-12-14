@@ -2,24 +2,20 @@ from calendar import monthrange
 from datetime import datetime
 
 from django.contrib import messages
-from django.contrib.auth import get_user, get_user_model
+from django.contrib.auth import get_user
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from . import models
 from . import forms
 
 
-class AddTransactionView(View):
+class AddTransactionView(LoginRequiredMixin, View):
     def post(self, request):
-
-        user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
-            wallets = [wallet.id for wallet in form.cleaned_data.get("wallet")]
+            wallets = list(form.cleaned_data.get("wallet"))
             transaction = form.save(commit=False)
             transaction.owner = get_user(request)
 
@@ -39,12 +35,7 @@ class AddTransactionView(View):
         return redirect('transactions:list_transaction')
 
     def get(self, request):
-
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         form = forms.TransactionForm()
         form.fields['wallet'].queryset = models.Wallet.objects.filter(owner=user)
         form.fields['category'].queryset = models.Category.objects.filter(owner=user)
@@ -52,13 +43,8 @@ class AddTransactionView(View):
         return render(request=request, template_name='transactions/add_transaction.html', context={"form": form})
 
 
-class ModifyTransactionView(View):
+class ModifyTransactionView(LoginRequiredMixin, View):
     def post(self, request, pk):
-
-        user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
@@ -72,7 +58,7 @@ class ModifyTransactionView(View):
             else:
                 transaction.value = -abs(transaction.value)
 
-            transaction.notes = form.cleaned_data.get("notes")
+            transaction.description = form.cleaned_data.get("notes")
             transaction.category = form.cleaned_data.get("category")
             transaction.counterparty = form.cleaned_data.get("counterparty")
             transaction.save()
@@ -88,10 +74,6 @@ class ModifyTransactionView(View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         transaction = get_object_or_404(models.Transaction, pk=pk)
 
         if user != transaction.owner:
@@ -106,7 +88,7 @@ class ModifyTransactionView(View):
                       context={"form": form, "object": transaction})
 
 
-class AddCategoryView(View):
+class AddCategoryView(LoginRequiredMixin, View):
     def post(self, request):
 
         form = forms.CategoryForm(request.POST)
@@ -132,16 +114,11 @@ class AddCategoryView(View):
 
     def get(self, request):
 
-        user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         form = forms.CategoryForm
         return render(request=request, template_name='transactions/add_category.html', context={"form": form})
 
 
-class ModifyCategoryView(View):
+class ModifyCategoryView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
         form = forms.CategoryForm(request.POST)
@@ -167,10 +144,6 @@ class ModifyCategoryView(View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         category = get_object_or_404(models.Category, pk=pk)
 
         if user != category.owner:
@@ -182,7 +155,7 @@ class ModifyCategoryView(View):
                       context={"form": form, "object": category})
 
 
-class AddCounterpartyView(View):
+class AddCounterpartyView(LoginRequiredMixin, View):
     def post(self, request):
 
         form = forms.CounterpartyForm(request.POST)
@@ -207,16 +180,11 @@ class AddCounterpartyView(View):
 
     def get(self, request):
 
-        user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         form = forms.CounterpartyForm
         return render(request=request, template_name='transactions/add_counterparty.html', context={"form": form})
 
 
-class ModifyCounterpartyView(View):
+class ModifyCounterpartyView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
         form = forms.CounterpartyForm(request.POST)
@@ -243,10 +211,6 @@ class ModifyCounterpartyView(View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         counterparty = get_object_or_404(models.Counterparty, pk=pk)
 
         if user != counterparty.owner:
@@ -258,7 +222,7 @@ class ModifyCounterpartyView(View):
                       context={"form": form, "object": counterparty})
 
 
-class AddWalletView(View):
+class AddWalletView(LoginRequiredMixin, View):
     def post(self, request):
 
         form = forms.WalletForm(request.POST)
@@ -283,16 +247,11 @@ class AddWalletView(View):
 
     def get(self, request):
 
-        user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         form = forms.WalletForm
         return render(request=request, template_name='transactions/add_wallet.html', context={"form": form})
 
 
-class ModifyWalletView(View):
+class ModifyWalletView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
         form = forms.WalletForm(request.POST)
@@ -319,10 +278,6 @@ class ModifyWalletView(View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         wallet = get_object_or_404(models.Wallet, pk=pk)
 
         if user != wallet.owner:
@@ -334,7 +289,7 @@ class ModifyWalletView(View):
                       context={"form": form, "object": wallet})
 
 
-class AddSavingsPlanView(View):
+class AddSavingsPlanView(LoginRequiredMixin, View):
     def post(self, request):
 
         form = forms.SavingsPlanForm(request.POST)
@@ -359,16 +314,11 @@ class AddSavingsPlanView(View):
 
     def get(self, request):
 
-        user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         form = forms.SavingsPlanForm
         return render(request=request, template_name='transactions/add_savings_plan.html', context={"form": form})
 
 
-class ModifySavingsPlanView(View):
+class ModifySavingsPlanView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
         form = forms.SavingsPlanForm(request.POST)
@@ -396,10 +346,6 @@ class ModifySavingsPlanView(View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
-
         savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
 
         if user != savings_plan.owner:
@@ -414,16 +360,13 @@ class ModifySavingsPlanView(View):
 last_sort_order_trans = "date"
 
 
-class ListTransactionView(View):
+class ListTransactionView(LoginRequiredMixin, View):
 
     def get(self, request):
 
         global last_sort_order_trans
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         word_filter = request.GET.get("wordFilter", "")
         value_filter = request.GET.get("valueFilter", 0)
@@ -483,15 +426,12 @@ class ListTransactionView(View):
 last_sort_order_category = "-name"
 
 
-class ListCategoryView(View):
+class ListCategoryView(LoginRequiredMixin, View):
     def get(self, request):
 
         global last_sort_order_category
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         word_filter = request.GET.get("wordFilter", "")
         sort_order = request.GET.get('order', 'name')
@@ -511,15 +451,12 @@ class ListCategoryView(View):
 last_sort_order_counterparty = "-name"
 
 
-class ListCounterpartyView(View):
+class ListCounterpartyView(LoginRequiredMixin, View):
     def get(self, request):
 
         global last_sort_order_counterparty
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         word_filter = request.GET.get("wordFilter", "")
         sort_order = request.GET.get('order', 'name')
@@ -539,15 +476,12 @@ class ListCounterpartyView(View):
 last_sort_order_wallet = '-name'
 
 
-class ListWalletView(View):
+class ListWalletView(LoginRequiredMixin, View):
     def get(self, request):
 
         global last_sort_order_wallet
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         word_filter = request.GET.get("wordFilter", "")
         sort_order = request.GET.get('order', 'name')
@@ -555,7 +489,6 @@ class ListWalletView(View):
         if sort_order == last_sort_order_wallet:
             sort_order = f"-{sort_order.replace('-', '')}"
         last_sort_order_wallet = sort_order
-
 
         wallets = models.Wallet.objects.filter(owner=user).order_by(sort_order)
         default_wallet = wallets.filter(is_default=True)
@@ -573,15 +506,12 @@ class ListWalletView(View):
 last_sort_order_plan = '-name'
 
 
-class ListSavingsPlanView(View):
+class ListSavingsPlanView(LoginRequiredMixin, View):
     def get(self, request):
 
         global last_sort_order_plan
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         word_filter = request.GET.get("wordFilter", "")
         sort_order = request.GET.get('order', 'name')
@@ -598,13 +528,10 @@ class ListSavingsPlanView(View):
                       })
 
 
-class DeleteTransactionView(View):
+class DeleteTransactionView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         transaction = get_object_or_404(models.Transaction, pk=pk)
 
@@ -617,13 +544,10 @@ class DeleteTransactionView(View):
         return redirect('transactions:list_transaction')
 
 
-class DeleteCategoryView(View):
+class DeleteCategoryView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         category = get_object_or_404(models.Category, pk=pk)
 
@@ -636,13 +560,10 @@ class DeleteCategoryView(View):
         return redirect('transactions:list_category')
 
 
-class DeleteCounterpartyView(View):
+class DeleteCounterpartyView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         counterparty = get_object_or_404(models.Counterparty, pk=pk)
 
@@ -655,13 +576,10 @@ class DeleteCounterpartyView(View):
         return redirect('transactions:list_counterparty')
 
 
-class DeleteWalletView(View):
+class DeleteWalletView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         wallet = get_object_or_404(models.Wallet, pk=pk)
 
@@ -674,13 +592,10 @@ class DeleteWalletView(View):
         return redirect('transactions:list_wallet')
 
 
-class DeleteSavingsPlanView(View):
+class DeleteSavingsPlanView(LoginRequiredMixin, View):
     def get(self, request, pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         savings_plan = get_object_or_404(models.SavingsPlan, pk=pk)
 
@@ -693,13 +608,10 @@ class DeleteSavingsPlanView(View):
         return redirect('transactions:list_savings_plan')
 
 
-class TransferWalletView(View):
+class TransferWalletView(LoginRequiredMixin, View):
     def get(self, request, from_pk, to_pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         from_wallet = get_object_or_404(models.Wallet, pk=from_pk)
         transactions = models.Transaction.objects.filter(wallet=from_wallet)
@@ -724,13 +636,10 @@ class TransferWalletView(View):
             return redirect('transactions:list_wallet')
 
 
-class MakeDefaultWalletView(View):
+class MakeDefaultWalletView(LoginRequiredMixin, View):
     def get(self, request, from_pk, to_pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         if from_pk == 0:
             to_wallet = models.Wallet.objects.get(pk=to_pk)
@@ -758,13 +667,10 @@ class MakeDefaultWalletView(View):
         return redirect('transactions:list_wallet')
 
 
-class MakeDefaultPlanView(View):
+class MakeDefaultPlanView(LoginRequiredMixin, View):
     def get(self, request, from_pk, to_pk):
 
         user = get_user(request)
-        if not user.is_authenticated:
-            messages.error(request, "You must log in to see this data.")
-            return redirect('login')
 
         if from_pk == 0:
             to_plan = models.SavingsPlan.objects.get(pk=to_pk)

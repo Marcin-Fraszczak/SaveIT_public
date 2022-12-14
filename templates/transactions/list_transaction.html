@@ -54,7 +54,7 @@
                 <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=counterparty&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Counterparty</a></div>
                 <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=category&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Category</a></div>
                 <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Wallet</a></div>
-                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Notes</a></div>
+                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Description</a></div>
             </div>
 
              <div class="row mb-3 data-table customizer card-box rounded-bottom">
@@ -80,11 +80,11 @@
                     <div class="col-2">
                         {% for wallet in object.wallet.all %}
                             {{wallet}}
+                        {%empty%}
+                            <div class="col-2"></div>
+                        {% endfor %}
                     </div>
-                    {%empty%}
-                        <div class="col-2"></div>
-                    {% endfor %}
-                    <div class="col">{{object.notes}}</div>
+                    <div class="col">{{object.description}}</div>
                 </div>
             </a>
             {% empty %}
