@@ -45,6 +45,12 @@ def prepare_data(user):
     )
     wallet.save()
 
+    wallet2 = Wallet(
+        name="test_wallet2".upper(),
+        owner=user,
+    )
+    wallet2.save()
+
     transaction = Transaction(
         date="2022-10-11",
         value=998,
@@ -64,11 +70,25 @@ def prepare_data(user):
     )
     plan.save()
 
+    plan2 = SavingsPlan(
+        name="test_plan2".upper(),
+        initial_value=1000,
+        monthly_goal=2000,
+        curve_type=1,
+        owner=user,
+    )
+    plan2.save()
+
     return {
         "category": category,
         "counterparty": counterparty,
         "savings_plan": plan,
+        "savings_plan2": plan2,
         "transaction": transaction,
         "wallet": wallet,
+        "wallet2": wallet2,
         "user": user,
     }
+
+
+prepare_data2 = prepare_data

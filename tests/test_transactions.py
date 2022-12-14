@@ -20,7 +20,7 @@ def test_url_exists_at_correct_location(client, prepare_data):
 
     response = client.get(f"/{t_item}/modify/{pk}/")
     assert response.status_code == 200
-    response = client.get(reverse(f"{app_name}:modify_{t_item}", args=f"{pk}"))
+    response = client.get(reverse(f"{app_name}:modify_{t_item}", args=[f"{pk}"]))
     assert response.status_code == 200
 
 
@@ -36,7 +36,7 @@ def test_proper_template_loaded(client, prepare_data):
         assert 'partials/_dash_menu.html' in (t.name for t in response.templates)
         assert f"Account: {user.username}" in response.content.decode('UTF-8')
 
-    response = client.get(reverse(f'{app_name}:modify_{t_item}', args=f"{pk}"))
+    response = client.get(reverse(f'{app_name}:modify_{t_item}', args=[f"{pk}"]))
     assert f'transactions/modify_{t_item}.html' in (t.name for t in response.templates)
     assert 'partials/_dash_menu.html' in (t.name for t in response.templates)
     assert f"Account: {user.username}" in response.content.decode('UTF-8')
@@ -82,7 +82,7 @@ def test_modify_transaction(client, prepare_data):
     client.force_login(user)
 
     response = client.post(
-        reverse(f'{app_name}:modify_{t_item}', args=f"{initial_trans.pk}"),
+        reverse(f'{app_name}:modify_{t_item}', args=[f"{initial_trans.pk}"]),
         {
             "date": "2022-10-10",
             "value": "100",
@@ -103,7 +103,7 @@ def test_delete_transaction(client, prepare_data):
     pk = prepare_data[t_item].pk
     user = prepare_data["user"]
     client.force_login(user)
-    print(pk)
+
     t_items_before = Transaction.objects.all().count()
 
     response = client.post(

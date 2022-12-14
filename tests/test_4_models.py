@@ -66,7 +66,7 @@ def test_url_exists_at_correct_location(client, prepare_data):
             assert response.status_code == 200
         response = client.get(f"/{item}/modify/{pk}/")
         assert response.status_code == 200
-        response = client.get(reverse(f"{translate(item, 'app')}:modify_{item}", args=f"{pk}"))
+        response = client.get(reverse(f"{translate(item, 'app')}:modify_{item}", args=[f"{pk}"]))
         assert response.status_code == 200
 
 
@@ -126,7 +126,7 @@ def test_update_view(client, prepare_data):
 
         if item == "savings_plan":
             response = client.post(
-                reverse(f"{translate(item, 'app')}:modify_{item}", args=f"{obj.pk}"),
+                reverse(f"{translate(item, 'app')}:modify_{item}", args=[f"{obj.pk}"]),
                 {
                     "name": f"Update {item}",
                     "initial_value": 2000,
@@ -136,7 +136,7 @@ def test_update_view(client, prepare_data):
                 })
         else:
             response = client.post(
-                reverse(f"{translate(item, 'app')}:modify_{item}", args=f"{obj.pk}"),
+                reverse(f"{translate(item, 'app')}:modify_{item}", args=[f"{obj.pk}"]),
                 {
                     "name": f"Update {item}",
                     "owner": user,
@@ -157,7 +157,7 @@ def test_delete_view(client, prepare_data):
 
         items_before = translate(item, "count")
         response = client.post(
-            reverse(f"{translate(item, 'app')}:modify_{item}", args=f"{obj.pk}"),
+            reverse(f"{translate(item, 'app')}:modify_{item}", args=[f"{obj.pk}"]),
             {"delete": ''})
         items_after = translate(item, "count")
 
@@ -175,14 +175,16 @@ def test_access_denied_for_not_logged_in(client, prepare_data):
         commands = [
             client.get(reverse(f"{translate(item, 'app')}:add_{item}")),
             client.get(reverse(f"{translate(item, 'app')}:list_{item}")),
-            client.get(reverse(f"{translate(item, 'app')}:modify_{item}", args=f"{obj.pk}")),
+            client.get(reverse(f"{translate(item, 'app')}:modify_{item}", args=[f"{obj.pk}"])),
 
             client.post(reverse(f"{translate(item, 'app')}:add_{item}")),
-            client.post(reverse(f"{translate(item, 'app')}:modify_{item}", args=f"{obj.pk}")),
-            client.post(reverse(f"{translate(item, 'app')}:modify_{item}", args=f"{obj.pk}"), {'delete': ''}),
+            client.post(reverse(f"{translate(item, 'app')}:modify_{item}", args=[f"{obj.pk}"])),
+            client.post(reverse(f"{translate(item, 'app')}:modify_{item}", args=[f"{obj.pk}"]), {'delete': ''}),
         ]
         for comm in commands:
             response = comm
 
             assert response.status_code == 302
             assert reverse("login") in response.url
+
+
