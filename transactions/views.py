@@ -19,9 +19,7 @@ class AddTransactionView(View):
 
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
-            wallets = form.cleaned_data.get("wallet")
-            # if wallets:
-            #     wallets = list(wallets)
+            wallets = [wallet.id for wallet in form.cleaned_data.get("wallet")]
             transaction = form.save(commit=False)
             transaction.owner = get_user(request)
 
@@ -32,7 +30,8 @@ class AddTransactionView(View):
 
             transaction.save()
             if wallets:
-                transaction.wallet.set(list(wallets))
+                transaction.wallet.set(wallets)
+                transaction.save()
             messages.success(request, "Transaction successfully added")
         else:
             messages.error(request, "Error saving form")
