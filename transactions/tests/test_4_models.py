@@ -7,10 +7,14 @@ from django.contrib.auth import get_user_model
 from django.test import Client
 from django.urls import reverse
 
-from transactions import models
+from categories.models import Category
+from counterparties.models import Counterparty
+from plans.models import SavingsPlan
+from transactions.models import Transaction
+from wallets.models import Wallet
 
 name = 'testuser'
-items = ["catgory", "counterparty", "wallet", "savings_plan"]
+items = ["category", "counterparty", "wallet", "savings_plan"]
 actions = ["add", "list"]
 
 
@@ -40,7 +44,6 @@ def object(user):
     else:
         object = translate(item, 1)(
             name="test",
-            description="desc",
             owner=user,
         )
     return object
@@ -49,24 +52,28 @@ def object(user):
 def translate(item, ind):
     translate_dict = {
         "category": (
-            models.Category.objects.all().count(),
-            models.Category,
-            models.Category.objects.last()
+            Category.objects.all().count(),
+            Category,
+            Category.objects.last(),
+            "categories",
         ),
         "counterparty": (
-            models.Counterparty.objects.all().count(),
-            models.Counterparty,
-            models.Counterparty.objects.last()
+            Counterparty.objects.all().count(),
+            Counterparty,
+            Counterparty.objects.last(),
+            "counterparties,"
         ),
         "wallet": (
             Wallet.objects.all().count(),
             Wallet,
-            Wallet.objects.last()
+            Wallet.objects.last(),
+            "wallets",
         ),
         "savings_plan": (
-            models.SavingsPlan.objects.all().count(),
-            models.SavingsPlan,
-            models.SavingsPlan.objects.last()
+            SavingsPlan.objects.all().count(),
+            SavingsPlan,
+            SavingsPlan.objects.last(),
+            "plans",
         ),
     }
     return translate_dict[item][ind]
@@ -77,28 +84,24 @@ for item in items:
     def test_url_exists_at_correct_location(client, user):
         client.force_login(user)
         for action in actions:
-            response = client.get(f"/finances/{action}/{item}/")
+            response = client.get(f"/{item}/{action}/")
+            assert response.status_code == 200
+            response = client.get(reverse(f"{translate(item, 3)}:{action}_{item}"))
             assert response.status_code == 200
 
 
     @pytest.mark.django_db
-    def test_url_available_under_specific_name(client, user):
-        client.force_login(user)
-        for action in actions:
-            response = client.get(reverse(f"transactions:{action}_{item}"))
-            assert response.status_code == 200
-
-
     def test_access_not_possible_without_login(client):
+        client.logout()
         for action in actions:
-            response = client.get(reverse(f"transactions:{action}_{item}"))
-            assert response.url == reverse("login")
+            response = client.get(reverse(f"{translate(item, 3)}:{action}_{item}"))
+            assert reverse("login") in response.url
 
 
     @pytest.mark.django_db
     def test_proper_template_loaded(client, user):
         client.force_login(user)
-        response = client.get(reverse(f'transactions:list_{item}'))
+        response = client.get(reverse(f'{translate(item, 3)}:list_{item}'))
         assert f'transactions/list_{item}.html' in (t.name for t in response.templates)
         assert 'partials/_dash_menu.html' in (t.name for t in response.templates)
         assert f"Account: {user.username}" in response.content.decode('UTF-8')
@@ -106,32 +109,14 @@ for item in items:
 
 
     @pytest.mark.django_db
-    def test_item_add_to_db_command(client, user, object):
-        client.force_login(user)
-
-        # empty database, should be 0 items
-        items_before = translate(item, 0)
-
-        # manually created 1 item
-        object.save()
-
-        # should be 1 item in a database
-        items_after = translate(item, 0)
-
-        assert items_after - items_before == 1
-
-
-    @pytest.mark.django_db
     def test_item_add_to_db_form(client, user):
         client.force_login(user)
 
-        # empty database, should be 0 items
         items_before = translate(item, 0)
 
-        # created second item using form
         if item == "savings_plan":
             response = client.post(
-                reverse(f'transactions:add_{item}'),
+                reverse(f'{translate(item, 3)}:add_{item}'),
                 {
                     "name": f"New {item}",
                     "initial_value": 1000,
@@ -141,20 +126,18 @@ for item in items:
                 })
         else:
             response = client.post(
-                reverse(f'transactions:add_{item}'),
+                reverse(f'{translate(item, 3)}:add_{item}'),
                 {
                     "name": f"New {item}",
-                    "description": f"new {item}",
                     "owner": user,
                 })
 
-        # should be 1 item in a database
         items_after = translate(item, 0)
 
         last_item = translate(item, 2)
 
         assert response.status_code == 302
-        assert response.url == f"/finances/list/{item}/"
+        assert response.url == reverse(f'{translate(item, 3)}:list_{item}')
         assert items_after - items_before == 1
         assert last_item.name == f"New {item}".upper()
 
@@ -165,7 +148,7 @@ for item in items:
         object.save()
         if item == "savings_plan":
             response = client.post(
-                reverse(f'transactions:modify_{item}', args=f"{object.pk}"),
+                reverse(f'{translate(item, 3)}:modify_{item}', args=f"{object.pk}"),
                 {
                     "name": f"Update {item}",
                     "initial_value": 2000,
@@ -175,10 +158,9 @@ for item in items:
                 })
         else:
             response = client.post(
-                reverse(f'transactions:modify_{item}', args=f"{object.pk}"),
+                reverse(f'{translate(item, 3)}:modify_{item}', args=f"{object.pk}"),
                 {
                     "name": f"Update {item}",
-                    "description": f"new {item}",
                     "owner": user,
                 })
 
@@ -192,7 +174,7 @@ for item in items:
         client.force_login(user)
         object.save()
         items_before = translate(item, 0)
-        response = client.get(reverse(f'transactions:delete_{item}', args=f"{object.pk}"))
+        response = client.get(reverse(f'{translate(item, 3)}:delete_{item}', args=f"{object.pk}"))
         items_after = translate(item, 0)
 
         assert response.status_code == 302
@@ -205,13 +187,14 @@ for item in items:
         object.save()
 
         commands = [
-            client.post(reverse(f'transactions:add_{item}')),
-            client.get(reverse(f'transactions:list_{item}')),
-            client.post(reverse(f'transactions:modify_{item}', args=f"{object.pk}")),
-            client.post(reverse(f'transactions:delete_{item}', args=f"{object.pk}")),
+            client.post(reverse(f'{translate(item, 3)}:add_{item}')),
+            client.get(reverse(f'{translate(item, 3)}:list_{item}')),
+            client.post(reverse(f'{translate(item, 3)}:modify_{item}', args=f"{object.pk}")),
+            client.post(reverse(f'{translate(item, 3)}:delete_{item}', args=f"{object.pk}")),
         ]
 
         for comm in commands:
             response = comm
 
-        # Dopisać testy
+            assert response.status_code == 302
+            assert reverse("login") in response.url

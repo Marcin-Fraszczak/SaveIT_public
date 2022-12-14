@@ -49,13 +49,13 @@
                         </a>
                     </div>
                     <div class="col-2">
-                        <a href="{% url 'transactions:list_transaction' %}?filter_by=wallet&filter_val={{object.pk}}" class="btn btn-secondary display-4 m-0">
-                            Transactions
+                        <a href="{% url 'wallets:transfer_wallet' from_wallet.pk object.pk %}" class="btn btn-secondary display-4 m-0">
+                            Transfer here
                         </a>
                     </div>
                     <div class="col-2">
-                        <a href="{% url 'wallets:transfer_wallet' from_wallet.pk object.pk %}" class="btn btn-secondary display-4 m-0">
-                            Transfer here
+                        <a href="{% url 'transactions:list_transaction' %}?filter_by=wallet&filter_val={{object.pk}}" class="btn btn-secondary display-4 m-0">
+                            Transactions
                         </a>
                     </div>
                 </div>
