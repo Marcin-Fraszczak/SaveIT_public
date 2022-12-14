@@ -55,7 +55,12 @@ INSTALLED_APPS = [
     # local apps
     'home.apps.HomeConfig',
     'accounts.apps.AccountsConfig',
+
+    'categories.apps.CategoriesConfig',
+    'counterparties.apps.CounterpartiesConfig',
+    'plans.apps.PlansConfig',
     'transactions.apps.TransactionsConfig',
+    'wallets.apps.WalletsConfig',
 
 ]
 
