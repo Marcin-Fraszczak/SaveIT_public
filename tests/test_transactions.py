@@ -60,7 +60,6 @@ def test_add_transaction(client, prepare_data):
             "is_profit": 1,
             "category": category.pk,
             "counterparty": counterparty.pk,
-            "owner": user.pk,
             "wallet": [wallet.pk],
         })
 
@@ -89,7 +88,6 @@ def test_modify_transaction(client, prepare_data):
             "is_profit": 1,
             "category": category.pk,
             "counterparty": counterparty.pk,
-            "owner": user.pk,
             "wallet": [wallet.pk],
         })
 

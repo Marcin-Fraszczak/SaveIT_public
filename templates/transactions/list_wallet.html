@@ -68,7 +68,7 @@
                     </div>
                     {% else %}
                     <div class="col-2">
-                        <a href="{% url 'wallets:make_default_wallet' default_wallet.pk|default:'0' object.pk %}" class="btn btn-secondary display-4 m-0">
+                        <a href="{% url 'wallets:make_default_wallet' object.pk %}" class="btn btn-secondary display-4 m-0">
                             make default
                         </a>
                     </div>

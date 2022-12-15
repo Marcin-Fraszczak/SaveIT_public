@@ -9,6 +9,6 @@ urlpatterns = [
     path('modify/<int:pk>/', views.ModifySavingsPlanView.as_view(), name='modify_savings_plan'),
     # path('delete/<int:pk>/', views.DeleteSavingsPlanView.as_view(), name='delete_savings_plan'),
 
-    path('default/<int:from_pk>/<int:to_pk>/', views.MakeDefaultPlanView.as_view(), name='make_default_savings_plan'),
+    path('default/<int:pk>/', views.MakeDefaultPlanView.as_view(), name='make_default_savings_plan'),
 ]
 

@@ -54,7 +54,6 @@ class ModifyWalletView(LoginRequiredMixin, View):
             messages.success(request, "Wallet successfully removed")
             return redirect('wallets:list_wallet')
 
-
         form = forms.WalletForm(request.POST)
         if form.is_valid():
             wallet = get_object_or_404(Wallet, pk=pk)
@@ -119,6 +118,7 @@ class ListWalletView(LoginRequiredMixin, View):
                           "default_wallet": default_wallet,
                       })
 
+
 #
 # class DeleteWalletView(LoginRequiredMixin, View):
 #     def get(self, request, pk):
@@ -154,37 +154,35 @@ class TransferWalletView(LoginRequiredMixin, View):
 
         else:
             to_wallet = get_object_or_404(Wallet, owner=user, pk=to_pk)
+            if to_wallet.owner != user:
+                messages.error(request, "Access denied")
+                return redirect('wallets:list_wallet')
+
             for transaction in transactions:
                 transaction.wallet.remove(from_wallet)
                 transaction.wallet.add(to_wallet)
                 transaction.save()
 
             messages.success(request,
-                             f"{len(transactions)} transactions successfully transferred from {from_wallet.name} to {to_wallet.name}")
+                             f"{len(transactions)} transactions successfully transferred from"
+                             f" {from_wallet.name} to {to_wallet.name}")
             return redirect('wallets:list_wallet')
 
 
 class MakeDefaultWalletView(LoginRequiredMixin, View):
-    def get(self, request, from_pk, to_pk):
+    def get(self, request, pk):
 
         user = get_user(request)
+        default_wallet = Wallet.objects.get(pk=pk)
 
-        if from_pk == 0:
-            to_wallet = Wallet.objects.get(pk=to_pk)
-            if to_wallet.owner != user:
-                messages.error(request, "Access denied")
-                return redirect('wallets:list_wallet')
-        else:
-            to_wallet = Wallet.objects.get(pk=to_pk)
-            from_wallet = Wallet.objects.get(pk=from_pk)
-            if from_wallet.owner != user or to_wallet.owner != user:
-                messages.error(request, "Access denied")
-                return redirect('wallets:list_wallet')
+        if default_wallet.owner != user:
+            messages.error(request, "Access denied")
+            return redirect('wallets:list_wallet')
 
         all_wallets = Wallet.objects.filter(owner=user)
 
         for wallet in all_wallets:
-            if wallet.pk == to_pk:
+            if wallet.pk == pk:
                 wallet.is_default = 1
                 wallet.save()
             else:

@@ -91,4 +91,31 @@ def prepare_data(user):
     }
 
 
-prepare_data2 = prepare_data
+@pytest.fixture
+def translate():
+    return {
+        "category": {
+            # "count": Category.objects.all().count(),
+            "model": Category,
+            # "last": Category.objects.last(),
+            "app": "categories",
+        },
+        "counterparty": {
+            # "count": Counterparty.objects.all().count(),
+            "model": Counterparty,
+            # "last": Counterparty.objects.last(),
+            "app": "counterparties",
+        },
+        "wallet": {
+            # "count": Wallet.objects.all().count(),
+            "model": Wallet,
+            # "last": Wallet.objects.last(),
+            "app": "wallets",
+        },
+        "savings_plan": {
+            # "count": SavingsPlan.objects.all().count(),
+            "model": SavingsPlan,
+            # "last": SavingsPlan.objects.last(),
+            "app": "plans",
+        },
+    }

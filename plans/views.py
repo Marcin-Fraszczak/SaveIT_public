@@ -52,7 +52,6 @@ class ModifySavingsPlanView(LoginRequiredMixin, View):
             messages.success(request, "Savings plan successfully removed")
             return redirect('plans:list_savings_plan')
 
-
         form = forms.SavingsPlanForm(request.POST)
         if form.is_valid():
             savings_plan = get_object_or_404(SavingsPlan, pk=pk)
@@ -112,6 +111,7 @@ class ListSavingsPlanView(LoginRequiredMixin, View):
                           "word_filter": word_filter,
                       })
 
+
 #
 # class DeleteSavingsPlanView(LoginRequiredMixin, View):
 #     def get(self, request, pk):
@@ -129,26 +129,18 @@ class ListSavingsPlanView(LoginRequiredMixin, View):
 
 
 class MakeDefaultPlanView(LoginRequiredMixin, View):
-    def get(self, request, from_pk, to_pk):
+    def get(self, request, pk):
 
         user = get_user(request)
-
-        if from_pk == 0:
-            to_plan = SavingsPlan.objects.get(pk=to_pk)
-            if to_plan.owner != user:
-                messages.error(request, "Access denied")
-                return redirect('plans:list_savings_plan')
-        else:
-            to_plan = SavingsPlan.objects.get(pk=to_pk)
-            from_plan = SavingsPlan.objects.get(pk=from_pk)
-            if from_plan.owner != user or to_plan.owner != user:
-                messages.error(request, "Access denied")
-                return redirect('plans:list_savings_plan')
+        default_plan = SavingsPlan.objects.get(pk=pk)
+        if default_plan.owner != user:
+            messages.error(request, "Access denied")
+            return redirect('plans:list_savings_plan')
 
         all_plans = SavingsPlan.objects.filter(owner=user)
 
         for plan in all_plans:
-            if plan.pk == to_pk:
+            if plan.pk == pk:
                 plan.is_default = 1
                 plan.save()
             else:

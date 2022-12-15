@@ -10,6 +10,6 @@ urlpatterns = [
     # path('delete/<int:pk>/', views.DeleteWalletView.as_view(), name='delete_wallet'),
 
     path('transfer/<int:from_pk>/<int:to_pk>/', views.TransferWalletView.as_view(), name='transfer_wallet'),
-    path('default/<int:from_pk>/<int:to_pk>/', views.MakeDefaultWalletView.as_view(), name='make_default_wallet'),
+    path('default/<int:pk>/', views.MakeDefaultWalletView.as_view(), name='make_default_wallet'),
 ]
 
