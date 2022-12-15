@@ -195,3 +195,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+import django_heroku
+django_heroku.settings(locals())
