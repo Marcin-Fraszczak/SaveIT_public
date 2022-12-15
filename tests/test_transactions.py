@@ -86,9 +86,11 @@ def test_modify_transaction(client, prepare_data):
             "date": "2022-10-10",
             "value": "100",
             "is_profit": 1,
+            "description": "aa",
             "category": category.pk,
             "counterparty": counterparty.pk,
             "wallet": [wallet.pk],
+
         })
 
     updated_trans = Transaction.objects.get(pk=initial_trans.pk)
