@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 
@@ -63,7 +64,6 @@ class ModifyTransactionView(LoginRequiredMixin, View):
             messages.success(request, "Transaction successfully removed")
             return redirect('transactions:list_transaction')
 
-
         form = forms.TransactionForm(request.POST)
         if form.is_valid():
             transaction = get_object_or_404(Transaction, pk=pk)
@@ -104,10 +104,6 @@ class ModifyTransactionView(LoginRequiredMixin, View):
         form.fields['counterparty'].queryset = Counterparty.objects.filter(owner=user)
         return render(request=request, template_name='transactions/modify_transaction.html',
                       context={"form": form, "object": transaction})
-
-
-
-
 
 
 last_sort_order_trans = "date"
@@ -163,6 +159,30 @@ class ListTransactionView(LoginRequiredMixin, View):
             transactions = transactions.order_by(f"{sort_order}__name")
         else:
             transactions = transactions.order_by(sort_order)
+
+        if 'json' in request.GET:
+            transactions = [
+                {
+                    "date": transaction.date,
+                    "value": transaction.value,
+                    "counterparty": transaction.counterparty.name,
+                    "category": transaction.category.name,
+                    "wallet": [wallet.name for wallet in transaction.wallet.all()],
+                }
+                for transaction in transactions]
+
+            data = {
+                "transactions": transactions,
+                "parameters": {
+                    "word_filter": word_filter,
+                    "value_filter": value_filter,
+                    "filter_by": filter_by,
+                    "filter_val": filter_val,
+                    "from_date": from_date,
+                    "to_date": to_date,
+                }
+            }
+            return JsonResponse(data)
 
         return render(request, 'transactions/list_transaction.html',
                       context={
