@@ -11,3 +11,5 @@ db.sqlite3
 
 accounts/migrations
 transactions/migrations
+
+code trash
