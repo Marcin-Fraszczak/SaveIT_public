@@ -1,3 +1,20 @@
+months = {
+    "01": "Jan",
+    "02": "Feb",
+    "03": "Mar",
+    "04": "Apr",
+    "05": "May",
+    "06": "Jun",
+    "07": "Jul",
+    "08": "Aug",
+    "09": "Sep",
+    "10": "Oct",
+    "11": "Nov",
+    "12": "Dec",
+}
+
+
+
 window.addEventListener("DOMContentLoaded", function (e) {
     searchFilter();
 })
@@ -113,12 +130,14 @@ function updateUrl(event) {
 
                         const dateCol = document.createElement("div")
                         dateCol.setAttribute("class", "col-1")
-                        dateCol.textContent = transactions[i]["date"].split("-").reverse().join("-")
+                        let newDate = transactions[i]["date"].split("-").reverse()
+                        newDate[1] = months[newDate[1]]
+                        dateCol.textContent = newDate.join(" ")
                         rowDiv.appendChild(dateCol)
 
                         const valueCol = document.createElement("div")
                         valueCol.setAttribute("class", "col-1 text-right pr-5")
-                        valueCol.textContent = transactions[i]["value"].toString()
+                        valueCol.textContent = transactions[i]["value"].toFixed(2)
                         rowDiv.appendChild(valueCol)
 
                         const cntpCol = document.createElement("div")

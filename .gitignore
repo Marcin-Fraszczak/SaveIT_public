@@ -13,3 +13,5 @@ accounts/migrations
 transactions/migrations
 
 code trash
+
+staticfiles
