@@ -76,7 +76,7 @@ class ModifyTransactionView(LoginRequiredMixin, View):
             else:
                 transaction.value = -abs(transaction.value)
 
-            transaction.description = form.cleaned_data.get("notes")
+            transaction.description = form.cleaned_data.get("description")
             transaction.category = form.cleaned_data.get("category")
             transaction.counterparty = form.cleaned_data.get("counterparty")
             transaction.save()
@@ -194,18 +194,3 @@ class ListTransactionView(LoginRequiredMixin, View):
                           "from_date": from_date,
                           "to_date": to_date,
                       })
-#
-#
-# class DeleteTransactionView(LoginRequiredMixin, View):
-#     def get(self, request, pk):
-#         user = get_user(request)
-#
-#         transaction = get_object_or_404(Transaction, pk=pk)
-#
-#         if user != transaction.owner:
-#             messages.error(request, "Access denied")
-#             return redirect('transactions:list_transaction')
-#
-#         transaction.delete()
-#         messages.success(request, "Transaction successfully removed")
-#         return redirect('transactions:list_transaction')

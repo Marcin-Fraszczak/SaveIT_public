@@ -13,8 +13,6 @@ months = {
     "12": "Dec",
 }
 
-
-
 window.addEventListener("DOMContentLoaded", function (e) {
     searchFilter();
 })
@@ -22,14 +20,27 @@ window.addEventListener("DOMContentLoaded", function (e) {
 const slider = document.querySelector('.value-input');
 const headers = [...document.querySelectorAll(".z")];
 const link = document.querySelector(".custom-scrollbar").querySelector("a");
+let defaultUrl = document.querySelector("#search-button").getAttribute("href")
 
 headers.forEach(function (header) {
-    header.firstChild.addEventListener("click", updateUrl);
+    header.firstChild.addEventListener("click", function (e) {
+        e.preventDefault()
+        updateUrl(this.getAttribute("href"))
+    });
 });
 
 if (slider != null) {
     slider.oninput = function () {
         searchFilter();
+    }
+}
+
+function dateTrigger(object) {
+    let year = object.value.split("-")[0]
+    if (year[0] != "0") {
+        updateUrl(defaultUrl);
+    } else {
+        return false;
     }
 }
 
@@ -72,15 +83,14 @@ function searchFilter(wordFilter, valueFilter) {
 }
 
 
-function updateUrl(event) {
-    event.preventDefault();
+function updateUrl(address) {
 
     let wordFilter = document.querySelector(`.search-input`).value;
     let valueFilter = document.querySelector(`.value-input`).value;
     let fromDate = document.querySelector(".from-date-input").value;
     let toDate = document.querySelector(".to-date-input").value;
 
-    let url = new URL(this.getAttribute('href'), document.baseURI)
+    let url = new URL(address, document.baseURI)
 
     let search_params = url.searchParams;
     search_params.set('wordFilter', wordFilter);
@@ -88,13 +98,11 @@ function updateUrl(event) {
     search_params.set('fromDate', fromDate);
     search_params.set('toDate', toDate);
     url.search = search_params.toString();
-    let new_url = url.toString();
 
     search_params.set('json', "1");
     url.search = search_params.toString();
     let fetchUrl = url.toString();
 
-    event.target.setAttribute("href", new_url);
     fetching(fetchUrl)
 
     function fetching(url) {
@@ -183,8 +191,4 @@ function updateUrl(event) {
                 }
             });
     }
-
-
-    // event.target.removeEventListener("click", updateUrl);
-    // event.target.click();
 }
