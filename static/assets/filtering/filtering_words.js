@@ -30,10 +30,10 @@ function searchWordFilter(wordFilter) {
 
 
 
-const headers = [...document.querySelectorAll(".z")]
+const triggers = [...document.querySelectorAll(".trigger")]
 
-headers.forEach(function (header) {
-    header.firstChild.addEventListener("click", updateUrl);
+triggers.forEach(function (trigger) {
+    trigger.firstChild.addEventListener("click", updateUrl);
 });
 
 function updateUrl(event) {

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
@@ -180,6 +181,7 @@ class DashboardView(LoginRequiredMixin, View):
 
             return displayed_date, values_list[1:], len(transactions)
 
+
         abs_displayed_date, abs_values_list, abs_no_transactions = get_data_for_graph(abs_year, abs_month)
         cum_displayed_date, cum_values_list, cum_no_transactions = get_data_for_graph(cum_year, cum_month)
 
@@ -197,6 +199,43 @@ class DashboardView(LoginRequiredMixin, View):
                 total_profit += value
             else:
                 total_debit += value
+
+
+        if 'json' in request.GET:
+            data = {
+                "abs_displayed_date": abs_displayed_date,
+                "cum_displayed_date": cum_displayed_date,
+                "abs_values_list": abs_values_list,
+                "cum_values_list": cum_values_list,
+                "abs_year": abs_year,
+                "cum_year": cum_year,
+                "abs_month": abs_month,
+                "cum_month": cum_month,
+                "chain_graphs": chain_graphs,
+                "abs_no_transactions": abs_no_transactions,
+                "cum_no_transactions": cum_no_transactions,
+                "monthly_profit": abs_values_list[-1][3],
+                "monthly_debit": abs_values_list[-1][4],
+                "monthly_balance": abs_values_list[-1][4] + abs_values_list[-1][3],
+                "total_transactions": len(total_transactions),
+                "total_profit": total_profit,
+                "total_debit": total_debit,
+                "total_balance": total_debit + total_profit,
+                "default_wallet": {
+                    "pk": default_wallet.pk,
+                    "name": default_wallet.name,
+                    "description": default_wallet.description,
+                },
+                "default_plan": {
+                    "pk": default_plan.pk,
+                    "name": default_plan.name,
+                    "monthly_goal": default_plan.monthly_goal,
+                    "initial_value": default_plan.initial_value,
+                    "curve_type": default_plan.curve_type,
+                },
+            }
+            return JsonResponse(data)
+
 
         return render(request, "accounts/dashboard.html", context={
             "abs_displayed_date": abs_displayed_date,

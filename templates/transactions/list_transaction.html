@@ -35,7 +35,7 @@
             <div class="col-2">
                 <input type="date" class="form-control to-date-input" value="{{to_date}}" onchange="dateTrigger(this)">
             </div>
-            <div class="z col-1"><a
+            <div class="trigger col-1"><a
                     href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}"
                     class="btn btn-dark display-4 m-0 d-flex" id="search-button">Search</a>
             </div>
@@ -49,12 +49,12 @@
 
             <div class="row mb-0 mt-3 data-table customizer card-box rounded-top">
                 <div class="col-1 text-white text-primary display-7 nav-link">No.</div>
-                <div class="z col-1"><a href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Date</a></div>
-                <div class="z col-1"><a href="{% url 'transactions:list_transaction' %}?order=value&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Value</a></div>
-                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=counterparty&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Counterparty</a></div>
-                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=category&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Category</a></div>
-                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Wallet</a></div>
-                <div class="z col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Description</a></div>
+                <div class="trigger col-1"><a href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Date</a></div>
+                <div class="trigger col-1"><a href="{% url 'transactions:list_transaction' %}?order=value&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Value</a></div>
+                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=counterparty&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Counterparty</a></div>
+                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=category&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Category</a></div>
+                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Wallet</a></div>
+                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Description</a></div>
             </div>
 
              <div class="row mb-3 data-table customizer card-box rounded-bottom">

@@ -18,12 +18,12 @@ window.addEventListener("DOMContentLoaded", function (e) {
 })
 
 const slider = document.querySelector('.value-input');
-const headers = [...document.querySelectorAll(".z")];
+const triggers = [...document.querySelectorAll(".trigger")];
 const link = document.querySelector(".custom-scrollbar").querySelector("a");
 let defaultUrl = document.querySelector("#search-button").getAttribute("href")
 
-headers.forEach(function (header) {
-    header.firstChild.addEventListener("click", function (e) {
+triggers.forEach(function (trigger) {
+    trigger.firstChild.addEventListener("click", function (e) {
         e.preventDefault()
         updateUrl(this.getAttribute("href"))
     });

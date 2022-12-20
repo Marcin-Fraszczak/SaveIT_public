@@ -1,4 +1,4 @@
-function drawGraphAbs(absValues) {
+function drawGraphAbs(absValues, absDate) {
     let days = [];
     let profits = [];
     let debits = [];
@@ -41,7 +41,7 @@ function drawGraphAbs(absValues) {
 }
 
 
-function drawGraphCum(cumValues) {
+function drawGraphCum(cumValues, cumDate) {
     let days = [];
     let profitCumulative = [];
     let debitCumulative = [];
@@ -103,7 +103,7 @@ function updateUrl(event) {
 
     let wordFilter = document.querySelector(`.chain-graphs`).value;
 
-    let url = new URL('http://127.0.0.1:8000' + this.getAttribute('href'));
+    let url = new URL(this.getAttribute('href'), document.baseURI);
 
     let search_params = url.searchParams
     search_params.set('chain_graphs', wordFilter)
