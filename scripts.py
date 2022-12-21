@@ -10,6 +10,32 @@ from transactions.models import Transaction
 from categories.models import Category
 from counterparties.models import Counterparty
 from wallets.models import Wallet
+#
+# import requests
+#
+# def populate_python_anywhere():
+#     def add_category():
+#         url = 'https://marcinfraszczak.eu.pythonanywhere.com/accounts/login/'
+#         client = requests.session()
+#         csrf = client.get(url).cookies['csrftoken']
+#         login_data = dict(username='Johny', password='Testpass123', csrfmiddlewaretoken=csrf, next='/')
+#
+#         r = client.post(url, data=login_data, headers=dict(Referer=url))
+#
+#
+#         url = 'https://marcinfraszczak.eu.pythonanywhere.com/category/add/'
+#         client = requests.session()
+#         csrf = client.get(url).cookies['csrftoken']
+#
+#         data = dict(name="Food", description="anything related with eating", csrfmiddlewaretoken=csrf,
+#                     next='https://marcinfraszczak.eu.pythonanywhere.com/category/list/')
+#
+#         r = client.post(url, data=data, headers=dict(Referer=url))
+#
+#         print(r.text)
+#         print(r.status_code)
+#
+#     add_category()
 
 
 def populate_db():
