@@ -35,8 +35,9 @@ SECRET_KEY = os.environ.get("DJ_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DJ_DEBUG', default=0))
 
+ALLOWED_HOSTS = ["MarcinFraszczak.eu.pythonanywhere.com", "localhost", "127.0.0.1", ]
 # ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ["save-it-project.herokuapp.com", "localhost", "127.0.0.1"]
+# ALLOWED_HOSTS = ["save-it-project.herokuapp.com", "localhost", "127.0.0.1", "MarcinFraszczak.eu.pythonanywhere.com"]
 
 # Application definition
 
@@ -100,6 +101,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# Configuration for PythonAnywhere
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get('DB_NAME'),
+#         'USER': os.environ.get('DB_USER'),
+#         'PASSWORD': os.environ.get('DB_PASSWORD'),
+#         'HOST': os.environ.get('DB_HOST'),
+#     }
+# }
+
+# Configuration for local postgres
 DATABASES = {
     'default': {}
 }
@@ -111,7 +124,7 @@ db_from_env = dj_database_url.config(
 
 DATABASES['default'].update(db_from_env)
 
-# stara baza plikowa db.sqlite3
+# Configuration for default file database
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -196,6 +209,6 @@ EMAIL_USE_TLS = True
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-
-import django_heroku
-django_heroku.settings(locals())
+#
+# import django_heroku
+# django_heroku.settings(locals())

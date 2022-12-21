@@ -9,9 +9,11 @@ env/.env
 
 db.sqlite3
 
-accounts/migrations
-transactions/migrations
+#accounts/migrations
+#transactions/migrations
+#categories/migrations
+#counterparties/migrations
+#wallets/migrations
+#plans/migrations
 
-code trash
-
-staticfiles
+#static/
