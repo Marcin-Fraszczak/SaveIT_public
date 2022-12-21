@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
 
-def connect():
+def populate_python_anywhere():
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
 
@@ -28,7 +28,7 @@ def connect():
     password = os.environ.get('SEL_PASSWORD')
 
 
-    categories = ["SPORT", "FOOD", "BICYCLE", "HOUSING", "TRANSPORT", "FUN", "HEALTH"]
+    categories = ["SPORT", "FOOD", "BICYCLE", "HOUSING", "TRANSPORT", "FUN", "HEALTH", "WORK"]
     counterparties = ["BIEDRONKA", "LIDL", "TESCO", "ŻABKA", "PKP", "CERVELO",
                       "STARA ROMANA", "MPK", "CASTORAMA", "MULTIKINO", "DREWBUD"]
     wallets = ["PERSONAL", "BUSINESS"]
@@ -205,10 +205,30 @@ def connect():
         delta = (stop - start).days
         return delta
 
-    starting_date = datetime(year=2022, month=12, day=1).date()
+    starting_date = datetime(year=2022, month=10, day=1).date()
 
     for i in range(get_days_till_today(starting_date)):
         today = starting_date + timedelta(days=i)
+
+        if today.day == 10:
+            time.sleep(sleep_time)
+            trans_menu_button = driver.find_element(By.XPATH, trans_menu)
+            a.move_to_element(trans_menu_button).perform()
+            driver.find_element(By.XPATH, add_trans).click()
+            time.sleep(0.5)
+            driver.find_element(By.XPATH, trans_date_input).send_keys(f"{today.month}-{today.day}-{today.year}")
+            driver.find_element(By.XPATH, trans_value_input).send_keys(4000)
+            driver.find_element(By.XPATH, trans_is_profit_input).click()
+            driver.find_element(By.XPATH, trans_desc_input).send_keys(f"salary")
+            cat_select = Select(driver.find_element(By.XPATH, trans_cat_input))
+            cat_select.select_by_visible_text("WORK")
+            cntp_select = Select(driver.find_element(By.XPATH, trans_cntp_input))
+            cntp_select.select_by_visible_text(choice(counterparties))
+            wallet_select = Select(driver.find_element(By.XPATH, trans_wallet_input))
+            wallet_select.select_by_visible_text("PERSONAL")
+            driver.find_element(By.XPATH, add_trans_submit).click()
+
+
 
         no_of_transactions = randint(0, 3)
 
@@ -218,6 +238,7 @@ def connect():
             trans_menu_button = driver.find_element(By.XPATH, trans_menu)
             a.move_to_element(trans_menu_button).perform()
             driver.find_element(By.XPATH, add_trans).click()
+            time.sleep(0.5)
             driver.find_element(By.XPATH, trans_date_input).send_keys(f"{today.month}-{today.day}-{today.year}")
             driver.find_element(By.XPATH, trans_value_input).send_keys(randint(50, 100))
             is_profit = driver.find_element(By.XPATH, trans_is_profit_input)

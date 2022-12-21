@@ -167,6 +167,7 @@ class ListTransactionView(LoginRequiredMixin, View):
                     "value": transaction.value,
                     "counterparty": transaction.counterparty.name,
                     "category": transaction.category.name,
+                    "description": transaction.description,
                     "wallet": [wallet.name for wallet in transaction.wallet.all()],
                 }
                 for transaction in transactions]
