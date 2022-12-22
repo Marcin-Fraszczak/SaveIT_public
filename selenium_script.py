@@ -30,7 +30,7 @@ def populate_python_anywhere():
 
     categories = ["SPORT", "FOOD", "BICYCLE", "HOUSING", "TRANSPORT", "FUN", "HEALTH", "WORK"]
     counterparties = ["BIEDRONKA", "LIDL", "TESCO", "ŻABKA", "PKP", "CERVELO",
-                      "STARA ROMANA", "MPK", "CASTORAMA", "MULTIKINO", "DREWBUD"]
+                      "STARA ROMANA", "MPK", "CASTORAMA", "MULTIKINO", "STALMET", "ITALINOX"]
     wallets = ["PERSONAL", "BUSINESS"]
     plans = [
         {"name": "Minimalistic", "goal": 4000, "initial": 1000, "curve": "Parabolic"},
@@ -92,13 +92,13 @@ def populate_python_anywhere():
     add_trans_submit = '/html/body/div[4]/form/button'
 
 
-    # register new user
-    driver.find_element(By.XPATH, sign_up).click()
-    driver.find_element(By.XPATH, sign_username_input).send_keys(username)
-    driver.find_element(By.XPATH, sign_email_input).send_keys(email)
-    driver.find_element(By.XPATH, sign_pass_input).send_keys(password)
-    driver.find_element(By.XPATH, sign_pass_conf_input).send_keys(password)
-    driver.find_element(By.XPATH, sign_submit).click()
+    # # register new user
+    # driver.find_element(By.XPATH, sign_up).click()
+    # driver.find_element(By.XPATH, sign_username_input).send_keys(username)
+    # driver.find_element(By.XPATH, sign_email_input).send_keys(email)
+    # driver.find_element(By.XPATH, sign_pass_input).send_keys(password)
+    # driver.find_element(By.XPATH, sign_pass_conf_input).send_keys(password)
+    # driver.find_element(By.XPATH, sign_submit).click()
 
     # login
     driver.find_element(By.XPATH, first_login).click()
@@ -106,110 +106,111 @@ def populate_python_anywhere():
     driver.find_element(By.XPATH, password_input).send_keys(password)
     driver.find_element(By.XPATH, login_submit).click()
 
-    # adding category
-    for cat_name in categories:
-        time.sleep(sleep_time)
-        cat_menu_button = driver.find_element(By.XPATH, cat_menu)
-        a.move_to_element(cat_menu_button).perform()
-        driver.find_element(By.XPATH, add_category).click()
-        driver.find_element(By.XPATH, cat_name_input).send_keys(cat_name)
-        driver.find_element(By.XPATH, cat_desc_input).send_keys(cat_name + "desc")
-        driver.find_element(By.XPATH, add_cat_submit).click()
-
-    # removing default category
-    time.sleep(sleep_time)
-    cat_menu_button = driver.find_element(By.XPATH, cat_menu)
-    a.move_to_element(cat_menu_button).perform()
-    driver.find_element(By.XPATH, list_category).click()
-    delete_category = '/html/body/div[4]/form[2]/button'
-    default_category = driver.find_element(By.XPATH, "//a[contains(text(), 'DEFAULT CATEGORY')]")
-    if default_category:
-        default_category.click()
-        driver.find_element(By.XPATH, delete_category).click()
-
-    # adding counterparty
-    for cntp_name in counterparties:
-        time.sleep(sleep_time)
-        cntp_menu_button = driver.find_element(By.XPATH, cntp_menu)
-        a.move_to_element(cntp_menu_button).perform()
-        driver.find_element(By.XPATH, add_cntp).click()
-        driver.find_element(By.XPATH, cntp_name_input).send_keys(cntp_name)
-        driver.find_element(By.XPATH, cntp_desc_input).send_keys(cntp_name + "desc")
-        driver.find_element(By.XPATH, add_cntp_submit).click()
-
-    # removing default counterparty
-    time.sleep(sleep_time)
-    cntp_menu_button = driver.find_element(By.XPATH, cntp_menu)
-    a.move_to_element(cntp_menu_button).perform()
-    driver.find_element(By.XPATH, list_cntp).click()
-    delete_cntp = '/html/body/div[4]/form[2]/button'
-    default_cntp = driver.find_element(By.XPATH, "//a[contains(text(), 'DEFAULT COUNTERPARTY')]")
-    if default_cntp:
-        default_cntp.click()
-        driver.find_element(By.XPATH, delete_cntp).click()
-
-    # adding wallet
-    for wallet_name in wallets:
-        time.sleep(sleep_time)
-        wallet_menu_button = driver.find_element(By.XPATH, wallet_menu)
-        a.move_to_element(wallet_menu_button).perform()
-        driver.find_element(By.XPATH, add_wallet).click()
-        driver.find_element(By.XPATH, wallet_name_input).send_keys(wallet_name)
-        driver.find_element(By.XPATH, wallet_desc_input).send_keys(wallet_name + " expenses")
-        driver.find_element(By.XPATH, add_wallet_submit).click()
-
-    # removing default wallet
-    time.sleep(sleep_time)
-    wallet_menu_button = driver.find_element(By.XPATH, wallet_menu)
-    a.move_to_element(wallet_menu_button).perform()
-    driver.find_element(By.XPATH, list_wallet).click()
-    delete_wallet = '/html/body/div[4]/form[2]/button'
-    default_wallet = driver.find_element(By.XPATH, "//a[contains(text(), 'DEFAULT WALLET')]")
-    if default_wallet:
-        default_wallet.click()
-        driver.find_element(By.XPATH, delete_wallet).click()
-
-    # setting default wallet
-    time.sleep(sleep_time)
-    wallet_menu_button = driver.find_element(By.XPATH, wallet_menu)
-    a.move_to_element(wallet_menu_button).perform()
-    driver.find_element(By.XPATH, list_wallet).click()
-    personal_wallet = driver.find_element(By.XPATH, "//div//div//a[contains(text(), 'PERSONAL')]")
-    if personal_wallet:
-        personal_wallet.find_element(By.XPATH, "//a[contains(text(), 'make default')]").click()
-
-    # adding savings_plan
-    for plan in plans:
-        time.sleep(sleep_time)
-        plan_menu_button = driver.find_element(By.XPATH, plan_menu)
-        a.move_to_element(plan_menu_button).perform()
-        driver.find_element(By.XPATH, add_plan).click()
-        driver.find_element(By.XPATH, plan_name_input).send_keys(plan["name"])
-        driver.find_element(By.XPATH, plan_goal_input).send_keys(plan["goal"])
-        driver.find_element(By.XPATH, plan_initial_input).send_keys(plan["initial"])
-        curve_select = Select(driver.find_element(By.XPATH, plan_curve_list))
-        curve_select.select_by_visible_text(plan["curve"])
-        driver.find_element(By.XPATH, add_plan_submit).click()
-
-    # setting default plan
-    time.sleep(sleep_time)
-    plan_menu_button = driver.find_element(By.XPATH, plan_menu)
-    a.move_to_element(plan_menu_button).perform()
-    driver.find_element(By.XPATH, list_plan).click()
-    personal_plan = driver.find_element(By.XPATH, "//div//div//a[contains(text(), 'MINIMALISTIC')]")
-    if personal_plan:
-        personal_plan.find_element(By.XPATH, "//a[contains(text(), 'make default')]").click()
+    # # adding category
+    # for cat_name in categories:
+    #     time.sleep(sleep_time)
+    #     cat_menu_button = driver.find_element(By.XPATH, cat_menu)
+    #     a.move_to_element(cat_menu_button).perform()
+    #     driver.find_element(By.XPATH, add_category).click()
+    #     driver.find_element(By.XPATH, cat_name_input).send_keys(cat_name)
+    #     driver.find_element(By.XPATH, cat_desc_input).send_keys(cat_name + "desc")
+    #     driver.find_element(By.XPATH, add_cat_submit).click()
+    #
+    # # removing default category
+    # time.sleep(sleep_time)
+    # cat_menu_button = driver.find_element(By.XPATH, cat_menu)
+    # a.move_to_element(cat_menu_button).perform()
+    # driver.find_element(By.XPATH, list_category).click()
+    # delete_category = '/html/body/div[4]/form[2]/button'
+    # default_category = driver.find_element(By.XPATH, "//a[contains(text(), 'DEFAULT CATEGORY')]")
+    # if default_category:
+    #     default_category.click()
+    #     driver.find_element(By.XPATH, delete_category).click()
+    #
+    # # adding counterparty
+    # for cntp_name in counterparties:
+    #     time.sleep(sleep_time)
+    #     cntp_menu_button = driver.find_element(By.XPATH, cntp_menu)
+    #     a.move_to_element(cntp_menu_button).perform()
+    #     driver.find_element(By.XPATH, add_cntp).click()
+    #     driver.find_element(By.XPATH, cntp_name_input).send_keys(cntp_name)
+    #     driver.find_element(By.XPATH, cntp_desc_input).send_keys(cntp_name + "desc")
+    #     driver.find_element(By.XPATH, add_cntp_submit).click()
+    #
+    # # removing default counterparty
+    # time.sleep(sleep_time)
+    # cntp_menu_button = driver.find_element(By.XPATH, cntp_menu)
+    # a.move_to_element(cntp_menu_button).perform()
+    # driver.find_element(By.XPATH, list_cntp).click()
+    # delete_cntp = '/html/body/div[4]/form[2]/button'
+    # default_cntp = driver.find_element(By.XPATH, "//a[contains(text(), 'DEFAULT COUNTERPARTY')]")
+    # if default_cntp:
+    #     default_cntp.click()
+    #     driver.find_element(By.XPATH, delete_cntp).click()
+    #
+    # # adding wallet
+    # for wallet_name in wallets:
+    #     time.sleep(sleep_time)
+    #     wallet_menu_button = driver.find_element(By.XPATH, wallet_menu)
+    #     a.move_to_element(wallet_menu_button).perform()
+    #     driver.find_element(By.XPATH, add_wallet).click()
+    #     driver.find_element(By.XPATH, wallet_name_input).send_keys(wallet_name)
+    #     driver.find_element(By.XPATH, wallet_desc_input).send_keys(wallet_name + " expenses")
+    #     driver.find_element(By.XPATH, add_wallet_submit).click()
+    #
+    # # removing default wallet
+    # time.sleep(sleep_time)
+    # wallet_menu_button = driver.find_element(By.XPATH, wallet_menu)
+    # a.move_to_element(wallet_menu_button).perform()
+    # driver.find_element(By.XPATH, list_wallet).click()
+    # delete_wallet = '/html/body/div[4]/form[2]/button'
+    # default_wallet = driver.find_element(By.XPATH, "//a[contains(text(), 'DEFAULT WALLET')]")
+    # if default_wallet:
+    #     default_wallet.click()
+    #     driver.find_element(By.XPATH, delete_wallet).click()
+    #
+    # # setting default wallet
+    # time.sleep(sleep_time)
+    # wallet_menu_button = driver.find_element(By.XPATH, wallet_menu)
+    # a.move_to_element(wallet_menu_button).perform()
+    # driver.find_element(By.XPATH, list_wallet).click()
+    # personal_wallet = driver.find_element(By.XPATH, "//div//div//a[contains(text(), 'PERSONAL')]")
+    # if personal_wallet:
+    #     personal_wallet.find_element(By.XPATH, "//a[contains(text(), 'make default')]").click()
+    #
+    # # adding savings_plan
+    # for plan in plans:
+    #     time.sleep(sleep_time)
+    #     plan_menu_button = driver.find_element(By.XPATH, plan_menu)
+    #     a.move_to_element(plan_menu_button).perform()
+    #     driver.find_element(By.XPATH, add_plan).click()
+    #     driver.find_element(By.XPATH, plan_name_input).send_keys(plan["name"])
+    #     driver.find_element(By.XPATH, plan_goal_input).send_keys(plan["goal"])
+    #     driver.find_element(By.XPATH, plan_initial_input).send_keys(plan["initial"])
+    #     curve_select = Select(driver.find_element(By.XPATH, plan_curve_list))
+    #     curve_select.select_by_visible_text(plan["curve"])
+    #     driver.find_element(By.XPATH, add_plan_submit).click()
+    #
+    # # setting default plan
+    # time.sleep(sleep_time)
+    # plan_menu_button = driver.find_element(By.XPATH, plan_menu)
+    # a.move_to_element(plan_menu_button).perform()
+    # driver.find_element(By.XPATH, list_plan).click()
+    # personal_plan = driver.find_element(By.XPATH, "//div//div//a[contains(text(), 'MINIMALISTIC')]")
+    # if personal_plan:
+    #     personal_plan.find_element(By.XPATH, "//a[contains(text(), 'make default')]").click()
 
     def get_days_till_today(start):
         stop = datetime.now().date()
         delta = (stop - start).days
         return delta
 
-    starting_date = datetime(year=2022, month=10, day=1).date()
+    starting_date = datetime(year=2022, month=12, day=1).date()
 
     for i in range(get_days_till_today(starting_date)):
         today = starting_date + timedelta(days=i)
 
+        # Salary
         if today.day == 10:
             time.sleep(sleep_time)
             trans_menu_button = driver.find_element(By.XPATH, trans_menu)
@@ -223,12 +224,10 @@ def populate_python_anywhere():
             cat_select = Select(driver.find_element(By.XPATH, trans_cat_input))
             cat_select.select_by_visible_text("WORK")
             cntp_select = Select(driver.find_element(By.XPATH, trans_cntp_input))
-            cntp_select.select_by_visible_text(choice(counterparties))
+            cntp_select.select_by_visible_text("MPK")
             wallet_select = Select(driver.find_element(By.XPATH, trans_wallet_input))
             wallet_select.select_by_visible_text("PERSONAL")
             driver.find_element(By.XPATH, add_trans_submit).click()
-
-
 
         no_of_transactions = randint(0, 3)
 

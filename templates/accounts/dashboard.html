@@ -14,123 +14,178 @@
 
 
 
-    <div class="row mt-4 ml-5 pt-2 container-flex align-items-center align-center">
-        <div class="col-1"><a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'-1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="abs_button_left"><</a>
+    <div class="row mt-0 ml-5 mr-2 pt-2 container-flex align-items-center align-center m-auto">
+
+
+
+        <div class="item features-image сol-12 col-md-12 col-lg-12 col-xl-6">
+            <div class="item-wrapper align-center">
+                <div class="item-img">
+                    <div class="row align-items-center">
+
+                        <div class="col-1">
+                            <a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'-1'}}"
+                                class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="abs_button_left"><</a>
+                        </div>
+
+                        <div class="col-10">
+                            <canvas id="chartAbsolute" style="width:100%; max-width: 700px; margin: 0 auto;"></canvas>
+                        </div>
+
+                        <div class="col-1">
+                            <a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'1'}}"
+                           class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="abs_button_right">></a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-4">
-            <canvas id="chartAbsolute" style="width:100%;max-width:700px"></canvas>
-        </div>
-        <div class="col-1"><a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="abs_button_right">></a>
-        </div>
 
 
 
-        <div class="col-5">
-            <div class="row mb-2 customizer card-box rounded align-items-center">
-                <div class="col-8 align-left">
-                    <p class="text-white text-primary display-7 nav-link" id="top_beam">Summary for wallet: {{ default_wallet.name|default:'All wallets' }} in {{abs_displayed_date}}</p>
+        <div class="item features-image сol-12 col-md-12 col-lg-12 col-xl-6">
+            <div class="item-wrapper align-center">
+                <div class="item-img">
+
+                    <div class="row mb-2 customizer card-box rounded align-items-center">
+                        <div class="col-8 align-left">
+                            <p class="text-white text-primary display-7 nav-link" id="top_beam">Summary for wallet: {{ default_wallet.name|default:'All wallets' }} in {{abs_displayed_date}}</p>
+                        </div>
+                        <div class="col-4"><a href="{% url 'accounts:dashboard' %}?abs_year={% now 'Y' %}&abs_month={% now 'm' %}"
+                            class="btn btn-light display-4 m-0 dash-link pt-2 pb-2">This month</a>
+                        </div>
+                    </div>
+
+                    <div class="row p-1 align-items-center">
+                        <div class="col-3">Transactions:</div>
+                        <div class="col-2" id="abs_no_transactions">{{abs_no_transactions}}</div>
+                        <div class="col-4"><a href="{% url 'transactions:add_transaction' %}"
+                            class="btn btn-dark display-4 m-0 dash-link">Add new</a>
+                        </div>
+                        <div class="col-3"><a href="{% url 'transactions:list_transaction' %}?fromDate={{abs_year}}-{{abs_month}}-1&toDate=1000-01-01"
+                            class="btn btn-secondary display-4 m-0 dash-link" id="show_month_transactions">Show</a>
+                        </div>
+                    </div>
+
+                    <div class="row p-1 pt-4 align-items-center">
+                        <div class="col-3">Monthly profit:</div>
+                        <div class="col-2" id="monthly_profit">{{monthly_profit}}</div>
+                    </div>
+
+                    <div class="row p-1 pt-4 align-items-center">
+                        <div class="col-3">Monthly debit:</div>
+                        <div class="col-2" id="monthly_debit">{{monthly_debit}}</div>
+                    </div>
+
+                    <div class="row p-1 pt-4 align-items-center">
+                        <div class="col-3">Monthly balance:</div>
+                        <div class="col-2" id="monthly_balance">{{ monthly_balance }}</div>
+                    </div>
+
                 </div>
-                <div class="col-4"><a href="{% url 'accounts:dashboard' %}?abs_year={% now 'Y' %}&abs_month={% now 'm' %}"
-                    class="btn btn-light display-4 m-0 dash-link pt-2 pb-2">This month</a>
-                </div>
             </div>
-            <div class="row p-1 align-items-center">
-                <div class="col-3">Transactions:</div>
-                <div class="col-2" id="abs_no_transactions">{{abs_no_transactions}}</div>
-                <div class="col-3"><a href="{% url 'transactions:add_transaction' %}"
-                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
-                </div>
-                <div class="col-3"><a href="{% url 'transactions:list_transaction' %}?fromDate={{abs_year}}-{{abs_month}}-1&toDate=1000-01-01"
-                    class="btn btn-secondary display-4 m-0 dash-link" id="show_month_transactions">Show</a>
-                </div>
-            </div>
-
-            <div class="row p-1 pt-4 align-items-center">
-                <div class="col-3">Monthly profit:</div>
-                <div class="col-2" id="monthly_profit">{{monthly_profit}}</div>
-            </div>
-
-            <div class="row p-1 pt-4 align-items-center">
-                <div class="col-3">Monthly debit:</div>
-                <div class="col-2" id="monthly_debit">{{monthly_debit}}</div>
-            </div>
-
-            <div class="row p-1 pt-4 align-items-center">
-                <div class="col-3">Monthly balance:</div>
-                <div class="col-2" id="monthly_balance">{{ monthly_balance }}</div>
-            </div>
-
         </div>
     </div>
 
 
 
-    <div class="row mt-1 ml-5 pt-2 container-flex align-items-center align-center">
-        <div class="col-1"><a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'-1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="cum_button_left"><</a>
+     <div class="row mt-0 ml-5 mr-2 pt-2 container-flex align-items-center align-center m-auto">
+
+
+
+        <div class="item features-image сol-12 col-md-12 col-lg-12 col-xl-6">
+            <div class="item-wrapper align-center">
+                <div class="item-img">
+                    <div class="row align-items-center">
+
+                        <div class="col-1">
+                            <a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'-1'}}"
+                                class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="cum_button_left"><</a>
+                        </div>
+
+                        <div class="col-10">
+                            <canvas id="chartCumulative" style="width:100%; max-width: 700px; margin: 0 auto;"></canvas>
+                        </div>
+
+                        <div class="col-1">
+                            <a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'1'}}"
+                                class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="cum_button_right">></a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-4">
-            <canvas id="chartCumulative" style="width:100%;max-width:700px"></canvas>
-        </div>
-        <div class="col-1"><a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'1'}}"
-               class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="cum_button_right">></a>
-        </div>
 
-        <div class="col-5">
-            <div class="row mb-2 customizer card-box rounded align-items-center">
-                <div class="col-8 align-left">
-                    <p class="text-white text-primary display-7 nav-link" id="bottom_beam">Summary for wallet: {{default_wallet.name|default:'All wallets'}}</p>
-                </div>
-                <div class="col-4"><a href="{% url 'wallets:list_wallet' %}"
-                    class="btn btn-light display-4 m-0 dash-link pt-2 pb-2">Change wallet</a>
+
+
+        <div class="item features-image сol-12 col-md-12 col-lg-12 col-xl-6">
+            <div class="item-wrapper align-center">
+                <div class="item-img">
+
+                    <div class="row mb-2 customizer card-box rounded align-items-center">
+                        <div class="col-8 align-left">
+                            <p class="text-white text-primary display-7 nav-link" id="bottom_beam">Summary for wallet: {{default_wallet.name|default:'All wallets'}}</p>
+                        </div>
+                        <div class="col-4"><a href="{% url 'wallets:list_wallet' %}"
+                            class="btn btn-light display-4 m-0 dash-link pt-2 pb-2">Change wallet</a>
+                        </div>
+                    </div>
+
+                    <div class="row p-1 align-items-center">
+                        <div class="col-3">Transactions:</div>
+                        <div class="col-2" id="total_transactions">{{total_transactions}}</div>
+                        <div class="col-4"><a href="{% url 'transactions:add_transaction' %}"
+                            class="btn btn-dark display-4 m-0 dash-link">Add new</a>
+                        </div>
+                        {% if default_wallet %}
+                        <div class="col-3"><a href="{% url 'transactions:list_transaction' %}?filter_by=wallet&filter_val={{default_wallet.pk}}"
+                            class="btn btn-secondary display-4 m-0 dash-link" id="show_by_wallet">Show</a>
+                        </div>
+                        {% else %}
+                        <div class="col-3"><a href="{% url 'transactions:list_transaction' %}"
+                            class="btn btn-secondary display-4 m-0 dash-link">Show</a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row p-1 pt-4 align-items-center">
+                        <div class="col-3">Total profit:</div>
+                        <div class="col-2" id="total_profit">{{total_profit}}</div>
+                    </div>
+
+                    <div class="row p-1 pt-4 align-items-center">
+                        <div class="col-3">Total debit:</div>
+                        <div class="col-2" id="total_debit">{{total_debit}}</div>
+                    </div>
+
+                    <div class="row p-1 pt-4 align-items-center">
+                        <div class="col-3">Total balance:</div>
+                        <div class="col-2" id="total_balance">{{total_balance}}</div>
+                    </div>
+
                 </div>
             </div>
-            <div class="row p-1 align-items-center">
-                <div class="col-3">Transactions:</div>
-                <div class="col-2" id="total_transactions">{{total_transactions}}</div>
-                <div class="col-3"><a href="{% url 'transactions:add_transaction' %}"
-                    class="btn btn-dark display-4 m-0 dash-link">Add new</a>
-                </div>
-                {% if default_wallet %}
-                <div class="col-3"><a href="{% url 'transactions:list_transaction' %}?filter_by=wallet&filter_val={{default_wallet.pk}}"
-                    class="btn btn-secondary display-4 m-0 dash-link" id="show_by_wallet">Show</a>
-                </div>
-                {% else %}
-                <div class="col-3"><a href="{% url 'transactions:list_transaction' %}"
-                    class="btn btn-secondary display-4 m-0 dash-link">Show</a>
-                </div>
-                {% endif %}
-            </div>
-
-            <div class="row p-1 pt-4 align-items-center">
-                <div class="col-3">Total profit:</div>
-                <div class="col-2" id="total_profit">{{total_profit}}</div>
-            </div>
-
-            <div class="row p-1 pt-4 align-items-center">
-                <div class="col-3">Total debit:</div>
-                <div class="col-2" id="total_debit">{{total_debit}}</div>
-            </div>
-
-            <div class="row p-1 pt-4 align-items-center">
-                <div class="col-3">Total balance:</div>
-                <div class="col-2" id="total_balance">{{total_balance}}</div>
-            </div>
-
         </div>
     </div>
 
+    <div class="row mt-3 mb-5">
 
+        <div class="item features-image сol-12 col-md-12 col-lg-12 col-xl-6">
+            <div class="item-wrapper">
+                <div class="row item-img">
 
-    <div class="row mt-5 ml-4 pt-1 container-flex align-items-center align-center">
-        <div class="col-2 display-4">Independent graphs</div>
-        <div class="slidecontainer col-2 form-control">
-            <input type="range" min="0" max="1" value="{{chain_graphs}}" step="1" class="slider chain-graphs" id="chain_graphs">
+                    <div class="col-4 display-4 align-center">Independent graphs</div>
+                    <div class="slidecontainer col-4 form-control">
+                        <input type="range" min="0" max="1" value="{{chain_graphs}}" step="1" class="slider chain-graphs" id="chain_graphs">
+                    </div>
+                    <div class="col-4 display-4 align-center">Connected graphs</div>
+
+                </div>
+            </div>
         </div>
-        <div class="col-2 display-4">Connected graphs</div>
-        </div>
+
     </div>
 
 

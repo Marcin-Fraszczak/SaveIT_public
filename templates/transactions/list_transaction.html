@@ -12,34 +12,30 @@
 {% block container %}
     <div class="container-flex ml-3 mr-5 mb-2 mt-5">
         <div class="row">
-            <div class="col-3">
+            <div class="col-0 col-lg-3">
                 <h2 class="ml-4">View all transactions:</h2>
             </div>
-            <div class="col-3">Filter by name:</div>
-            <div class="col-2">From date:</div>
-            <div class="col-2">To date:</div>
-            <div class="col-1"></div>
+            <div class="col-0 col-lg-3">Filter by name:</div>
+            <div class="col-0 col-lg-2">From date:</div>
+            <div class="col-0 col-lg-2">To date:</div>
+            <div class="col-0 col-lg-1"></div>
         </div>
         <div class="row align-center">
-            <div class="col-1 btn-group-vertical">Only Debits</div>
-            <div class="slidecontainer col-1 btn-group-vertical form-control">
+            <div class="col-4 col-lg-1 btn-group-vertical">Only Debits</div>
+            <div class="slidecontainer col-4 col-lg-1 btn-group-vertical form-control">
                 <input type="range" min="-1" max="1" value="{{value_filter}}" step="1" class="slider value-input">
             </div>
-            <div class="col-1 btn-group-vertical">Only Profits</div>
-            <div class="col-3">
+            <div class="col-4 col-lg-1 btn-group-vertical">Only Profits</div>
+            <div class="col-0 col-lg-3">
                 <input type="text" class="search-input form-control" onkeyup="searchFilter()" placeholder="Search for..." value="{{word_filter}}">
             </div>
-            <div class="col-2">
+            <div class="col-0 col-lg-2">
                 <input type="date" class="form-control from-date-input" value="{{from_date}}" onchange="dateTrigger(this)">
             </div>
-            <div class="col-2">
+            <div class="col-0 col-lg-2">
                 <input type="date" class="form-control to-date-input" value="{{to_date}}" onchange="dateTrigger(this)">
             </div>
-            <div class="trigger col-1"><a
-                    href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}"
-                    class="btn btn-dark display-4 m-0 d-flex disabled" id="search-button">Search</a>
-            </div>
-            <div class="col-1"><a
+            <div class="col-4 col-md-3 col-lg-2 col-xl-2"><a
                     href="{% url 'transactions:list_transaction' %}"
                     class="btn btn-secondary display-4 m-0 d-flex">Reset</a>
             </div>
@@ -48,19 +44,31 @@
         <ul class="data-body">
 
             <div class="row mb-0 mt-3 data-table customizer card-box rounded-top">
-                <div class="col-1 text-white text-primary display-7 nav-link">No.</div>
-                <div class="trigger col-1"><a href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Date</a></div>
-                <div class="trigger col-1"><a href="{% url 'transactions:list_transaction' %}?order=value&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Value</a></div>
-                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=counterparty&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Counterparty</a></div>
-                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=category&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Category</a></div>
-                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=wallet&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Wallet</a></div>
-                <div class="trigger col-2"><a href="{% url 'transactions:list_transaction' %}?order=notes&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">Description</a></div>
+                <div class="col-0 col-lg-1 text-white text-primary display-7 nav-link"></div>
+                <div class="trigger col-0 col-lg-5 col-xl-2">
+                    <a href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">
+                        Date</a></div>
+                <div class="trigger col-0 col-lg-5 col-xl-2">
+                    <a href="{% url 'transactions:list_transaction' %}?order=value&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">
+                        Value</a></div>
+                <div class="trigger col-0 col-xl-2">
+                    <a href="{% url 'transactions:list_transaction' %}?order=counterparty&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">
+                        Counterparty</a></div>
+                <div class="trigger col-0 col-xl-2">
+                    <a href="{% url 'transactions:list_transaction' %}?order=category&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">
+                        Category</a></div>
+                <div class="trigger col-0 col-xl-1">
+                    <a href="{% url 'transactions:list_transaction' %}?order=wallet&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">
+                        Wallet</a></div>
+                <div class="trigger col-0 col-xl-2">
+                    <a href="{% url 'transactions:list_transaction' %}?order=notes&filter_by={{filter_by}}&filter_val={{filter_val}}" class="text-white text-primary display-7 nav-link">
+                        Description</a></div>
             </div>
 
              <div class="row mb-3 data-table customizer card-box rounded-bottom">
-                <div class="col-1 text-white text-primary display-7 nav-link value-total">Total</div>
+                <div class="col-0 col-lg-1 text-white text-primary display-7 nav-link value-total">Total</div>
                 <div class="col-1 text-white text-primary display-7 nav-link"></div>
-                <div class="col-1 text-white text-primary display-7 nav-link align-center value-sum">Total</div>
+                <div class="col-0 col-lg-3 text-white text-primary display-7 nav-link align-right value-sum">Total</div>
                 <div class="col-2 text-white text-primary display-7 nav-link"></div>
                 <div class="col-2 text-white text-primary display-7 nav-link"></div>
                 <div class="col-2 text-white text-primary display-7 nav-link"></div>
@@ -72,19 +80,19 @@
             {% for object in object_list %}
             <a href="{% url 'transactions:modify_transaction' object.pk %}" class="text-black">
                 <div class="row p-2 data-row">
-                    <div class="col-1">{{forloop.counter}}</div>
-                    <div class="col-1">{{object.date|date:"d M Y"}}</div>
-                    <div class="col-1 text-right pr-5">{{object.value|floatformat:2}}</div>
-                    <div class="col-2">{{object.counterparty}}</div>
-                    <div class="col-2">{{object.category}}</div>
-                    <div class="col-2">
+                    <div class="col-0 col-lg-1">{{forloop.counter}}</div>
+                    <div class="col-0 col-lg-5 col-xl-2">{{object.date|date:"d M Y"}}</div>
+                    <div class="col-0 col-lg-5 col-xl-2 text-right pr-5">{{object.value|floatformat:2}}</div>
+                    <div class="col-0 col-xl-2">{{object.counterparty}}</div>
+                    <div class="col-0 col-xl-2">{{object.category}}</div>
+                    <div class="col-0 col-xl-1">
                         {% for wallet in object.wallet.all %}
                             {{wallet}}
                         {%empty%}
-                            <div class="col-2"></div>
+                            <div class="col-0 col-xl-1"></div>
                         {% endfor %}
                     </div>
-                    <div class="col">{{object.description|default_if_none:""}}</div>
+                    <div class="col-0 col-xl-2">{{object.description|default_if_none:""}}</div>
                 </div>
             </a>
             {% empty %}
@@ -93,10 +101,10 @@
             </div>
         </ul>
     </div>
-    <script src="{% static 'assets/filtering/filtering_trans.js' %}">
+    <a href="{% url 'transactions:list_transaction' %}?order=date&filter_by={{filter_by}}&filter_val={{filter_val}}"
+        class="btn btn-dark display-4 m-0 d-flex disabled" id="search-button">Search</a>
 
-
-    </script>
+    <script src="{% static 'assets/filtering/filtering_trans.js' %}"></script>
     <div></div>
 
 {% endblock container %}

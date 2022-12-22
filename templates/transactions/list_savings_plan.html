@@ -12,60 +12,77 @@
 {% block container %}
     <div class="container-flex ml-3 mr-5 mb-2 mt-5">
         <div class="row">
-            <div class="col-4">
+            <div class="col-10 col-md-6">
                 <h2 class="ml-4">View all savings plans:</h2>
             </div>
-            <div class="col-8">
+            <div class="col-10 col-md-4 col-lg-4 ml-5 mr-5">
                 <input type="text" class="search-input form-control" onkeyup="searchWordFilter()" placeholder="Search for..." value="{{word_filter}}">
             </div>
+            <div class="col-2 col-md-2"></div>
         </div>
 
         <ul>
 
             <div class="row mb-3 mt-3 data-table customizer card-box rounded">
-                <div class="col-1 text-white text-primary display-7 nav-link">No.</div>
-                <div class="trigger col-2"><a href="{% url 'plans:list_savings_plan' %}?order=name" class="text-white text-primary display-7 nav-link">Name</a></div>
-                <div class="trigger col-2"><a href="{% url 'plans:list_savings_plan' %}?order=initial_value" class="text-white text-primary display-7 nav-link">Initial value</a></div>
-                <div class="trigger col-2"><a href="{% url 'plans:list_savings_plan' %}?order=monthly_goal" class="text-white text-primary display-7 nav-link">Monthly goal</a></div>
-                <div class="trigger col-3"><a href="{% url 'plans:list_savings_plan' %}?order=curve_type" class="text-white text-primary display-7 nav-link">Curve type</a></div>
-                <div class="col-2 text-white text-primary display-7 nav-link">Default</div>
+                <div class="col-0 col-md-1 text-white text-primary display-7 nav-link"></div>
+                <div class="trigger col-0 col-md-3 col-lg-2">
+                    <a href="{% url 'plans:list_savings_plan' %}?order=name" class="text-white text-primary display-7 nav-link">
+                        Name
+                    </a>
+                </div>
+                <div class="trigger col-0 col-md-2">
+                    <a href="{% url 'plans:list_savings_plan' %}?order=initial_value" class="text-white text-primary display-7 nav-link">
+                        Initial value
+                    </a>
+                </div>
+                <div class="trigger col-0 col-md-3 col-lg-2">
+                    <a href="{% url 'plans:list_savings_plan' %}?order=monthly_goal" class="text-white text-primary display-7 nav-link">
+                        Monthly goal
+                    </a>
+                </div>
+                <div class="trigger col-0 col-md-3">
+                    <a href="{% url 'plans:list_savings_plan' %}?order=curve_type" class="text-white text-primary display-7 nav-link">
+                        Curve type
+                    </a>
+                </div>
+                <div class="col-0 col-lg-2 text-white text-primary display-7 nav-link">Default</div>
             </div>
             <div class="custom-scrollbar" style="overflow-y: auto; overflow-x: hidden; max-height: 63vh">
             {% for object in object_list %}
                 <div class="row p-4 data-row align-items-center">
-                    <div class="col-1">
+                    <div class="col-0 col-md-1">
                         <a href="{% url 'plans:modify_savings_plan' object.pk %}" class="text-black d-inline-block">
                             {{forloop.counter}}
                         </a>
                     </div>
-                    <div class="col-2">
+                    <div class="col-0 col-md-3 col-lg-2">
                         <a href="{% url 'plans:modify_savings_plan' object.pk %}" class="text-black d-inline-block">
                             {{object.name}}
                         </a>
                     </div>
-                    <div class="col-2">
+                    <div class="col-0 col-md-2">
                         <a href="{% url 'plans:modify_savings_plan' object.pk %}" class="text-black d-inline-block">
                             {{object.initial_value}}
                         </a>
                     </div>
-                    <div class="col-2">
+                    <div class="col-0 col-md-3 col-lg-2">
                         <a href="{% url 'plans:modify_savings_plan' object.pk %}" class="text-black d-inline-block">
                             {{object.monthly_goal}}
                         </a>
                     </div>
-                    <div class="col-3">
+                    <div class="col-0 col-md-3">
                         <a href="{% url 'plans:modify_savings_plan' object.pk %}" class="text-black d-inline-block">
                             {{object.get_curve_type_display}}
                         </a>
                     </div>
                     {% if object.is_default %}
-                    <div class="col-2">
+                    <div class="col-0 col-lg-2">
                         <a href="#" class="btn btn-dark display-4 m-0 disabled">
                             default
                         </a>
                     </div>
                     {% else %}
-                    <div class="col-2">
+                    <div class="col-0 col-lg-2">
                         <a href="{% url 'plans:make_default_savings_plan' object.pk %}" class="btn btn-secondary display-4 m-0">
                             make default
                         </a>
