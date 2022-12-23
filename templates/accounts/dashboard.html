@@ -21,9 +21,21 @@
         <div class="item features-image сol-12 col-md-12 col-lg-12 col-xl-6">
             <div class="item-wrapper align-center">
                 <div class="item-img">
+
+                    <div class="row align-items-center small-show">
+                        <div class="col-6 small-show">
+                            <a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'-1'}}"
+                                class="btn btn-secondary display-4 m-0 dash-link p-2 pt-2 pb-2 trigger d-flex" id="abs_button_left"><</a>
+                        </div>
+                        <div class="col-6 small-show">
+                            <a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'1'}}"
+                           class="btn btn-secondary display-4 m-0 dash-link p-2 pt-2 pb-2 trigger d-flex" id="abs_button_right">></a>
+                        </div>
+                    </div>
+
                     <div class="row align-items-center">
 
-                        <div class="col-1">
+                        <div class="col-1 small-no-show">
                             <a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'-1'}}"
                                 class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="abs_button_left"><</a>
                         </div>
@@ -32,7 +44,7 @@
                             <canvas id="chartAbsolute" style="width:100%; max-width: 700px; margin: 0 auto;"></canvas>
                         </div>
 
-                        <div class="col-1">
+                        <div class="col-1 small-no-show">
                             <a href="{% url 'accounts:dashboard' %}?abs_year={{abs_year}}&abs_month={{abs_month|add:'1'}}"
                            class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="abs_button_right">></a>
                         </div>
@@ -97,9 +109,20 @@
         <div class="item features-image сol-12 col-md-12 col-lg-12 col-xl-6">
             <div class="item-wrapper align-center">
                 <div class="item-img">
-                    <div class="row align-items-center">
 
-                        <div class="col-1">
+                    <div class="row align-items-center small-show">
+                        <div class="col-6 small-show">
+                            <a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'-1'}}"
+                                class="btn btn-secondary display-4 m-0 dash-link p-2 pt-2 pb-2 trigger d-flex" id="cum_button_left"><</a>
+                        </div>
+                        <div class="col-6 small-show">
+                            <a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'1'}}"
+                                class="btn btn-secondary display-4 m-0 dash-link p-2 pt-2 pb-2 trigger d-flex" id="cum_button_right">></a>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center">
+                        <div class="col-1 small-no-show">
                             <a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'-1'}}"
                                 class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="cum_button_left"><</a>
                         </div>
@@ -108,7 +131,7 @@
                             <canvas id="chartCumulative" style="width:100%; max-width: 700px; margin: 0 auto;"></canvas>
                         </div>
 
-                        <div class="col-1">
+                        <div class="col-1 small-no-show">
                             <a href="{% url 'accounts:dashboard' %}?cum_year={{cum_year}}&cum_month={{cum_month|add:'1'}}"
                                 class="btn btn-secondary display-4 m-0 dash-link p-2 pt-3 pb-3 trigger" id="cum_button_right">></a>
                         </div>
