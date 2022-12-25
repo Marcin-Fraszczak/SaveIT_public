@@ -59,12 +59,12 @@
                         <a href="{% url 'wallets:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.wlt_transaction.all|length}}
                         </a>
                     </div>
-                    <div class="col-0 col-lg-2">
+                    <div class="col-0 col-lg-2 m-1">
                         <a href="{% url 'wallets:transfer_wallet' from_wallet.pk object.pk %}" class="btn btn-secondary display-4 m-0">
                             Transfer here
                         </a>
                     </div>
-                    <div class="col-0 col-lg-3">
+                    <div class="col-0 col-lg-3 m-1">
                         <a href="{% url 'transactions:list_transaction' %}?filter_by=wallet&filter_val={{object.pk}}" class="btn btn-secondary display-4 m-0">
                             Transactions
                         </a>
