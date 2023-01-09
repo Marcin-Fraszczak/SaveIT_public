@@ -21,7 +21,7 @@ def populate_python_anywhere():
 
     url = 'https://marcinfraszczak.eu.pythonanywhere.com/'
     driver.get(url)
-    sleep_time = 1
+    sleep_time = 0.7
 
     username = os.environ.get('SEL_USERNAME')
     email = os.environ.get('SEL_EMAIL')
@@ -200,12 +200,28 @@ def populate_python_anywhere():
     # if personal_plan:
     #     personal_plan.find_element(By.XPATH, "//a[contains(text(), 'make default')]").click()
 
-    def get_days_till_today(start):
-        stop = datetime.now().date()
-        delta = (stop - start).days
-        return delta
+    starting_date = datetime(year=2023, month=2, day=1).date()
 
-    starting_date = datetime(year=2022, month=12, day=1).date()
+    def get_days_till_today(start):
+        # just today
+        # stop = datetime.now().date()
+
+        # arbitrary date
+        stop = datetime(year=2023, month=3, day=1).date()
+        return (stop - start).days
+
+    def create_date_key(today):
+        if int(today.month) <= 9:
+            month = f"0{today.month}"
+        else:
+            month = today.month
+        if int(today.day) <= 9:
+            day = f"0{today.day}"
+        else:
+            day = today.day
+        date_key = f"{month}-{day}-{today.year}"
+        return date_key
+
 
     for i in range(get_days_till_today(starting_date)):
         today = starting_date + timedelta(days=i)
@@ -217,7 +233,7 @@ def populate_python_anywhere():
             a.move_to_element(trans_menu_button).perform()
             driver.find_element(By.XPATH, add_trans).click()
             time.sleep(0.5)
-            driver.find_element(By.XPATH, trans_date_input).send_keys(f"{today.month}-{today.day}-{today.year}")
+            driver.find_element(By.XPATH, trans_date_input).send_keys(create_date_key(today))
             driver.find_element(By.XPATH, trans_value_input).send_keys(4000)
             driver.find_element(By.XPATH, trans_is_profit_input).click()
             driver.find_element(By.XPATH, trans_desc_input).send_keys(f"salary")
@@ -238,7 +254,7 @@ def populate_python_anywhere():
             a.move_to_element(trans_menu_button).perform()
             driver.find_element(By.XPATH, add_trans).click()
             time.sleep(0.5)
-            driver.find_element(By.XPATH, trans_date_input).send_keys(f"{today.month}-{today.day}-{today.year}")
+            driver.find_element(By.XPATH, trans_date_input).send_keys(create_date_key(today))
             driver.find_element(By.XPATH, trans_value_input).send_keys(randint(50, 100))
             is_profit = driver.find_element(By.XPATH, trans_is_profit_input)
             if randint(1, 5) == 1:

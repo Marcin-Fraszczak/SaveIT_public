@@ -140,12 +140,15 @@ class ListTransactionView(LoginRequiredMixin, View):
         if not to_date:
             to_date = datetime.now().date()
 
-        if raw_sort_order == last_sort_order_trans:
-            sort_order = f"-{raw_sort_order.replace('-', '')}"
-        else:
+        if "no_reverse" in request.GET:
             sort_order = raw_sort_order
+        else:
+            if raw_sort_order == last_sort_order_trans:
+                sort_order = f"-{raw_sort_order.replace('-', '')}"
+            else:
+                sort_order = raw_sort_order
+            last_sort_order_trans = sort_order
 
-        last_sort_order_trans = sort_order
         transactions = Transaction.objects.filter(owner=user, date__range=(from_date, to_date))
 
         if filter_by == 'category':
