@@ -29,15 +29,14 @@ Dashboard view allows user to view graphs and summary for each month as well as 
 4. You can now add transactions.
 
 
+
 Tests:
 <!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage report</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
-    <script type="text/javascript" src="coverage_html.js" defer></script>
 </head>
 <body class="indexfile">
 <header>
@@ -45,40 +44,6 @@ Tests:
         <h1>Coverage report:
             <span class="pc_cov">95%</span>
         </h1>
-        <aside id="help_panel_wrapper">
-            <input id="help_panel_state" type="checkbox">
-            <label for="help_panel_state">
-                <img id="keyboard_icon" src="keybd_closed.png" alt="Show/hide keyboard shortcuts" />
-            </label>
-            <div id="help_panel">
-                <p class="legend">Shortcuts on this page</p>
-                <div class="keyhelp">
-                    <p>
-                        <kbd>n</kbd>
-                        <kbd>s</kbd>
-                        <kbd>m</kbd>
-                        <kbd>x</kbd>
-                        <kbd>c</kbd>
-                        &nbsp; change column sorting
-                    </p>
-                    <p>
-                        <kbd>[</kbd>
-                        <kbd>]</kbd>
-                        &nbsp; prev/next file
-                    </p>
-                    <p>
-                        <kbd>?</kbd> &nbsp; show/hide this help
-                    </p>
-                </div>
-            </div>
-        </aside>
-        <form id="filter_container">
-            <input id="filter" type="text" value="" placeholder="filter..." />
-        </form>
-        <p class="text">
-            <a class="nav" href="https://coverage.readthedocs.io">coverage.py v7.1.0</a>,
-            created at 2023-01-25 12:07 +0100
-        </p>
     </div>
 </header>
 <main id="index">
@@ -158,13 +123,6 @@ Tests:
             created at 2023-01-25 12:07 +0100
         </p>
     </div>
-    <aside class="hidden">
-        <a id="prevFileLink" class="nav" href="d_e7c17c6834bd7be8_views_py.html"/>
-        <a id="nextFileLink" class="nav" href="d_509fd8af0f7a1b49_views_py.html"/>
-        <button type="button" class="button_prev_file" data-shortcut="["/>
-        <button type="button" class="button_next_file" data-shortcut="]"/>
-        <button type="button" class="button_show_hide_help" data-shortcut="?"/>
-    </aside>
 </footer>
 </body>
 </html>
