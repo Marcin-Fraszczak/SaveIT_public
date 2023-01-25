@@ -72,3 +72,13 @@ def test_login_impossible_with_wrong_data(client):
 
     assert response.status_code == 200
     assert not response.context["user"].is_authenticated
+
+
+@pytest.mark.django_db
+def test_proper_data_displayed(client, prepare_data):
+    user = prepare_data.get("user")
+    client.force_login(user)
+    response = client.get(reverse("accounts:dashboard"))
+
+    assert response.status_code == 200
+    assert '<div class="col-2" id="total_debit">998.0</div>' in response.content.decode("UTF-8")

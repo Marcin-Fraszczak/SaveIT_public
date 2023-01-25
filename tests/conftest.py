@@ -67,9 +67,11 @@ def prepare_data(user):
         name="test_plan".upper(),
         initial_value=1000,
         monthly_goal=2000,
-        curve_type=1,
+        curve_type=2,
         owner=user,
     )
+    plan.save()
+    plan.is_default = True
     plan.save()
 
     plan2 = SavingsPlan(
