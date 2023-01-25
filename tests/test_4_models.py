@@ -3,6 +3,7 @@ Tests for 4 models: Category, Counterparty, Wallet, SavingsPlan
 """
 
 import pytest
+from django.contrib.messages import get_messages
 from django.urls import reverse
 
 items = ["category", "counterparty", "wallet", "savings_plan"]
@@ -67,6 +68,7 @@ def test_item_add_to_db_form(client, user, translate):
         assert response.status_code == 302
         assert response.url == reverse(f"{translate[item]['app']}:list_{item}")
         assert last_item.name == f"New {item}".upper()
+        assert str(last_item) == f"New {item}".upper()
         assert items_after - items_before == 1
 
 
@@ -142,3 +144,18 @@ def test_access_denied_for_not_logged_in(client, prepare_data, translate):
             assert reverse("login") in response.url
 
 
+@pytest.mark.django_db
+def test_name_already_exists(client, prepare_data, translate):
+    user = prepare_data.get("user")
+    client.force_login(user)
+    for item in ["category", "counterparty"]:
+        obj = prepare_data[item]
+        response = client.post(
+            reverse(f"{translate[item]['app']}:add_{item}"),
+            {
+                "name": f"{obj.name}",
+            })
+        messages = list(get_messages(response.wsgi_request))
+        assert response.status_code == 302
+        assert response.url == f"/{item}/add/"
+        assert str(messages[0]) == "This name already exists"

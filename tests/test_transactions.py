@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -64,10 +66,12 @@ def test_add_transaction(client, prepare_data):
         })
 
     t_items_after = Transaction.objects.all().count()
+    new_transaction = Transaction.objects.get(value="997.0")
 
     assert response.status_code == 302
     assert response.url == reverse(f"{app_name}:list_{t_item}")
     assert t_items_after - t_items_before == 1
+    assert str(new_transaction) == f'2022-10-10 997.0 {counterparty.name.upper()}'
 
 
 @pytest.mark.django_db
@@ -161,3 +165,25 @@ def test_access_denied_if_different_user(client, prepare_data):
 
         assert response.status_code == 302
         assert response.url == reverse(f'{app_name}:list_{t_item}')
+
+
+@pytest.mark.django_db
+def test_getting_transactions_from_specific_month(client, prepare_data):
+    user = prepare_data.get("user")
+    client.force_login(user)
+    response = client.get(reverse(f'{app_name}:list_{t_item}'), {
+        "fromDate": "2022-10-01",
+        "toDate": "1000-01-01",
+    })
+    assert response.status_code == 200
+    assert 'transactions/list_transaction.html' in (t.name for t in response.templates)
+
+
+@pytest.mark.django_db
+def test_getting_transactions_via_api(client, prepare_data):
+    user = prepare_data.get("user")
+    client.force_login(user)
+    response = client.get(reverse(f'{app_name}:list_{t_item}'), {"json": 1})
+    assert response.status_code == 200
+    assert "transactions" in response.json()
+    assert len(response.json().get("transactions"))

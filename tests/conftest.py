@@ -30,12 +30,14 @@ def prepare_data(user):
     category = Category(
         name="test_cat".upper(),
         owner=user,
+        unique_name=f"{user.username}_TEST_CAT"
     )
     category.save()
 
     counterparty = Counterparty(
         name="test_cntp".upper(),
         owner=user,
+        unique_name=f"{user.username}_TEST_CNTP"
     )
     counterparty.save()
 

@@ -17,3 +17,9 @@ wallets/migrations
 plans/migrations
 
 static/
+
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
