@@ -200,7 +200,7 @@ def populate_python_anywhere():
     # if personal_plan:
     #     personal_plan.find_element(By.XPATH, "//a[contains(text(), 'make default')]").click()
 
-    starting_date = datetime(year=2023, month=2, day=1).date()
+    starting_date = datetime(year=2023, month=1, day=1).date()
 
     def get_days_till_today(start):
         # just today

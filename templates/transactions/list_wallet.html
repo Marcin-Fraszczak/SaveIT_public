@@ -35,7 +35,7 @@
                         Description
                     </a>
                 </div>
-                <div class="col-0 col-md-4 col-lg-3 text-white text-primary display-7 nav-link">Transactions assigned to wallet</div>
+                <div class="col-0 col-md-4 col-lg-2 text-white text-primary display-7 nav-link">Transactions assigned to wallet</div>
                 <div class="col-0 col-md-3 col-lg-2 text-white text-primary display-7 nav-link">Transfer transactions</div>
                 <div class="col-0 col-lg-2 text-white text-primary display-7 nav-link">Default</div>
             </div>
@@ -59,7 +59,7 @@
                         <a href="{% url 'wallets:modify_wallet' object.pk %}" class="text-black d-inline-block">{{object.wlt_transaction.all|length}}
                         </a>
                     </div>
-                    <div class="col-0 col-md-3 col-lg-2 m-1">
+                    <div class="col-0 col-md-3 col-lg-1 m-1">
                         <a href="{% url 'transactions:list_transaction' %}?filter_by=wallet&filter_val={{object.pk}}" class="btn btn-secondary display-4 m-0">
                             View
                         </a>
@@ -76,7 +76,7 @@
                         </a>
                     </div>
                     {% else %}
-                    <div class="col-0 col-lg-2">
+                    <div class="col-0 col-lg-2 m-1">
                         <a href="{% url 'wallets:make_default_wallet' object.pk %}" class="btn btn-secondary display-4 m-0">
                             make default
                         </a>
