@@ -11,6 +11,84 @@ from categories.models import Category
 from counterparties.models import Counterparty
 from wallets.models import Wallet
 
+import os
+from random import choices, randint
+
+import django
+from django.contrib.auth import get_user_model
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+django.setup()
+
+from categories.models import Category
+from counterparties.models import Counterparty
+from plans.models import SavingsPlan
+from transactions.models import Transaction
+from wallets.models import Wallet
+
+User = get_user_model()
+
+
+def check_if_taken(name, counter, admin=False):
+    email = f'{name}{counter}@gmail.com'
+    existing_users = User.objects.filter(email=email)
+    if existing_users:
+        counter += 1
+        email = check_if_taken(name, counter, admin)
+    return email, f'{name}{counter}'
+
+
+def create_user(admin=False):
+    try:
+        admin = bool(admin)
+    except Exception as e:
+        print(e)
+        return None
+
+    if admin:
+        name = "admin"
+    else:
+        name = "user"
+
+    email, username = check_if_taken(name, 1, admin)
+    password = "Testpass123"
+
+    user = User(email=email, username=username)
+    user.set_password(password)
+    user.is_active = 1
+    user.is_staff = admin
+    user.is_superuser = admin
+    user.save()
+
+    return user, password
+
+
+def create_categories():
+    pass
+
+
+def populate():
+    print(f'=' * 60)
+    user, password = create_user(admin=False)
+    print(f'User created:')
+    print(f'email: \t {user.username}')
+    print(f'password: {password}')
+    print(f'email: \t {user.email}')
+    print(f'=' * 60)
+    superuser, password = create_user(admin=True)
+    print(f'Superuser created:')
+    print(f'email: \t {superuser.username}')
+    print(f'password: {password}')
+    print(f'email: \t {superuser.email}')
+    print(f'=' * 60)
+    print("Created categories:")
+
+    print(f'=' * 60)
+    print("Created institutions:")
+
+    print(f'=' * 60)
+
+
 
 def populate_db():
     usernames = ["John", "Derek", "Maria", "Dude"]
@@ -95,3 +173,11 @@ def populate_db():
                 transaction.save()
 
         print(f"User {username} fully created.")
+
+
+def say_hello():
+    print("hello")
+
+
+if __name__ == "__main__":
+    say_hello()
