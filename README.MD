@@ -370,8 +370,11 @@ Dashboard view allows user to view graphs and summary for each month as well as 
 2. Clone the repository to your local machine, for example:
 `git clone <your_repo_url>`
 3. Create and activate virtual environment, for example for virtualenv:
+
 `virtualenv -p python3.11 venv`
+
 and then
+
 `source venv/bin/activate`
 4. In the main project folder (where manage.py is located), with virtual environment activated, use command:
 
