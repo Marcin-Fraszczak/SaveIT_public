@@ -30,14 +30,15 @@ environ.Env.read_env(os.path.join(BASE_DIR, 'env', '.env'))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJ_SECRET_KEY")
+# SECRET_KEY = os.environ.get("DJ_SECRET_KEY")
+SECRET_KEY = 'r-54zkup)6nkry=5^1yk&02(x!d+flq7givxd(0ia*(!(c7@ad'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get('DJ_DEBUG', default=0))
+# DEBUG = int(os.environ.get('DJ_DEBUG', default=0))
+DEBUG = 1
 
 ALLOWED_HOSTS = ["MarcinFraszczak.eu.pythonanywhere.com", "localhost", "127.0.0.1", ]
-# ALLOWED_HOSTS = ["*"]
-# ALLOWED_HOSTS = ["save-it-project.herokuapp.com", "localhost", "127.0.0.1", "MarcinFraszczak.eu.pythonanywhere.com"]
 
 # Application definition
 
@@ -113,24 +114,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # }
 
 # Configuration for local postgres
-DATABASES = {
-    'default': {}
-}
-
-DATABASE_URL = os.environ.get('DATABASE_URL')
-db_from_env = dj_database_url.config(
-    default=DATABASE_URL, conn_max_age=500, ssl_require=False
-)
-
-DATABASES['default'].update(db_from_env)
+# DATABASES = {
+#     'default': {}
+# }
+#
+# DATABASE_URL = os.environ.get('DATABASE_URL')
+# db_from_env = dj_database_url.config(
+#     default=DATABASE_URL, conn_max_age=500, ssl_require=False
+# )
+#
+# DATABASES['default'].update(db_from_env)
 
 # Configuration for default file database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation
@@ -196,16 +197,16 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "accounts:dashboard"
 LOGOUT_REDIRECT_URL = "home:home"
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
-EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_HOST_USER = 'apikey'
-EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+# EMAIL_HOST = "smtp.sendgrid.net"
+# EMAIL_HOST_USER = 'apikey'
+# EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD')
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
