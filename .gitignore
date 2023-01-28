@@ -9,10 +9,12 @@ env/.env
 
 db.sqlite3
 
-static/
+staticfiles/
 
 htmlcov/
 .coverage
 .coverage.*
 coverage.xml
 *.cover
+
+log.txt
