@@ -55,43 +55,43 @@ def create_user(admin=False):
 
 
 def create_categories(user):
-    object_list = ["work", "fun", "food", "transportation", "sport", "housing", "health"]
+    object_list = ["WORK", "FUN", "FOOD", "TRANSPORTATION", "SPORT", "HOUSING", "HEALTH"]
     for obj in object_list:
         Category.objects.create(name=obj, unique_name=f'{user.username}_{obj}', owner=user)
         print(obj)
 
 
 def create_counterparties(user):
-    object_list = ["work", "Biedronka", "LIDL", "Tesco", "Post", "TM", "Lufthansa", "PGNiG"]
+    object_list = ["WORK", "BIEDRONKA", "LIDL", "TESCO", "POST", "TM", "LUFTHANSA", "PGNIG"]
     for obj in object_list:
         Counterparty.objects.create(name=obj, unique_name=f'{user.username}_{obj}', owner=user)
         print(obj)
 
 
 def create_wallets(user):
-    object_list = ["Personal", "Company"]
+    object_list = ["PERSONAL", "COMPANY"]
     for obj in object_list:
         Wallet.objects.create(
-            name=obj,
+            name=obj.upper(),
             unique_name=f'{user.username}_{obj}',
             owner=user,
-            is_default=(obj == "Personal")
+            is_default=(obj == "PERSONAL")
         )
         print(obj)
 
 
 def create_plans(user):
     object_dict = {
-        "Minimalist": {"goal": 4000, "init": 1000, "curve": 1},
-        "Hedonist": {"goal": 6000, "init": 1200, "curve": 2},
-        "Like No Tomorrow": {"goal": 12000, "init": 4000, "curve": 3},
+        "MINIMALIST": {"goal": 4000, "init": 1000, "curve": 1},
+        "HEDONIST": {"goal": 6000, "init": 1200, "curve": 2},
+        "LIKE NO TOMORROW": {"goal": 12000, "init": 4000, "curve": 3},
     }
     for obj in object_dict:
         SavingsPlan.objects.create(
             name=obj,
             unique_name=f'{user.username}_{obj}',
             owner=user,
-            is_default=(obj == "Minimalist"),
+            is_default=(obj == "MINIMALIST"),
             monthly_goal=object_dict[obj]["goal"],
             initial_value=object_dict[obj]["init"],
             curve_type=object_dict[obj]["curve"],
@@ -106,9 +106,9 @@ def create_transactions(user):
         return delta
 
     starting_date = datetime(year=2022, month=6, day=1).date()
-    _category = Category.objects.filter(owner=user)
-    _counterparty = Counterparty.objects.filter(owner=user)
-    _wallet = Wallet.objects.filter(owner=user)
+    _category = [x for x in Category.objects.filter(owner=user)]
+    _counterparty = [x for x in Counterparty.objects.filter(owner=user)]
+    _wallet = [x for x in Wallet.objects.filter(owner=user)]
 
     for i in range(get_days_till_today(starting_date)):
 
@@ -147,7 +147,7 @@ def create_transactions(user):
                 owner=user,
             )
             transaction.save()
-            transaction.wallet.add(choice(_wallet))
+            transaction.wallet.add(choices(_wallet, weights=[5, 1], k=1)[0])
             transaction.save()
 
 
@@ -181,6 +181,7 @@ def populate():
     transactions = Transaction.objects.all().count()
     print(f"Created transactions: {transactions}")
     print(f'=' * 60)
+    print("END OF DATA\n\n")
 
 
 def say_hello():
@@ -188,4 +189,4 @@ def say_hello():
 
 
 if __name__ == "__main__":
-    say_hello()
+    populate()
