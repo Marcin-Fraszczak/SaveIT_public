@@ -116,8 +116,8 @@ def create_transactions(user):
 
         if today.day == 10:
             transaction = Transaction(
-                counterparty=Counterparty.objects.get(name="WORK"),
-                category=Category.objects.get(name="WORK"),
+                counterparty=Counterparty.objects.filter(name="WORK")[0],
+                category=Category.objects.filter(name="WORK")[0],
                 is_profit=True,
                 value=6000,
                 date=today,
@@ -182,6 +182,7 @@ def populate():
     print(f"Created transactions: {transactions}")
     print(f'=' * 60)
     print("END OF DATA\n\n")
+    print("SCROLL UP TO SEE THE DETAILS\n\n")
 
 
 def say_hello():
