@@ -1,23 +1,17 @@
 FROM python:3.11.2-alpine
 
-WORKDIR /saveit
+WORKDIR /app
+COPY . /app
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN pip install --upgrade pip
-
-COPY old/requirements.txt /saveit
-
-RUN pip install -r requirements.txt && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY . /saveit
-
-RUN python manage.py makemigrations && \
+RUN pip install --upgrade pip && \
+    pip install -r /app/requirements.txt && \
     python manage.py migrate && \
     pytest > log.txt && \
-    python scripts.py >> log.txt
+    python scripts.py >> log.txt && \
+    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8000
 

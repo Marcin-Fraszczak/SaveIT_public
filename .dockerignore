@@ -1,0 +1,12 @@
+.git
+.cache
+venv*
+old
+htmlcov
+*.*cache
+.pytest_cache
+env
+selenium_script.py
+db.sqlite3
+.gitignore
+drivers
