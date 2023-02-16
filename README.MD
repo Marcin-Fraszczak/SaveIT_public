@@ -1,5 +1,6 @@
 # SaveIT - app for tracking personal finances
 **Educational purposes only**
+
 Live version available at:
 
 https://marcinfraszczak.eu.pythonanywhere.com/
@@ -9,7 +10,7 @@ username: 'Johny'
 password: 'Testpass123'  
 
 
-## How to use app:
+## How to use the app:
 
 Main functionality depends on adding everyday expenses as 'transactions'.
 Each transaction must have specified:
