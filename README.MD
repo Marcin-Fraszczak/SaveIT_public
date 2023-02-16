@@ -1,37 +1,53 @@
 # SaveIT - app for tracking personal finances
+
 **Educational purposes only**
 
-Live version available at:
-
-https://marcinfraszczak.eu.pythonanywhere.com/
-
-To see funcionalities, use credentials:  
-username: 'Johny'  
-password: 'Testpass123'  
-
-
-## How to use the app:
-
-Main functionality depends on adding everyday expenses as 'transactions'.
-Each transaction must have specified:
-- date
-- value
-- counterparty (other side of transaction. for example name of the shop)
-- category (like 'food', 'tickets', 'transportation' and so on)
-- wallet that gathers transactions (usually one is enough, if you want to separate some transactions from another,you can do so by assigning them to another wallet)
-
-Each item can be modified later, by clicking on its name in an item list view.
-Dashboard view allows user to view graphs and summary for each month as well as summary for current wallet.
-
-## Step by step instructions: 
-1. Create an account, log in.
-2. Add counterparties, cateogries, wallet. You are given one of each by default, but they are not enough.
-3. Delete default values, if not needed anymore.
-4. You can now add transactions.
-
+<table>
+    <thead>
+        <th>Local version (best with Docker Compose)</th>
+        <th>Live version (pythonanywhere)</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                1) Clone the repo:<br>
+                <code>git clone git@github.com:Marcin-Fraszczak/SaveIT_public.git</code>
+            </td>
+            <td rowspan="3"> 
+                1-3) Visit this website:<br>
+                <a href="https://marcinfraszczak.eu.pythonanywhere.com/">https://marcinfraszczak.eu.pythonanywhere.com/</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                2) Inside the main directory, build and start the container:<br>
+                <code>docker compose up</code><br>
+                It should take around 30-40 seconds to finish and 200 MB of disk space
+            </td>
+        </tr>
+        <tr>
+            <td>
+                3) Open your browser and visit <code>0.0.0.0:8000</code>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                4) Choose 'Log in' and use credentials:<br>
+                Username: <code>user1</code><br>
+                Password: <code>Testpass123</code>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                5) Enjoy using the app.
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 
 ## Tests:
+
 <header>
     <div class="content">
         <h1>Coverage report:
@@ -362,46 +378,3 @@ Dashboard view allows user to view graphs and summary for each month as well as 
         </p>
     </div>
 </footer>
-
-
-
-
-# How to run it locally:
-1. Fork the repository
-2. Clone the repository to your local machine, for example:
-`git clone <your_repo_url>`
-3. Inside the project folder, create and activate virtual environment, for example for virtualenv:
-
-`virtualenv -p python3.11 venv`
-
-and then
-
-`source venv/bin/activate`
-
-4. In the main project folder (where manage.py is located), with virtual environment activated, use command:
-
-`bash start.sh`
-
-That will run the script, which does the following:
-- installs required packages
-- prepares and runs migrations (database file is created in main directory)
-- flushes the database, in case script is run for the second time
-- populates the database with starting data:
-    - one user
-    - one superuser
-    - couple of instances of all the necessary models
-- tests code with pytest
-- runs django development server, by default at http://127.0.0.1:8000/
-- saves all the above info with details, passwords, test coverage, etc. to `log.txt` file in the main directory
-
-### In case you run this script multiple times without killing the previous process, you'll get `port already in use` message
-
-One easy way to free this port is:
-
-`sudo lsof -t -i:8000`
-
-or any other port number. This will output ID of the process that is running on this port,
-
-for example `21987`, then
-
-`sudo kill 21987`
