@@ -1,58 +1,50 @@
 # SaveIT - app for tracking personal finances
+## Local version (best with Docker Compose)
 
-**Educational purposes only**
+1) Clone the repo:
 
-<table>
-    <thead>
-        <th>Local version (best with Docker Compose)</th>
-        <th>Live version (pythonanywhere)</th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-                1) Clone the repo:<br>
-                <code>git clone git@github.com:Marcin-Fraszczak/SaveIT_public.git</code>
-            </td>
-            <td rowspan="3"> 
-                1-3) Visit this website:<br>
-                <a href="https://marcinfraszczak.eu.pythonanywhere.com/">https://marcinfraszczak.eu.pythonanywhere.com/</a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                2) Inside the main directory, build and start the container:<br>
-                <code>docker compose up</code><br>
-                It should take around 30-40 seconds to finish and 200 MB of disk space
-            </td>
-        </tr>
-        <tr>
-            <td>
-                3) Open your browser and visit <code>0.0.0.0:8000</code>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                4) Choose 'Log in' and use credentials:<br>
-                Username: <code>user1</code><br>
-                Password: <code>Testpass123</code>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                5) Enjoy using the app.
-            </td>
-        </tr>
-    </tbody>
-</table>
+    `git clone git@github.com:Marcin-Fraszczak/SaveIT_public.git`
+
+2) Enter the main directory:
+
+    `cd SaveIT_public/`
+
+3) build and start the container:
+
+    `docker compose up`
+    
+    It should take around 30-40 seconds and 200 MB of disk space. You can delete the container and the image later.
+4) Pytest results and objects populating database (along with users) will be displayed in the terminal.
+5) Open your browser and visit:
+
+    http://0.0.0.0:8000/
+6) Use user credentials to log in:
+
+    Username: `user1`
+
+    Password: `Testpass123`
+7) Avoid using `Ctrl+C` inside the container for copying. If it happens, you can always restart the container:
+
+    `docker restart <container_name>`
+## Live version (pythonanywhere.com)
+1) Visit this website:
+
+    https://marcinfraszczak.eu.pythonanywhere.com/
+2) To log in use credentials:
+    
+    Username: `Johny`
+
+    Password: `Testpass123`
+3) Enjoy using the app.
 
 
 ## Tests:
 
 <header>
     <div class="content">
-        <h1>Coverage report:
+        <h2>Coverage report:
             <span class="pc_cov">92%</span>
-        </h1>
+        </h2>
         <p class="text">
             <a class="nav" href="https://coverage.readthedocs.io">coverage.py v7.1.0</a>,
             created at 2023-01-26 15:31 +0100
