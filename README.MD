@@ -32,7 +32,7 @@
     https://marcinfraszczak.eu.pythonanywhere.com/
 2) To log in use credentials:
     
-    Username: `Johny`
+    Username: `user1`
 
     Password: `Testpass123`
 3) Enjoy using the app.
