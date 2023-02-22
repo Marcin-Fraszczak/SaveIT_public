@@ -101,7 +101,8 @@ def create_plans(user):
 
 def create_transactions(user):
     def get_days_till_today(start):
-        stop = datetime.now().date()
+        stop = datetime(year=2023, month=6, day=29).date()
+        # stop = datetime.now().date()
         delta = (stop - start).days
         return delta
 
@@ -183,6 +184,21 @@ def populate():
     print(f'=' * 60)
     print("END OF DATA\n\n")
     print("SCROLL UP TO SEE THE DETAILS\n\n")
+
+
+def add_transactions(username):
+    user = User.objects.filter(username=username)
+    if user:
+        print(f'=' * 60)
+        user = user[0]
+        create_transactions(user)
+        transactions = Transaction.objects.all().count()
+        print(f"Created transactions: {transactions}")
+        print(f'=' * 60)
+        print("END OF DATA\n\n")
+        print("SCROLL UP TO SEE THE DETAILS\n\n")
+    else:
+        print("specify different username")
 
 
 def say_hello():
