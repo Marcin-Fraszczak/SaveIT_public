@@ -3,7 +3,7 @@
 
 1) Clone the repo:
 
-    `git clone git@github.com:Marcin-Fraszczak/SaveIT_public.git`
+    `git clone https://github.com/Marcin-Fraszczak/SaveIT_public.git`
 
 2) Enter the main directory:
 
